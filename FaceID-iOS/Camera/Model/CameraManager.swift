@@ -1,5 +1,5 @@
 //
-//  CameraModel.swift
+//  CameraManager.swift
 //  FaceID-iOS
 //
 //  Created by Tri Pham on 6/13/23.
@@ -7,8 +7,9 @@
 
 import Foundation
 import AVFoundation
+import CoreImage
 
-class CameraModel: ObservableObject {
+class CameraManager: ObservableObject {
     enum Status {
         case unconfigured
         case configured
@@ -16,21 +17,22 @@ class CameraModel: ObservableObject {
         case failed
     }
     
-    static let shared = CameraModel()
-    
     @Published var error: CameraError?
     
+    var previewLayer: AVCaptureVideoPreviewLayer?
+    
+    static let shared = CameraManager()
+
     let session = AVCaptureSession()
     
-    private let sessionQueue = DispatchQueue(
+    let sessionQueue = DispatchQueue(
         label: "Video Session Queue",
-        qos: .userInitiated,
+        qos: .background,
         attributes: [],
         autoreleaseFrequency: .workItem
     )
     
     private let videoOutput = AVCaptureVideoDataOutput()
-    
     private var status = Status.unconfigured
     
     private init() {
@@ -106,9 +108,9 @@ class CameraModel: ObservableObject {
             session.addOutput(videoOutput)
 
             videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
-
             let videoConnection = videoOutput.connection(with: .video)
             videoConnection?.videoOrientation = .portrait
+            
         } else {
             set(error: .cannotAddOutput)
             status = .failed
