@@ -22,6 +22,7 @@
 		E5AC974D2A384B7E00DC1B27 /* UIScreenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC974C2A384B7E00DC1B27 /* UIScreenExtension.swift */; };
 		E5AC97502A384C5C00DC1B27 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC974F2A384C5C00DC1B27 /* CameraView.swift */; };
 		E5AC97522A384CC200DC1B27 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC97512A384CC200DC1B27 /* HomeView.swift */; };
+		E5AC97562A38534400DC1B27 /* FaceDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC97552A38534300DC1B27 /* FaceDetection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		E5AC974C2A384B7E00DC1B27 /* UIScreenExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScreenExtension.swift; sourceTree = "<group>"; };
 		E5AC974F2A384C5C00DC1B27 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		E5AC97512A384CC200DC1B27 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		E5AC97552A38534300DC1B27 /* FaceDetection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 		E507B4892A380AC900331FCA /* FaceID-iOS */ = {
 			isa = PBXGroup;
 			children = (
+				E5AC97532A38532700DC1B27 /* FaceDetection */,
 				E507B4A82A381BC700331FCA /* Extensions */,
 				E507B49E2A380C7700331FCA /* Camera */,
 				E507B49D2A380C5900331FCA /* Views */,
@@ -108,8 +111,6 @@
 			children = (
 				E5AC974E2A384C4D00DC1B27 /* View */,
 				E507B4A32A3810DA00331FCA /* Model */,
-				E507B49F2A380CD100331FCA /* CameraError.swift */,
-				E5AC974A2A381DEA00DC1B27 /* CameraViewController.swift */,
 			);
 			path = Camera;
 			sourceTree = "<group>";
@@ -117,8 +118,9 @@
 		E507B4A32A3810DA00331FCA /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				E507B4A42A3810EB00331FCA /* CameraManager.swift */,
+				E507B49F2A380CD100331FCA /* CameraError.swift */,
 				E507B4A62A3819DD00331FCA /* FrameManager.swift */,
+				E507B4A42A3810EB00331FCA /* CameraManager.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -135,9 +137,26 @@
 		E5AC974E2A384C4D00DC1B27 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				E5AC974A2A381DEA00DC1B27 /* CameraViewController.swift */,
 				E5AC974F2A384C5C00DC1B27 /* CameraView.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		E5AC97532A38532700DC1B27 /* FaceDetection */ = {
+			isa = PBXGroup;
+			children = (
+				E5AC97542A38533400DC1B27 /* Model */,
+			);
+			path = FaceDetection;
+			sourceTree = "<group>";
+		};
+		E5AC97542A38533400DC1B27 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				E5AC97552A38534300DC1B27 /* FaceDetection.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -218,6 +237,7 @@
 				E507B4A22A380E0900331FCA /* ErrorView.swift in Sources */,
 				E507B4A02A380CD100331FCA /* CameraError.swift in Sources */,
 				E507B4972A380ACA00331FCA /* FaceID_iOS.xcdatamodeld in Sources */,
+				E5AC97562A38534400DC1B27 /* FaceDetection.swift in Sources */,
 				E507B4AA2A381BE400331FCA /* CGImageExtension.swift in Sources */,
 				E507B48D2A380AC900331FCA /* ContentView.swift in Sources */,
 				E507B48B2A380AC900331FCA /* FaceID_iOSApp.swift in Sources */,
