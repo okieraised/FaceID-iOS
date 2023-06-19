@@ -8,6 +8,7 @@
 import Foundation
 import AVFoundation
 import CoreImage
+import Combine
 
 class CameraManager: ObservableObject {
     enum Status {
@@ -20,16 +21,25 @@ class CameraManager: ObservableObject {
     @Published var error: CameraError?
     
     var previewLayer: AVCaptureVideoPreviewLayer?
+    var faceDetector: FaceDetector?
     
     static let shared = CameraManager()
 
     let session = AVCaptureSession()
+    let shutterReleased = PassthroughSubject<Void, Never>()
     
     let sessionQueue = DispatchQueue(
         label: "Video Session Queue",
         qos: .background,
         attributes: [],
         autoreleaseFrequency: .workItem
+    )
+    
+    let videoOutputQueue = DispatchQueue(
+      label: "Video Output Queue 2",
+      qos: .userInitiated,
+      attributes: [],
+      autoreleaseFrequency: .workItem
     )
     
     private let videoOutput = AVCaptureVideoDataOutput()
@@ -106,7 +116,7 @@ class CameraManager: ObservableObject {
         
         if session.canAddOutput(videoOutput) {
             session.addOutput(videoOutput)
-
+            videoOutput.setSampleBufferDelegate(faceDetector, queue: videoOutputQueue)
             videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
             let videoConnection = videoOutput.connection(with: .video)
             videoConnection?.videoOrientation = .portrait
@@ -135,5 +145,4 @@ class CameraManager: ObservableObject {
             self.videoOutput.setSampleBufferDelegate(delegate, queue: queue)
         }
     }
-    
 }

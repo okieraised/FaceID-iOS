@@ -10,10 +10,19 @@ import AVFoundation
 
 struct CameraView: UIViewControllerRepresentable {
     typealias UIViewControllerType = CameraViewController
+    
+    private(set) var cameraViewModel: CameraViewModel
 
     func makeUIViewController(context: Context) -> CameraViewController {
         
+        let faceDetector = FaceDetector()
+        faceDetector.cameraViewModel = cameraViewModel
+        
+        
         let viewController = CameraViewController()
+        
+//        viewController.cameraManager.faceDetector = faceDetector
+        
         return viewController
     }
 

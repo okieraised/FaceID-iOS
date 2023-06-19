@@ -9,7 +9,12 @@ import Foundation
 import AVFoundation
 import UIKit
 
-class CameraViewController: UIViewController {
+class CameraViewController: UIViewController, FaceDetectorDelegate {
+    func draw(image: CIImage) {
+        
+    }
+    
+    
     
     let notificationCenter = NotificationCenter.default
     private let context = CIContext()
@@ -20,6 +25,7 @@ class CameraViewController: UIViewController {
         
         UIApplication.shared.isIdleTimerDisabled = true
         super.viewDidLoad()
+        self.cameraManager.faceDetector?.viewDelegate = self
         
         self.cameraManager.session.sessionPreset = .high
         self.notificationCenter.addObserver(self, selector: #selector(willResignActive), name: UIApplication.didEnterBackgroundNotification, object: nil)

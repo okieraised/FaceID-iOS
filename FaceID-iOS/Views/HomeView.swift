@@ -8,13 +8,29 @@
 import SwiftUI
 
 struct HomeView: View {
+    
+    
+    @ObservedObject private(set) var model: CameraViewModel
+
+    init(model: CameraViewModel) {
+      self.model = model
+    }
+    
     var body: some View {
-        CameraView()
+        CameraView(cameraViewModel: model)
+        
+//        ZStack {
+//            Image("vbd")
+//
+//        }
+//        .ignoresSafeArea()
+//        .preferredColorScheme(.dark)
+        
     }
 }
 
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView()
-    }
-}
+//struct HomeView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        HomeView()
+//    }
+//}
