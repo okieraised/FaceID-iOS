@@ -17,14 +17,11 @@ struct HomeView: View {
     }
     
     var body: some View {
-        CameraView(cameraViewModel: model)
-        
-//        ZStack {
-//            Image("vbd")
-//
-//        }
-//        .ignoresSafeArea()
-//        .preferredColorScheme(.dark)
+        ZStack {
+            
+            CameraView(cameraViewModel: model)
+            FaceBoundingBoxView(model: model)
+        }
         
     }
 }

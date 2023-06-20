@@ -20,8 +20,7 @@ struct CameraView: UIViewControllerRepresentable {
         
         
         let viewController = CameraViewController()
-        
-//        viewController.cameraManager.faceDetector = faceDetector
+        viewController.faceDetector = faceDetector
         
         return viewController
     }

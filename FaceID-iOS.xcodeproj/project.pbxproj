@@ -15,8 +15,6 @@
 		E507B4972A380ACA00331FCA /* FaceID_iOS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E507B4952A380ACA00331FCA /* FaceID_iOS.xcdatamodeld */; };
 		E507B4A02A380CD100331FCA /* CameraError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E507B49F2A380CD100331FCA /* CameraError.swift */; };
 		E507B4A22A380E0900331FCA /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E507B4A12A380E0900331FCA /* ErrorView.swift */; };
-		E507B4A52A3810EB00331FCA /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E507B4A42A3810EB00331FCA /* CameraManager.swift */; };
-		E507B4A72A3819DD00331FCA /* FrameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E507B4A62A3819DD00331FCA /* FrameManager.swift */; };
 		E507B4AA2A381BE400331FCA /* CGImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E507B4A92A381BE400331FCA /* CGImageExtension.swift */; };
 		E52222CA2A3AB6940058246C /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E52222C92A3AB6940058246C /* CameraViewModel.swift */; };
 		E585685A2A3969DA008460A3 /* AnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58568592A3969DA008460A3 /* AnimationView.swift */; };
@@ -24,7 +22,11 @@
 		E5AC974D2A384B7E00DC1B27 /* UIScreenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC974C2A384B7E00DC1B27 /* UIScreenExtension.swift */; };
 		E5AC97502A384C5C00DC1B27 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC974F2A384C5C00DC1B27 /* CameraView.swift */; };
 		E5AC97522A384CC200DC1B27 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC97512A384CC200DC1B27 /* HomeView.swift */; };
-		E5AC97562A38534400DC1B27 /* FaceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC97552A38534300DC1B27 /* FaceDetector.swift */; };
+		E5AC97562A38534400DC1B27 /* FaceDetectorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC97552A38534300DC1B27 /* FaceDetectorModel.swift */; };
+		E5AE52732A40145700CB741F /* FaceBoundingBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AE52722A40145700CB741F /* FaceBoundingBoxView.swift */; };
+		E5AE52752A4034DB00CB741F /* PreviewLayerFrameConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AE52742A4034DB00CB741F /* PreviewLayerFrameConstant.swift */; };
+		E5B87DBC2A418597002AECD9 /* faceid.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E5B87DBA2A418594002AECD9 /* faceid.mlmodel */; };
+		E5B87DBD2A418597002AECD9 /* fas_4.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E5B87DBB2A418596002AECD9 /* fas_4.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,8 +39,6 @@
 		E507B4962A380ACA00331FCA /* FaceID_iOS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FaceID_iOS.xcdatamodel; sourceTree = "<group>"; };
 		E507B49F2A380CD100331FCA /* CameraError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraError.swift; sourceTree = "<group>"; };
 		E507B4A12A380E0900331FCA /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
-		E507B4A42A3810EB00331FCA /* CameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraManager.swift; sourceTree = "<group>"; };
-		E507B4A62A3819DD00331FCA /* FrameManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameManager.swift; sourceTree = "<group>"; };
 		E507B4A92A381BE400331FCA /* CGImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGImageExtension.swift; sourceTree = "<group>"; };
 		E52222C92A3AB6940058246C /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		E58568592A3969DA008460A3 /* AnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationView.swift; sourceTree = "<group>"; };
@@ -46,7 +46,11 @@
 		E5AC974C2A384B7E00DC1B27 /* UIScreenExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScreenExtension.swift; sourceTree = "<group>"; };
 		E5AC974F2A384C5C00DC1B27 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		E5AC97512A384CC200DC1B27 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		E5AC97552A38534300DC1B27 /* FaceDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetector.swift; sourceTree = "<group>"; };
+		E5AC97552A38534300DC1B27 /* FaceDetectorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetectorModel.swift; sourceTree = "<group>"; };
+		E5AE52722A40145700CB741F /* FaceBoundingBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceBoundingBoxView.swift; sourceTree = "<group>"; };
+		E5AE52742A4034DB00CB741F /* PreviewLayerFrameConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewLayerFrameConstant.swift; sourceTree = "<group>"; };
+		E5B87DBA2A418594002AECD9 /* faceid.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = faceid.mlmodel; sourceTree = "<group>"; };
+		E5B87DBB2A418596002AECD9 /* fas_4.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = fas_4.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,7 +83,8 @@
 		E507B4892A380AC900331FCA /* FaceID-iOS */ = {
 			isa = PBXGroup;
 			children = (
-				E5AC97532A38532700DC1B27 /* FaceDetection */,
+				E5B87DB92A418569002AECD9 /* AIModel */,
+				E5AE526F2A4010B400CB741F /* Constants */,
 				E507B4A82A381BC700331FCA /* Extensions */,
 				E507B49E2A380C7700331FCA /* Camera */,
 				E507B49D2A380C5900331FCA /* Views */,
@@ -107,6 +112,7 @@
 				E507B4A12A380E0900331FCA /* ErrorView.swift */,
 				E5AC97512A384CC200DC1B27 /* HomeView.swift */,
 				E58568592A3969DA008460A3 /* AnimationView.swift */,
+				E5AE52722A40145700CB741F /* FaceBoundingBoxView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -115,7 +121,6 @@
 			isa = PBXGroup;
 			children = (
 				E52222CC2A3AB6D70058246C /* Error */,
-				E52222CB2A3AB69D0058246C /* Manager */,
 				E5AC974E2A384C4D00DC1B27 /* View */,
 				E507B4A32A3810DA00331FCA /* Model */,
 			);
@@ -125,6 +130,7 @@
 		E507B4A32A3810DA00331FCA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				E5AC97552A38534300DC1B27 /* FaceDetectorModel.swift */,
 				E52222C92A3AB6940058246C /* CameraViewModel.swift */,
 			);
 			path = Model;
@@ -137,15 +143,6 @@
 				E5AC974C2A384B7E00DC1B27 /* UIScreenExtension.swift */,
 			);
 			path = Extensions;
-			sourceTree = "<group>";
-		};
-		E52222CB2A3AB69D0058246C /* Manager */ = {
-			isa = PBXGroup;
-			children = (
-				E507B4A62A3819DD00331FCA /* FrameManager.swift */,
-				E507B4A42A3810EB00331FCA /* CameraManager.swift */,
-			);
-			path = Manager;
 			sourceTree = "<group>";
 		};
 		E52222CC2A3AB6D70058246C /* Error */ = {
@@ -165,20 +162,21 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		E5AC97532A38532700DC1B27 /* FaceDetection */ = {
+		E5AE526F2A4010B400CB741F /* Constants */ = {
 			isa = PBXGroup;
 			children = (
-				E5AC97542A38533400DC1B27 /* Model */,
+				E5AE52742A4034DB00CB741F /* PreviewLayerFrameConstant.swift */,
 			);
-			path = FaceDetection;
+			path = Constants;
 			sourceTree = "<group>";
 		};
-		E5AC97542A38533400DC1B27 /* Model */ = {
+		E5B87DB92A418569002AECD9 /* AIModel */ = {
 			isa = PBXGroup;
 			children = (
-				E5AC97552A38534300DC1B27 /* FaceDetector.swift */,
+				E5B87DBA2A418594002AECD9 /* faceid.mlmodel */,
+				E5B87DBB2A418596002AECD9 /* fas_4.mlmodel */,
 			);
-			path = Model;
+			path = AIModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -252,6 +250,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E507B4942A380ACA00331FCA /* Persistence.swift in Sources */,
+				E5B87DBC2A418597002AECD9 /* faceid.mlmodel in Sources */,
 				E5AC974B2A381DEA00DC1B27 /* CameraViewController.swift in Sources */,
 				E5AC97522A384CC200DC1B27 /* HomeView.swift in Sources */,
 				E5AC974D2A384B7E00DC1B27 /* UIScreenExtension.swift in Sources */,
@@ -261,12 +260,13 @@
 				E585685A2A3969DA008460A3 /* AnimationView.swift in Sources */,
 				E507B4A02A380CD100331FCA /* CameraError.swift in Sources */,
 				E507B4972A380ACA00331FCA /* FaceID_iOS.xcdatamodeld in Sources */,
-				E5AC97562A38534400DC1B27 /* FaceDetector.swift in Sources */,
+				E5AC97562A38534400DC1B27 /* FaceDetectorModel.swift in Sources */,
+				E5B87DBD2A418597002AECD9 /* fas_4.mlmodel in Sources */,
 				E507B4AA2A381BE400331FCA /* CGImageExtension.swift in Sources */,
 				E507B48D2A380AC900331FCA /* ContentView.swift in Sources */,
+				E5AE52732A40145700CB741F /* FaceBoundingBoxView.swift in Sources */,
+				E5AE52752A4034DB00CB741F /* PreviewLayerFrameConstant.swift in Sources */,
 				E507B48B2A380AC900331FCA /* FaceID_iOSApp.swift in Sources */,
-				E507B4A52A3810EB00331FCA /* CameraManager.swift in Sources */,
-				E507B4A72A3819DD00331FCA /* FrameManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,6 +399,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera access is required to use functionlities of this app";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Photo Library access is required to save photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -429,6 +430,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera access is required to use functionlities of this app";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Photo Library access is required to save photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

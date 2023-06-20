@@ -14,4 +14,6 @@ extension UIScreen {
     static let screenSize = UIScreen.main.bounds.size
     static let midX = UIScreen.main.bounds.midX
     static let midY = UIScreen.main.bounds.midY
+    static let x = UIScreen.main.bounds.origin.x
+    static let y = UIScreen.main.bounds.origin.y
 }
