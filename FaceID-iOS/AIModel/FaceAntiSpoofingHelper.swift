@@ -31,6 +31,8 @@ public class FaceAntiSpoofingModel {
     
     public func antiSpoofing(buffer: CVPixelBuffer) throws -> [Float32] {
         
+        
+        
         let width = CVPixelBufferGetWidth(buffer)
         let height = CVPixelBufferGetHeight(buffer)
         let scale = CGFloat(FaceAntiSpoofingModel.InputImageSize) / CGFloat(min(width, height))
@@ -40,7 +42,7 @@ public class FaceAntiSpoofingModel {
         let ciImage = CIImage(cvPixelBuffer: buffer).transformed(by: transform, highQualityDownsample: true)
         let uiImage = UIImage(ciImage: ciImage)
         
-        let resized = uiImage.resizeImageTo(size: CGSize(width: 112, height: 112))
+        let resized = uiImage.resizeImageTo(size: CGSize(width: FaceAntiSpoofingModel.InputImageSize, height: FaceAntiSpoofingModel.InputImageSize))
         
         do {
 //            let cc = try faceID.prediction(input_1: MLFeatureValue(g))

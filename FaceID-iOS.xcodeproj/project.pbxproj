@@ -25,6 +25,8 @@
 		E5A01CE02A42B00100E7BD7E /* FaceCaptureProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A01CDF2A42B00100E7BD7E /* FaceCaptureProgressView.swift */; };
 		E5A01CE42A42EE3600E7BD7E /* FaceAntiSpoofing.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E5A01CE32A42EE3600E7BD7E /* FaceAntiSpoofing.mlmodel */; };
 		E5A01CE62A42EE5600E7BD7E /* FaceAntiSpoofingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A01CE52A42EE5600E7BD7E /* FaceAntiSpoofingHelper.swift */; };
+		E5A01CE82A42FAF100E7BD7E /* CVPixelBuffer+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A01CE72A42FAF100E7BD7E /* CVPixelBuffer+Resize.swift */; };
+		E5A01CEA2A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A01CE92A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift */; };
 		E5AC974B2A381DEA00DC1B27 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC974A2A381DEA00DC1B27 /* CameraViewController.swift */; };
 		E5AC974D2A384B7E00DC1B27 /* UIScreenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC974C2A384B7E00DC1B27 /* UIScreenExtension.swift */; };
 		E5AC97502A384C5C00DC1B27 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC974F2A384C5C00DC1B27 /* CameraView.swift */; };
@@ -56,6 +58,8 @@
 		E5A01CDF2A42B00100E7BD7E /* FaceCaptureProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceCaptureProgressView.swift; sourceTree = "<group>"; };
 		E5A01CE32A42EE3600E7BD7E /* FaceAntiSpoofing.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = FaceAntiSpoofing.mlmodel; sourceTree = "<group>"; };
 		E5A01CE52A42EE5600E7BD7E /* FaceAntiSpoofingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceAntiSpoofingHelper.swift; sourceTree = "<group>"; };
+		E5A01CE72A42FAF100E7BD7E /* CVPixelBuffer+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CVPixelBuffer+Resize.swift"; sourceTree = "<group>"; };
+		E5A01CE92A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CVPixelBuffer+Create.swift"; sourceTree = "<group>"; };
 		E5AC974A2A381DEA00DC1B27 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		E5AC974C2A384B7E00DC1B27 /* UIScreenExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScreenExtension.swift; sourceTree = "<group>"; };
 		E5AC974F2A384C5C00DC1B27 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
@@ -160,6 +164,8 @@
 				E5A01CD72A42A88300E7BD7E /* UIImage+CVPixelBuffer.swift */,
 				E5A01CDB2A42AD0800E7BD7E /* ViewExtension.swift */,
 				E5A01CDD2A42AD4400E7BD7E /* UINavigationControllerExtension.swift */,
+				E5A01CE72A42FAF100E7BD7E /* CVPixelBuffer+Resize.swift */,
+				E5A01CE92A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -283,6 +289,7 @@
 				E52222CA2A3AB6940058246C /* CameraViewModel.swift in Sources */,
 				E507B4A22A380E0900331FCA /* ErrorView.swift in Sources */,
 				E5A01CDE2A42AD4400E7BD7E /* UINavigationControllerExtension.swift in Sources */,
+				E5A01CE82A42FAF100E7BD7E /* CVPixelBuffer+Resize.swift in Sources */,
 				E585685A2A3969DA008460A3 /* AnimationView.swift in Sources */,
 				E507B4A02A380CD100331FCA /* CameraError.swift in Sources */,
 				E507B4972A380ACA00331FCA /* FaceID_iOS.xcdatamodeld in Sources */,
@@ -290,6 +297,7 @@
 				E507B4AA2A381BE400331FCA /* CGImage+CVPixelBuffer.swift in Sources */,
 				E507B48D2A380AC900331FCA /* ContentView.swift in Sources */,
 				E5AE52732A40145700CB741F /* FaceBoundingBoxView.swift in Sources */,
+				E5A01CEA2A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift in Sources */,
 				E5AE52752A4034DB00CB741F /* Constants.swift in Sources */,
 				E5B87DC12A41AB12002AECD9 /* FaceID.mlmodel in Sources */,
 				E5A01CE42A42EE3600E7BD7E /* FaceAntiSpoofing.mlmodel in Sources */,
