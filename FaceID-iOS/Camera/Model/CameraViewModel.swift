@@ -22,7 +22,7 @@ struct FaceQualityModel {
 }
 
 enum FaceBoundsState {
-    case unknown
+    case faceNotFound
     case detectedFaceTooSmall
     case detectedFaceTooLarge
     case detectedFaceOffCentre
@@ -51,6 +51,7 @@ final class CameraViewModel: ObservableObject {
     // MARK: - Published Variables
     
     @Published private(set) var passportPhoto: UIImage?
+    
     @Published private(set) var faceObservationState: FaceObservationState<FaceGeometryModel> {
         didSet {
             processUpdatedFaceGeometry()
@@ -65,14 +66,20 @@ final class CameraViewModel: ObservableObject {
       }
     }
     
+    @Published private(set) var faceBoundsState: FaceBoundsState {
+        didSet {
+            updateFaceValidity()
+        }
+    }
+    
     func processUpdatedFaceGeometry() {
         switch faceObservationState {
-        case .faceFound(let faceGeometryModel):
-            let boundingBox = faceGeometryModel.boundingBox
-            let roll = faceGeometryModel.roll.doubleValue
-            let pitch = faceGeometryModel.pitch.doubleValue
-            let yaw = faceGeometryModel.yaw.doubleValue
+        case .faceFound(let faceGeometry):
+            let boundingBox = faceGeometry.boundingBox
+            updateAcceptableBounds(using: boundingBox)
+            
         case .faceNotFound:
+            
             break
         case .errored(let error):
             print("\(error.localizedDescription)")
@@ -86,6 +93,7 @@ final class CameraViewModel: ObservableObject {
     init() {
         faceObservationState = .faceNotFound
         faceQualityState = .faceNotFound
+        faceBoundsState = .faceNotFound
     }
     
     // MARK: - Public Methods
@@ -146,5 +154,31 @@ final class CameraViewModel: ObservableObject {
 // MARK: - Extensions
 
 extension CameraViewModel {
+    
+    func invalidateFaceGeometry() {
+        faceObservationState = .faceNotFound
+        faceQualityState = .faceNotFound
+    }
+    
+    func updateFaceValidity() {
+        
+    }
+    
+    func updateAcceptableBounds(using boundingBox: CGRect) {
+        if boundingBox.width > 1.1 * FaceCaptureConstant.LayoutGuideWidth {
+            faceBoundsState = .detectedFaceTooLarge
+            print("TOO BIG")
+        } else if boundingBox.width  < FaceCaptureConstant.LayoutGuideHeight * 0.5 {
+            faceBoundsState = .detectedFaceTooSmall
+            print("TOO SMALL")
+        } else {
+            faceBoundsState = .faceOK
+            print("OK")
+        }
+    }
+    
+    func updateFaceCaptureProgress(yaw: Double, pitch: Double) {
+        
+    }
     
 }

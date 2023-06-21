@@ -1,39 +1,39 @@
 //
-//  FaceIDModelHelper.swift
+//  FaceAntiSpoofinghelper.swift
 //  FaceID-iOS
 //
-//  Created by Tri Pham on 6/20/23.
+//  Created by Tri Pham on 6/21/23.
 //
 
-import AVFoundation
+import Foundation
 import CoreImage
 import Vision
 import UIKit
 
 
 @available(iOS 13.0, *)
-public class FaceIDModel {
+public class FaceAntiSpoofingModel {
     
-    public struct FaceIDResult {
+    public struct FaceAntiSpoofingResult {
         public let result: [Float32]
     }
     
-    public static let InputImageSize = 112
+    public static let InputImageSize = 80
     
-    private let faceID: FaceID = {
+    private let faceAntiSpoofing: FaceAntiSpoofing = {
         do {
             let config = MLModelConfiguration()
-            return try FaceID(configuration: config)
+            return try FaceAntiSpoofing(configuration: config)
         } catch {
             fatalError("\(error.localizedDescription)")
         }
     }()
     
-    public func detectFaceID(buffer: CVPixelBuffer) throws -> [Float32] {
+    public func antiSpoofing(buffer: CVPixelBuffer) throws -> [Float32] {
         
         let width = CVPixelBufferGetWidth(buffer)
         let height = CVPixelBufferGetHeight(buffer)
-        let scale = CGFloat(FaceIDModel.InputImageSize) / CGFloat(min(width, height))
+        let scale = CGFloat(FaceAntiSpoofingModel.InputImageSize) / CGFloat(min(width, height))
         let transform = CGAffineTransform(scaleX: scale, y: scale)
 
         
@@ -54,6 +54,3 @@ public class FaceIDModel {
         }
     }
 }
-
-
-

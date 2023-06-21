@@ -9,24 +9,20 @@ import SwiftUI
 
 struct HomeView: View {
     
-    
+    // MARK: - Variables
     @ObservedObject private(set) var model: CameraViewModel
 
+    // MARK: - Init
     init(model: CameraViewModel) {
-      self.model = model
+        self.model = model
     }
     
+    // MARK: - View
     var body: some View {
         ZStack {
             CameraView(cameraViewModel: model)
             FaceBoundingBoxView(model: model)
-            VStack {
-                Image("Bounding")
-                    .resizable()
-                    .frame(width: 300, height: 300)
-                Spacer()
-            }
-            .padding(.top, 50 + PreviewLayerFrameConstant.yOffset)
+            FaceCaptureBorderView()
         }
         
     }

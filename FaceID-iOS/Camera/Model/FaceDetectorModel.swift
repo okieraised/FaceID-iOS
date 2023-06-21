@@ -19,6 +19,9 @@ protocol FaceDetectorDelegate: NSObjectProtocol {
 }
 
 class FaceDetector: NSObject {
+    
+    // MARK: - Variables
+    
     weak var viewDelegate: FaceDetectorDelegate?
     
     weak var cameraViewModel: CameraViewModel? {
@@ -38,11 +41,12 @@ class FaceDetector: NSObject {
     }
 
     var sequenceHandler = VNSequenceRequestHandler()
+    var faceIDModel = FaceIDModel()
     var isCapturingPhoto = true
     var currentFrameBuffer: CVImageBuffer?
     var subscriptions = Set<AnyCancellable>()
     
-    var rect = CGRect()
+    // MARK: - Processing Queue
 
     let imageProcessingQueue = DispatchQueue(
         label: "Image Processing Queue",
@@ -67,7 +71,6 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
 //        } catch {
 //            print("\(error.localizedDescription)")
 //        }
-//
 
         if isCapturingPhoto {
 //            isCapturingPhoto = false
@@ -86,7 +89,8 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
             try sequenceHandler.perform(
                 [detectFaceRectanglesRequest, detectCaptureQualityRequest],
                 on: imageBuffer,
-                orientation: .leftMirrored)
+                orientation: .leftMirrored
+            )
         } catch {
             print(error.localizedDescription)
         }
@@ -97,9 +101,7 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 extension FaceDetector {
     
-    // detectedFaceRectangles detect the roll, pitch, and yaw values of the detected faces
     func detectedFaceRectangles(request: VNRequest, error: Error?) {
-        
         guard
             let model = cameraViewModel, let viewDelegate = viewDelegate
         else {
@@ -114,14 +116,17 @@ extension FaceDetector {
             return
         }
         
-        rect = result.boundingBox
-        
-        
-        
-        let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
+        let boundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
+        if round(abs(UIScreen.midY - boundingBox.midY)) < 50 ||
+            round(abs(UIScreen.midY - boundingBox.midY)) > 300 ||
+            round(abs(UIScreen.midX - boundingBox.midX)) > 130 ||
+            round(boundingBox.midY) > 450 || round(boundingBox.midX) < 100 || round(boundingBox.midX) > 300 {
+            model.perform(action: .noFaceDetected)
+            return
+        }
         
         let faceGeometry = FaceGeometryModel(
-            boundingBox: convertedBoundingBox,
+            boundingBox: boundingBox,
             roll: result.roll ?? 0,
             pitch: result.pitch ?? 0,
             yaw: result.yaw ?? 0
@@ -130,11 +135,6 @@ extension FaceDetector {
         model.perform(action: .faceGeometryDetected(faceGeometry))
     }
     
-    
-    /// detectedFaceQualityRequest returns the captured face quality between 0 and 1.
-    /// - Parameters:
-    ///     - request: a vision framework VNRequest
-    ///     - error: error, if any
     func detectedFaceQualityRequest(request: VNRequest, error: Error?) {
         guard
             let model = cameraViewModel
@@ -165,7 +165,6 @@ extension FaceDetector {
             return
         }
         
-        
         imageProcessingQueue.async { [self] in
             let originalImage = CIImage(cvPixelBuffer: pixelBuffer)
 
@@ -191,16 +190,16 @@ extension FaceDetector {
                                              capturedPhoto.size.height / UIScreen.screenHeight / 2)
                     
                     let cropZone = CGRect(
-                        x:(faceGeo.boundingBox.origin.x + PreviewLayerFrameConstant.yOffset),
+                        x: (faceGeo.boundingBox.origin.x + PreviewLayerFrameConstant.YOffset),
                         y: (UIScreen.screenHeight - faceGeo.boundingBox.origin.y)/2,
-                        width:faceGeo.boundingBox.size.width * imageViewScale + PreviewLayerFrameConstant.yOffset,
-                        height:(faceGeo.boundingBox.size.height + PreviewLayerFrameConstant.yOffset) * imageViewScale)
+                        width: faceGeo.boundingBox.size.width * imageViewScale + PreviewLayerFrameConstant.YOffset,
+                        height: (faceGeo.boundingBox.size.height + PreviewLayerFrameConstant.YOffset) * imageViewScale)
                     
                     if let cutImageRef: CGImage = capturedPhoto.cgImage?.cropping(to:cropZone) {
                         let cropped = UIImage(cgImage: cutImageRef)
-                        DispatchQueue.main.async {
-                            model.perform(action: .savePhoto(cropped))
-                        }
+//                        DispatchQueue.main.async {
+//                            model.perform(action: .savePhoto(cropped))
+//                        }
                     }
                     
                 default:

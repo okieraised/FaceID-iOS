@@ -163,7 +163,6 @@ extension CameraViewController {
         
         previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer?.videoGravity = .resizeAspectFill
-//        previewLayer?.frame = view.bounds
         previewLayer?.frame = PreviewLayerFrameConstant.Frame
         
         if let previewLayer = previewLayer {

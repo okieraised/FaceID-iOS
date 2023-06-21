@@ -23,7 +23,7 @@ struct FaceBoundingBoxView: View {
                 Rectangle()
                     .path(in: CGRect(
                         x: faceGeometryModel.boundingBox.origin.x,
-                        y: faceGeometryModel.boundingBox.origin.y + PreviewLayerFrameConstant.yOffset,
+                        y: faceGeometryModel.boundingBox.origin.y + PreviewLayerFrameConstant.YOffset,
                         width: faceGeometryModel.boundingBox.width,
                         height: faceGeometryModel.boundingBox.height
                     ))
