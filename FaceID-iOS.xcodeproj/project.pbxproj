@@ -25,8 +25,9 @@
 		E5AC97562A38534400DC1B27 /* FaceDetectorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC97552A38534300DC1B27 /* FaceDetectorModel.swift */; };
 		E5AE52732A40145700CB741F /* FaceBoundingBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AE52722A40145700CB741F /* FaceBoundingBoxView.swift */; };
 		E5AE52752A4034DB00CB741F /* PreviewLayerFrameConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AE52742A4034DB00CB741F /* PreviewLayerFrameConstant.swift */; };
-		E5B87DBC2A418597002AECD9 /* faceid.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E5B87DBA2A418594002AECD9 /* faceid.mlmodel */; };
-		E5B87DBD2A418597002AECD9 /* fas_4.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E5B87DBB2A418596002AECD9 /* fas_4.mlmodel */; };
+		E5B87DBD2A418597002AECD9 /* FaceAntiSpoofing.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E5B87DBB2A418596002AECD9 /* FaceAntiSpoofing.mlmodel */; };
+		E5B87DBF2A4186C5002AECD9 /* FaceIDHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B87DBE2A4186C5002AECD9 /* FaceIDHelper.swift */; };
+		E5B87DC12A41AB12002AECD9 /* FaceID.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E5B87DC02A41AB12002AECD9 /* FaceID.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,8 +50,9 @@
 		E5AC97552A38534300DC1B27 /* FaceDetectorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetectorModel.swift; sourceTree = "<group>"; };
 		E5AE52722A40145700CB741F /* FaceBoundingBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceBoundingBoxView.swift; sourceTree = "<group>"; };
 		E5AE52742A4034DB00CB741F /* PreviewLayerFrameConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewLayerFrameConstant.swift; sourceTree = "<group>"; };
-		E5B87DBA2A418594002AECD9 /* faceid.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = faceid.mlmodel; sourceTree = "<group>"; };
-		E5B87DBB2A418596002AECD9 /* fas_4.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = fas_4.mlmodel; sourceTree = "<group>"; };
+		E5B87DBB2A418596002AECD9 /* FaceAntiSpoofing.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = FaceAntiSpoofing.mlmodel; sourceTree = "<group>"; };
+		E5B87DBE2A4186C5002AECD9 /* FaceIDHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceIDHelper.swift; sourceTree = "<group>"; };
+		E5B87DC02A41AB12002AECD9 /* FaceID.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = FaceID.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,8 +175,9 @@
 		E5B87DB92A418569002AECD9 /* AIModel */ = {
 			isa = PBXGroup;
 			children = (
-				E5B87DBA2A418594002AECD9 /* faceid.mlmodel */,
-				E5B87DBB2A418596002AECD9 /* fas_4.mlmodel */,
+				E5B87DC02A41AB12002AECD9 /* FaceID.mlmodel */,
+				E5B87DBB2A418596002AECD9 /* FaceAntiSpoofing.mlmodel */,
+				E5B87DBE2A4186C5002AECD9 /* FaceIDHelper.swift */,
 			);
 			path = AIModel;
 			sourceTree = "<group>";
@@ -250,7 +253,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E507B4942A380ACA00331FCA /* Persistence.swift in Sources */,
-				E5B87DBC2A418597002AECD9 /* faceid.mlmodel in Sources */,
 				E5AC974B2A381DEA00DC1B27 /* CameraViewController.swift in Sources */,
 				E5AC97522A384CC200DC1B27 /* HomeView.swift in Sources */,
 				E5AC974D2A384B7E00DC1B27 /* UIScreenExtension.swift in Sources */,
@@ -261,12 +263,14 @@
 				E507B4A02A380CD100331FCA /* CameraError.swift in Sources */,
 				E507B4972A380ACA00331FCA /* FaceID_iOS.xcdatamodeld in Sources */,
 				E5AC97562A38534400DC1B27 /* FaceDetectorModel.swift in Sources */,
-				E5B87DBD2A418597002AECD9 /* fas_4.mlmodel in Sources */,
+				E5B87DBD2A418597002AECD9 /* FaceAntiSpoofing.mlmodel in Sources */,
 				E507B4AA2A381BE400331FCA /* CGImageExtension.swift in Sources */,
 				E507B48D2A380AC900331FCA /* ContentView.swift in Sources */,
 				E5AE52732A40145700CB741F /* FaceBoundingBoxView.swift in Sources */,
 				E5AE52752A4034DB00CB741F /* PreviewLayerFrameConstant.swift in Sources */,
+				E5B87DC12A41AB12002AECD9 /* FaceID.mlmodel in Sources */,
 				E507B48B2A380AC900331FCA /* FaceID_iOSApp.swift in Sources */,
+				E5B87DBF2A4186C5002AECD9 /* FaceIDHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -61,12 +61,20 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
         else {
             return
         }
+        
+//        do {
+//            try FaceIDModel().detectFaceID(buffer: imageBuffer)
+//        } catch {
+//            print("\(error.localizedDescription)")
+//        }
+//
 
         if isCapturingPhoto {
 //            isCapturingPhoto = false
             saveCapturedPhoto(from: imageBuffer)
         }
-
+        
+        /// Vision Model to detect face angles and quality
         let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(completionHandler: detectedFaceRectangles)
         detectFaceRectanglesRequest.revision = VNDetectFaceRectanglesRequestRevision3
 
@@ -161,67 +169,45 @@ extension FaceDetector {
         imageProcessingQueue.async { [self] in
             let originalImage = CIImage(cvPixelBuffer: pixelBuffer)
 
-            switch model.faceObservationState {
-            case .faceFound(let faceGeometry):
+            let coreImageWidth = originalImage.extent.width
+            let coreImageHeight = originalImage.extent.height
+            let desiredImageHeight = coreImageWidth * 4 / 3
 
-                let coreImageWidth = originalImage.extent.width * 4 / 3
-                let coreImageHeight = originalImage.extent.height
+            // Calculate frame of photo
+            let yOrigin = (coreImageHeight - desiredImageHeight) / 2
+            let photoRect = CGRect(x: 0, y: yOrigin, width: coreImageWidth, height: desiredImageHeight)
+            
+  
+            let context = CIContext()
+            if let cgImage = context.createCGImage(originalImage, from: photoRect) {
                 
-
-                let desiredImageHeight = coreImageWidth * 4 / 3
-
-                // Calculate frame of photo
-                let yOrigin = (coreImageHeight - desiredImageHeight) / 2
-                let photoRect = CGRect(x: 0, y: yOrigin, width: coreImageWidth, height: desiredImageHeight)
                 
-      
-                let context = CIContext()
-
-                if let cgImage = context.createCGImage(originalImage, from: photoRect) {
+                
+                switch model.faceObservationState {
+                case .faceFound(let faceGeo):
                     
                     let capturedPhoto = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
+                    let imageViewScale = max(capturedPhoto.size.width / UIScreen.screenWidth,
+                                             capturedPhoto.size.height / UIScreen.screenHeight / 2)
                     
+                    let cropZone = CGRect(
+                        x:(faceGeo.boundingBox.origin.x + PreviewLayerFrameConstant.yOffset),
+                        y: (UIScreen.screenHeight - faceGeo.boundingBox.origin.y)/2,
+                        width:faceGeo.boundingBox.size.width * imageViewScale + PreviewLayerFrameConstant.yOffset,
+                        height:(faceGeo.boundingBox.size.height + PreviewLayerFrameConstant.yOffset) * imageViewScale)
                     
-                    
-                    //-----
-//                    let imageViewScale = max(capturedPhoto.size.width / UIScreen.screenWidth,
-//                                             capturedPhoto.size.height / (UIScreen.screenHeight))
-//
-//
-//                        // Scale cropRect to handle images larger than shown-on-screen size
-//                    let cropZone = CGRect(x:faceGeometry.boundingBox.origin.x * imageViewScale,
-//                                              y:faceGeometry.boundingBox.origin.y * imageViewScale,
-//                                              width:faceGeometry.boundingBox.size.width * imageViewScale,
-//                                              height:faceGeometry.boundingBox.size.height * imageViewScale)
-//
-//
-//                        // Perform cropping in Core Graphics
-//                    let cutImageRef: CGImage = (capturedPhoto.cgImage?.cropping(to:cropZone))!
-//
-//                        // Return image to UIImage
-//                    let croppedImage: UIImage = UIImage(cgImage: cutImageRef)
-                    
-                    //-----
-
-                    DispatchQueue.main.async {
-                        model.perform(action: .savePhoto(capturedPhoto))
+                    if let cutImageRef: CGImage = capturedPhoto.cgImage?.cropping(to:cropZone) {
+                        let cropped = UIImage(cgImage: cutImageRef)
+                        DispatchQueue.main.async {
+                            model.perform(action: .savePhoto(cropped))
+                        }
                     }
+                    
+                default:
+                    break
                 }
-                
-            default:
-                break
             }
         }
     }
 }
 
-extension CGRect {
-    func scaledForCropping(to size: CGSize) -> CGRect {
-        return CGRect(
-            x: self.origin.x * size.width,
-            y: self.origin.y * size.height,
-            width: (self.size.width * size.width),
-            height: (self.size.height * size.height)
-        )
-    }
-}

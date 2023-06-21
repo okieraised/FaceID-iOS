@@ -18,9 +18,15 @@ struct HomeView: View {
     
     var body: some View {
         ZStack {
-            
             CameraView(cameraViewModel: model)
             FaceBoundingBoxView(model: model)
+            VStack {
+                Image("Bounding")
+                    .resizable()
+                    .frame(width: 300, height: 300)
+                Spacer()
+            }
+            .padding(.top, 50 + PreviewLayerFrameConstant.yOffset)
         }
         
     }
