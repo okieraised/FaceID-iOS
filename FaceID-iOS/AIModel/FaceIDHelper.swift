@@ -30,25 +30,13 @@ public class FaceIDModel {
     }()
     
     public func detectFaceID(buffer: CVPixelBuffer) throws -> [Float32] {
-        
-        let width = CVPixelBufferGetWidth(buffer)
-        let height = CVPixelBufferGetHeight(buffer)
-        let scale = CGFloat(FaceIDModel.InputImageSize) / CGFloat(min(width, height))
-        let transform = CGAffineTransform(scaleX: scale, y: scale)
-
-        
-        let ciImage = CIImage(cvPixelBuffer: buffer).transformed(by: transform, highQualityDownsample: true)
-        let uiImage = UIImage(ciImage: ciImage)
-        
-        let resized = uiImage.resizeImageTo(size: CGSize(width: 112, height: 112))
-        
         do {
-//            let cc = try faceID.prediction(input_1: MLFeatureValue(g))
-//
-//            print(cc.var_1612)
-
+            let rawPrediction = try faceID.prediction(input_1: buffer)
+            if let result = try? UnsafeBufferPointer<Float32>(rawPrediction.var_1612) {
+                let predictionResult = Array(result)
+                return predictionResult
+            }
             return []
-
         } catch {
             return []
         }

@@ -16,11 +16,9 @@ import CoreML
 @available(iOS 13.0, *)
 public class FaceAntiSpoofingModel {
     
-    public struct FaceAntiSpoofingResult {
-        public let result: [Float32]
-    }
-    
+    public static let DefaultResult: [Float32] = [0, 0, 0]
     public static let InputImageSize = 80
+    public static let AntiSpoofingThreshold = 0.9
     
     private let faceAntiSpoofing: FaceAntiSpoofing = {
         do {
@@ -36,24 +34,16 @@ public class FaceAntiSpoofingModel {
         if let resizedBuffer = resizePixelBuffer(buffer, width: FaceAntiSpoofingModel.InputImageSize, height: FaceAntiSpoofingModel.InputImageSize) {
             do {
                 let rawPrediction = try faceAntiSpoofing.prediction(input_1: resizedBuffer)
-    
-                print(rawPrediction.var_1030)
-                
                 if let result = try? UnsafeBufferPointer<Float32>(rawPrediction.var_1030) {
                     let predictionResult = Array(result)
-                    print(predictionResult)
-
                     return predictionResult
                 }
-                
-                return [0, 0, 0]
-                
-
+                return FaceAntiSpoofingModel.DefaultResult
             } catch {
                 print("\(error.localizedDescription)")
-                return [0, 0, 0]
+                return FaceAntiSpoofingModel.DefaultResult
             }
         }
-        return [0, 0, 0]
+        return FaceAntiSpoofingModel.DefaultResult
     }
 }

@@ -11,20 +11,20 @@ import VideoToolbox
 
 extension CGImage {
     /**
-    Converts the image to an ARGB `CVPixelBuffer`.
+    Converts the image to a BGRA `CVPixelBuffer`.
     */
     public func pixelBuffer() -> CVPixelBuffer? {
         return pixelBuffer(width: width, height: height, orientation: .up)
     }
 
     /**
-    Resizes the image to `width` x `height` and converts it to an ARGB
+    Resizes the image to `width` x `height` and converts it to an BGRA
     `CVPixelBuffer`.
     */
     public func pixelBuffer(width: Int, height: Int, orientation: CGImagePropertyOrientation) -> CVPixelBuffer? {
         return pixelBuffer(width: width,
                            height: height,
-                           pixelFormatType: kCVPixelFormatType_32ARGB,
+                           pixelFormatType: kCVPixelFormatType_32BGRA,
                            colorSpace: CGColorSpaceCreateDeviceRGB(),
                            alphaInfo: .noneSkipFirst,
                            orientation: orientation)

@@ -27,6 +27,7 @@ enum FaceBoundsState {
     case detectedFaceTooLarge
     case detectedFaceOffCentre
     case faceObstructed
+    case faceSpoofed
     case faceOK
 }
 
