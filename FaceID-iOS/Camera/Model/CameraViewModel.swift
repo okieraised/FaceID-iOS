@@ -21,6 +21,11 @@ struct FaceQualityModel {
   let quality: Float
 }
 
+struct FaceLivenessModel {
+    var spoofed: Bool
+    var obstructed: Bool
+}
+
 enum FaceBoundsState {
     case faceNotFound
     case detectedFaceTooSmall
@@ -30,6 +35,14 @@ enum FaceBoundsState {
     case faceSpoofed
     case faceOK
 }
+
+enum FaceLivenessState {
+    case faceNotFound
+    case faceObstructed
+    case faceSpoofed
+    case faceOK
+}
+
 
 enum FaceObservationState<T> {
   case faceFound(T)
@@ -41,7 +54,7 @@ enum CameraAction {
     case noFaceDetected
     case faceGeometryDetected(FaceGeometryModel)
     case faceQualityDetected(FaceQualityModel)
-    case faceSpoofed
+    case faceLivenessDetected(FaceLivenessModel)
     case takePhoto
     case savePhoto(UIImage)
 }
@@ -52,50 +65,101 @@ final class CameraViewModel: ObservableObject {
     
     // MARK: - Published Variables
     
-    @Published private(set) var passportPhoto: UIImage?
+    @Published private(set) var capturedPhoto: UIImage?
     
-    @Published private(set) var faceObservationState: FaceObservationState<FaceGeometryModel> {
+    @Published private(set) var isAcceptableQuality: Bool {
         didSet {
-            processUpdatedFaceGeometry()
-            print(faceObservationState)
-            
+            print(isAcceptableQuality)
         }
     }
     
-    @Published private(set) var faceQualityState: FaceObservationState<FaceQualityModel> {
-      didSet {
-          print(faceQualityState)
-      }
+    
+    @Published private(set) var faceGeometryObservation: FaceObservationState<FaceGeometryModel> {
+        didSet {
+            processUpdatedFaceGeometry()
+        }
     }
     
-    @Published private(set) var faceBoundsState: FaceBoundsState {
+    @Published private(set) var faceQualityObservation: FaceObservationState<FaceQualityModel> {
+        didSet {
+            processUpdatedFaceQuality()
+        }
+    }
+    
+    @Published private(set) var faceLivenessObservation: FaceObservationState<FaceLivenessModel> {
+        didSet {
+            processUpdatedFaceLiveness()
+        }
+    }
+
+
+    @Published private(set) var faceBounds: FaceBoundsState {
         didSet {
             updateFaceValidity()
         }
     }
+
+    @Published private(set) var faceLiveness: FaceLivenessState {
+        didSet {
+            print("haha")
+        }
+    }
+    
+    
     
     func processUpdatedFaceGeometry() {
-        switch faceObservationState {
+        switch faceGeometryObservation {
         case .faceFound(let faceGeometry):
             let boundingBox = faceGeometry.boundingBox
             updateAcceptableBounds(using: boundingBox)
-            
         case .faceNotFound:
-            
-            break
+            invalidateFaceGeometry()
         case .errored(let error):
             print("\(error.localizedDescription)")
-            break
+            invalidateFaceGeometry()
         }
-
+    }
+    
+    func processUpdatedFaceQuality() {
+        switch faceQualityObservation {
+        case .faceFound(let faceQuality):
+            if faceQuality.quality < 0.3 {
+                isAcceptableQuality = false
+            } else {
+                isAcceptableQuality = true
+            }
+        case .faceNotFound:
+            isAcceptableQuality = false
+        case .errored(let error):
+            print("\(error.localizedDescription)")
+            isAcceptableQuality = false
+        }
+    }
+    
+    func processUpdatedFaceLiveness() {
+        switch faceLivenessObservation {
+        case .faceFound(let liveness):
+            updateAcceptableLiveness(using: liveness)
+        case .faceNotFound:
+            invalidateFaceGeometry()
+        case .errored(let error):
+            print("\(error.localizedDescription)")
+            invalidateFaceGeometry()
+        }
     }
     
     // MARK: - Init
     
     init() {
-        faceObservationState = .faceNotFound
-        faceQualityState = .faceNotFound
-        faceBoundsState = .faceNotFound
+        faceGeometryObservation = .faceNotFound
+        faceQualityObservation = .faceNotFound
+        faceLivenessObservation = .faceNotFound
+        
+        
+        
+        isAcceptableQuality = false
+        faceBounds = .faceNotFound
+        faceLiveness = .faceNotFound
     }
     
     // MARK: - Public Methods
@@ -104,14 +168,10 @@ final class CameraViewModel: ObservableObject {
         switch action {
         case .faceGeometryDetected(let faceGeometry):
             publishFaceGeometryObservation(faceGeometry)
-            print(faceGeometry)
-            break
         case .faceQualityDetected(let faceQuality):
             publishFaceQualityObservation(faceQuality)
-            print(faceQuality)
-            break
-        case .faceSpoofed:
-            faceObservationState
+        case .faceLivenessDetected(let faceLiveness):
+            publishFaceLivenessObservation(faceLiveness)
         case .takePhoto:
             takePhoto()
         case .savePhoto(let image):
@@ -130,26 +190,34 @@ final class CameraViewModel: ObservableObject {
     private func savePhoto(_ photo: UIImage) {
         UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
         DispatchQueue.main.async { [self] in
-            passportPhoto = photo
+            capturedPhoto = photo
         }
     }
     
     private func publishNoFaceObserved() {
         DispatchQueue.main.async { [self] in
-            faceObservationState = .faceNotFound
-            faceQualityState = .faceNotFound
+            faceGeometryObservation = .faceNotFound
+            faceQualityObservation = .faceNotFound
+            faceLivenessObservation = .faceNotFound
         }
     }
     
     private func publishFaceGeometryObservation(_ faceGeometry: FaceGeometryModel) {
         DispatchQueue.main.async { [self] in
-            faceObservationState = .faceFound(faceGeometry)
+            faceGeometryObservation = .faceFound(faceGeometry)
         }
     }
     
     private func publishFaceQualityObservation(_ faceQuality: FaceQualityModel) {
         DispatchQueue.main.async { [self] in
-            faceQualityState = .faceFound(faceQuality)
+            faceQualityObservation = .faceFound(faceQuality)
+        }
+    }
+    
+    
+    private func publishFaceLivenessObservation(_ faceLiveness: FaceLivenessModel) {
+        DispatchQueue.main.async { [self] in
+            faceLivenessObservation = .faceFound(faceLiveness)
         }
     }
     
@@ -160,8 +228,10 @@ final class CameraViewModel: ObservableObject {
 extension CameraViewModel {
     
     func invalidateFaceGeometry() {
-        faceObservationState = .faceNotFound
-        faceQualityState = .faceNotFound
+//        faceGeometryObservation = .faceNotFound
+//        faceQualityObservation = .faceNotFound
+//        faceLivenessObservation = .faceNotFound
+//        faceBounds = .faceNotFound
     }
     
     func updateFaceValidity() {
@@ -170,14 +240,26 @@ extension CameraViewModel {
     
     func updateAcceptableBounds(using boundingBox: CGRect) {
         if boundingBox.width > 1.1 * FaceCaptureConstant.LayoutGuideWidth {
-            faceBoundsState = .detectedFaceTooLarge
+            faceBounds = .detectedFaceTooLarge
             print("TOO BIG")
         } else if boundingBox.width  < FaceCaptureConstant.LayoutGuideHeight * 0.5 {
-            faceBoundsState = .detectedFaceTooSmall
+            faceBounds = .detectedFaceTooSmall
             print("TOO SMALL")
         } else {
-            faceBoundsState = .faceOK
+            faceBounds = .faceOK
             print("OK")
+        }
+    }
+    
+    func updateAcceptableLiveness(using liveness: FaceLivenessModel) {
+        if liveness.spoofed {
+            faceLiveness = .faceSpoofed
+        } else {
+            if liveness.obstructed {
+                faceLiveness = .faceObstructed
+            } else {
+                faceLiveness = .faceOK
+            }
         }
     }
     

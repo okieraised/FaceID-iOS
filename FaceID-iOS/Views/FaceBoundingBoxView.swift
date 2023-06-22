@@ -14,7 +14,7 @@ struct FaceBoundingBoxView: View {
     var body: some View {
         
         
-        switch model.faceObservationState {
+        switch model.faceGeometryObservation {
         case .faceNotFound, .errored:
             Rectangle().fill(Color.clear)
             

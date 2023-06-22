@@ -68,19 +68,6 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
         else {
             return
         }
-        
-//        do {
-//            try FaceIDModel().detectFaceID(buffer: imageBuffer)
-//        } catch {
-//            print("\(error.localizedDescription)")
-//        }
-        
-//        do {
-//            try faceAntiSpoofingModel.antiSpoofing(buffer: imageBuffer)
-//        } catch {
-//            print("\(error.localizedDescription)")
-//        }
-        
 
         if isCapturingPhoto {
             isCapturingPhoto = false
@@ -107,8 +94,7 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         
         faceIDHandler(buffer: imageBuffer)
-        faceAntiSpoofingHandler(buffer: imageBuffer)
-        faceMaskHandler(buffer: imageBuffer)
+        faceLivenessHandler(buffer: imageBuffer)
     }
 }
 
@@ -176,73 +162,44 @@ extension FaceDetector {
         model.perform(action: .faceQualityDetected(faceQuality))
     }
     
-    func faceAntiSpoofingHandler(buffer: CVPixelBuffer) {
+    func faceIDHandler(buffer: CVPixelBuffer) {
         guard
             let model = cameraViewModel
         else {
             return
         }
         
-        if let result = try? faceAntiSpoofingModel.antiSpoofing(buffer: buffer) {
-//            print(result)
-//            if result[1] < FaceAntiSpoofingModel.AntiSpoofingThreshold {
-//            }
-            
-        }
-    }
-    
-    func faceIDHandler(buffer: CVPixelBuffer) {
-        
         if let resizedBuffer = scaleImage(pixelBuffer: buffer) {
             if let result = try? faceIDModel.detectFaceID(buffer: resizedBuffer) {
-//                print(result)
             }
         }
     }
     
-    func faceMaskHandler(buffer: CVPixelBuffer) {
-        if let resizedBuffer = scaleImage(pixelBuffer: buffer) {
-            if let result = try? faceMaskModel.detectFaceMask(buffer: resizedBuffer) {
-                print("result: \(result)")
+    
+    func faceLivenessHandler(buffer: CVPixelBuffer) {
+        guard
+            let model = cameraViewModel, let resizedBuffer = scaleImage(pixelBuffer: buffer)
+        else {
+            return
+        }
+        
+        var faceLiveness = FaceLivenessModel(spoofed: true, obstructed: true)
+        
+        if let maskResult = try? faceMaskModel.detectFaceMask(buffer: resizedBuffer) {
+            if let maxVal = maskResult.max() {
+                faceLiveness.obstructed = (maxVal == maskResult[1] && maxVal != 0) ? false : true
             }
         }
+        
+        if let spoofingResult = try? faceAntiSpoofingModel.antiSpoofing(buffer: buffer) {
+            faceLiveness.spoofed = (spoofingResult[1] < FaceAntiSpoofingModel.AntiSpoofingThreshold) ? true : false
+        }
+        
+        print("faceLiveness: \(faceLiveness)")
+        
+        model.perform(action: .faceLivenessDetected(faceLiveness))
     }
     
-    private func scaleImage(pixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
-        guard
-            let viewDelegate = viewDelegate
-        else {
-            return nil
-        }
-        
-        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        let imageViewScale = max(ciImage.extent.width / UIScreen.screenWidth,
-                                 ciImage.extent.size.height / UIScreen.screenHeight / 2)
-        
-        let converted = viewDelegate.convertFromMetadataToPreviewRect(rect: bBox)
-        let cropZone = CGRect(
-            x: (converted.origin.x + PreviewLayerFrameConstant.YOffset) + PreviewLayerFrameConstant.YOffset/2,
-            y: (UIScreen.screenHeight - converted.origin.y + PreviewLayerFrameConstant.YOffset)/2,
-            width: converted.size.width * imageViewScale + PreviewLayerFrameConstant.YOffset,
-            height: (converted.size.height + PreviewLayerFrameConstant.YOffset) * imageViewScale)
-
-        let cropped = ciImage.cropped(to: cropZone)
-        let context = CIContext()
-        
-        guard
-            let cgImage = context.createCGImage(cropped, from: cropped.extent)
-        else {
-            return nil
-        }
-        
-        guard
-            let convertedBuffer = cgImage.pixelBuffer()
-        else {
-            return nil
-        }
-        
-        return resizePixelBuffer(convertedBuffer, width: FaceIDModel.InputImageSize, height: FaceIDModel.InputImageSize)
-    }
     
     
     func saveCapturedPhoto(from pixelBuffer: CVPixelBuffer) {
@@ -280,3 +237,40 @@ extension FaceDetector {
     }
 }
 
+extension FaceDetector {
+    private func scaleImage(pixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
+        guard
+            let viewDelegate = viewDelegate
+        else {
+            return nil
+        }
+        
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        let imageViewScale = max(ciImage.extent.width / UIScreen.screenWidth,
+                                 ciImage.extent.size.height / UIScreen.screenHeight / 2)
+        
+        let converted = viewDelegate.convertFromMetadataToPreviewRect(rect: bBox)
+        let cropZone = CGRect(
+            x: (converted.origin.x + PreviewLayerFrameConstant.YOffset) + PreviewLayerFrameConstant.YOffset/2,
+            y: (UIScreen.screenHeight - converted.origin.y + PreviewLayerFrameConstant.YOffset)/2,
+            width: converted.size.width * imageViewScale + PreviewLayerFrameConstant.YOffset,
+            height: (converted.size.height + PreviewLayerFrameConstant.YOffset) * imageViewScale)
+
+        let cropped = ciImage.cropped(to: cropZone)
+        let context = CIContext()
+        
+        guard
+            let cgImage = context.createCGImage(cropped, from: cropped.extent)
+        else {
+            return nil
+        }
+        
+        guard
+            let convertedBuffer = cgImage.pixelBuffer()
+        else {
+            return nil
+        }
+        
+        return resizePixelBuffer(convertedBuffer, width: FaceIDModel.InputImageSize, height: FaceIDModel.InputImageSize)
+    }
+}

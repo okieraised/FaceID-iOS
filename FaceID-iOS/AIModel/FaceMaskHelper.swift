@@ -36,9 +36,9 @@ public class FaceMaskModel {
                 let predictionResult = Array(result)
                 return predictionResult
             }
-            return []
+            return [0, 0, 0, 0]
         } catch {
-            return []
+            return [0, 0, 0, 0]
         }
     }
 }
