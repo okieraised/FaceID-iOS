@@ -18,7 +18,7 @@ public class FaceAntiSpoofingModel {
     
     public static let DefaultResult: [Float32] = [0, 0, 0]
     public static let InputImageSize = 80
-    public static let AntiSpoofingThreshold = 0.9
+    public static let AntiSpoofingThreshold: Float32 = 0.9
     
     private let faceAntiSpoofing: FaceAntiSpoofing = {
         do {

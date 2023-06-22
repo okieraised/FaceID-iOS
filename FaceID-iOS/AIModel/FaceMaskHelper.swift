@@ -1,8 +1,8 @@
 //
-//  FaceIDModelHelper.swift
+//  FaceMaskHelper.swift
 //  FaceID-iOS
 //
-//  Created by Tri Pham on 6/20/23.
+//  Created by Tri Pham on 6/22/23.
 //
 
 import AVFoundation
@@ -12,27 +12,27 @@ import UIKit
 
 
 @available(iOS 13.0, *)
-public class FaceIDModel {
+public class FaceMaskModel {
     
-    public struct FaceIDResult {
+    public struct FaceMaskResult {
         public let result: [Float32]
     }
     
     public static let InputImageSize = 112
     
-    private let faceID: FaceID = {
+    private let faceMask: FaceMask = {
         do {
             let config = MLModelConfiguration()
-            return try FaceID(configuration: config)
+            return try FaceMask(configuration: config)
         } catch {
             fatalError("\(error.localizedDescription)")
         }
     }()
     
-    public func detectFaceID(buffer: CVPixelBuffer) throws -> [Float32] {
+    public func detectFaceMask(buffer: CVPixelBuffer) throws -> [Float32] {
         do {
-            let rawPrediction = try faceID.prediction(x_1: buffer)
-            if let result = try? UnsafeBufferPointer<Float32>(rawPrediction.var_1617) {
+            let rawPrediction = try faceMask.prediction(x_1: buffer)
+            if let result = try? UnsafeBufferPointer<Float32>(rawPrediction.var_844) {
                 let predictionResult = Array(result)
                 return predictionResult
             }
@@ -42,6 +42,7 @@ public class FaceIDModel {
         }
     }
 }
+
 
 
 

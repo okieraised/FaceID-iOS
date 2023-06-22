@@ -43,6 +43,7 @@ class FaceDetector: NSObject {
     var sequenceHandler = VNSequenceRequestHandler()
     var faceIDModel = FaceIDModel()
     var faceAntiSpoofingModel = FaceAntiSpoofingModel()
+    var faceMaskModel = FaceMaskModel()
     var isCapturingPhoto = false
     var currentFrameBuffer: CVImageBuffer?
     var subscriptions = Set<AnyCancellable>()
@@ -107,6 +108,7 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
         
         faceIDHandler(buffer: imageBuffer)
         faceAntiSpoofingHandler(buffer: imageBuffer)
+        faceMaskHandler(buffer: imageBuffer)
     }
 }
 
@@ -175,19 +177,45 @@ extension FaceDetector {
     }
     
     func faceAntiSpoofingHandler(buffer: CVPixelBuffer) {
-        if let result = try? faceAntiSpoofingModel.antiSpoofing(buffer: buffer) {
-            print(result)
-        }
-    }
-    
-    func faceIDHandler(buffer: CVPixelBuffer) {
         guard
-            let viewDelegate = viewDelegate
+            let model = cameraViewModel
         else {
             return
         }
         
-        let ciImage = CIImage(cvPixelBuffer: buffer)
+        if let result = try? faceAntiSpoofingModel.antiSpoofing(buffer: buffer) {
+//            print(result)
+//            if result[1] < FaceAntiSpoofingModel.AntiSpoofingThreshold {
+//            }
+            
+        }
+    }
+    
+    func faceIDHandler(buffer: CVPixelBuffer) {
+        
+        if let resizedBuffer = scaleImage(pixelBuffer: buffer) {
+            if let result = try? faceIDModel.detectFaceID(buffer: resizedBuffer) {
+//                print(result)
+            }
+        }
+    }
+    
+    func faceMaskHandler(buffer: CVPixelBuffer) {
+        if let resizedBuffer = scaleImage(pixelBuffer: buffer) {
+            if let result = try? faceMaskModel.detectFaceMask(buffer: resizedBuffer) {
+                print("result: \(result)")
+            }
+        }
+    }
+    
+    private func scaleImage(pixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
+        guard
+            let viewDelegate = viewDelegate
+        else {
+            return nil
+        }
+        
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
         let imageViewScale = max(ciImage.extent.width / UIScreen.screenWidth,
                                  ciImage.extent.size.height / UIScreen.screenHeight / 2)
         
@@ -204,26 +232,17 @@ extension FaceDetector {
         guard
             let cgImage = context.createCGImage(cropped, from: cropped.extent)
         else {
-            return
+            return nil
         }
         
         guard
             let convertedBuffer = cgImage.pixelBuffer()
         else {
-            return
+            return nil
         }
         
-        guard
-            let resizedBuffer = resizePixelBuffer(convertedBuffer, width: FaceIDModel.InputImageSize, height: FaceIDModel.InputImageSize)
-        else {
-            return
-        }
-        
-        if let result = try? faceIDModel.detectFaceID(buffer: resizedBuffer) {
-            print(result)
-        }
+        return resizePixelBuffer(convertedBuffer, width: FaceIDModel.InputImageSize, height: FaceIDModel.InputImageSize)
     }
-    
     
     
     func saveCapturedPhoto(from pixelBuffer: CVPixelBuffer) {
@@ -256,7 +275,6 @@ extension FaceDetector {
                 DispatchQueue.main.async {
                     model.perform(action: .savePhoto(uiImage))
                 }
-                
             }
         }
     }

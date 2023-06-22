@@ -32,10 +32,12 @@
 		E5AC97502A384C5C00DC1B27 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC974F2A384C5C00DC1B27 /* CameraView.swift */; };
 		E5AC97522A384CC200DC1B27 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC97512A384CC200DC1B27 /* HomeView.swift */; };
 		E5AC97562A38534400DC1B27 /* FaceDetectorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC97552A38534300DC1B27 /* FaceDetectorModel.swift */; };
+		E5AE11702A442BA9003C38CC /* FaceID.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E5AE116F2A442BA9003C38CC /* FaceID.mlmodel */; };
+		E5AE11722A442C80003C38CC /* FaceMask.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E5AE11712A442C80003C38CC /* FaceMask.mlmodel */; };
+		E5AE11742A442D08003C38CC /* FaceMaskHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AE11732A442D08003C38CC /* FaceMaskHelper.swift */; };
 		E5AE52732A40145700CB741F /* FaceBoundingBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AE52722A40145700CB741F /* FaceBoundingBoxView.swift */; };
 		E5AE52752A4034DB00CB741F /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AE52742A4034DB00CB741F /* Constants.swift */; };
 		E5B87DBF2A4186C5002AECD9 /* FaceIDHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B87DBE2A4186C5002AECD9 /* FaceIDHelper.swift */; };
-		E5B87DC12A41AB12002AECD9 /* FaceID.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E5B87DC02A41AB12002AECD9 /* FaceID.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,10 +67,12 @@
 		E5AC974F2A384C5C00DC1B27 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		E5AC97512A384CC200DC1B27 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		E5AC97552A38534300DC1B27 /* FaceDetectorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetectorModel.swift; sourceTree = "<group>"; };
+		E5AE116F2A442BA9003C38CC /* FaceID.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = FaceID.mlmodel; sourceTree = "<group>"; };
+		E5AE11712A442C80003C38CC /* FaceMask.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = FaceMask.mlmodel; sourceTree = "<group>"; };
+		E5AE11732A442D08003C38CC /* FaceMaskHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceMaskHelper.swift; sourceTree = "<group>"; };
 		E5AE52722A40145700CB741F /* FaceBoundingBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceBoundingBoxView.swift; sourceTree = "<group>"; };
 		E5AE52742A4034DB00CB741F /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		E5B87DBE2A4186C5002AECD9 /* FaceIDHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceIDHelper.swift; sourceTree = "<group>"; };
-		E5B87DC02A41AB12002AECD9 /* FaceID.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = FaceID.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -198,10 +202,12 @@
 		E5B87DB92A418569002AECD9 /* AIModel */ = {
 			isa = PBXGroup;
 			children = (
-				E5B87DC02A41AB12002AECD9 /* FaceID.mlmodel */,
 				E5A01CE32A42EE3600E7BD7E /* FaceAntiSpoofing.mlmodel */,
+				E5AE116F2A442BA9003C38CC /* FaceID.mlmodel */,
+				E5AE11712A442C80003C38CC /* FaceMask.mlmodel */,
 				E5B87DBE2A4186C5002AECD9 /* FaceIDHelper.swift */,
 				E5A01CE52A42EE5600E7BD7E /* FaceAntiSpoofingHelper.swift */,
+				E5AE11732A442D08003C38CC /* FaceMaskHelper.swift */,
 			);
 			path = AIModel;
 			sourceTree = "<group>";
@@ -279,7 +285,9 @@
 				E507B4942A380ACA00331FCA /* Persistence.swift in Sources */,
 				E5A01CDA2A42AB0100E7BD7E /* FaceCaptureBorderView.swift in Sources */,
 				E5AC974B2A381DEA00DC1B27 /* CameraViewController.swift in Sources */,
+				E5AE11742A442D08003C38CC /* FaceMaskHelper.swift in Sources */,
 				E5A01CE02A42B00100E7BD7E /* FaceCaptureProgressView.swift in Sources */,
+				E5AE11702A442BA9003C38CC /* FaceID.mlmodel in Sources */,
 				E5AC97522A384CC200DC1B27 /* HomeView.swift in Sources */,
 				E5A01CE62A42EE5600E7BD7E /* FaceAntiSpoofingHelper.swift in Sources */,
 				E5A01CD82A42A88300E7BD7E /* UIImage+CVPixelBuffer.swift in Sources */,
@@ -298,8 +306,8 @@
 				E507B48D2A380AC900331FCA /* ContentView.swift in Sources */,
 				E5AE52732A40145700CB741F /* FaceBoundingBoxView.swift in Sources */,
 				E5A01CEA2A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift in Sources */,
+				E5AE11722A442C80003C38CC /* FaceMask.mlmodel in Sources */,
 				E5AE52752A4034DB00CB741F /* Constants.swift in Sources */,
-				E5B87DC12A41AB12002AECD9 /* FaceID.mlmodel in Sources */,
 				E5A01CE42A42EE3600E7BD7E /* FaceAntiSpoofing.mlmodel in Sources */,
 				E507B48B2A380AC900331FCA /* FaceID_iOSApp.swift in Sources */,
 				E5B87DBF2A4186C5002AECD9 /* FaceIDHelper.swift in Sources */,

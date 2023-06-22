@@ -41,6 +41,7 @@ enum CameraAction {
     case noFaceDetected
     case faceGeometryDetected(FaceGeometryModel)
     case faceQualityDetected(FaceQualityModel)
+    case faceSpoofed
     case takePhoto
     case savePhoto(UIImage)
 }
@@ -109,6 +110,8 @@ final class CameraViewModel: ObservableObject {
             publishFaceQualityObservation(faceQuality)
             print(faceQuality)
             break
+        case .faceSpoofed:
+            faceObservationState
         case .takePhoto:
             takePhoto()
         case .savePhoto(let image):
