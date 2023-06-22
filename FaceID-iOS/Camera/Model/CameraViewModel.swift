@@ -67,11 +67,7 @@ final class CameraViewModel: ObservableObject {
     
     @Published private(set) var capturedPhoto: UIImage?
     
-    @Published private(set) var isAcceptableQuality: Bool {
-        didSet {
-            print(isAcceptableQuality)
-        }
-    }
+    
     
     
     @Published private(set) var faceGeometryObservation: FaceObservationState<FaceGeometryModel> {
@@ -101,7 +97,13 @@ final class CameraViewModel: ObservableObject {
 
     @Published private(set) var faceLiveness: FaceLivenessState {
         didSet {
-            print("haha")
+            updateFaceValidity()
+        }
+    }
+    
+    @Published private(set) var faceQuality: Bool {
+        didSet {
+            print(faceQuality)
         }
     }
     
@@ -109,8 +111,8 @@ final class CameraViewModel: ObservableObject {
     
     func processUpdatedFaceGeometry() {
         switch faceGeometryObservation {
-        case .faceFound(let faceGeometry):
-            let boundingBox = faceGeometry.boundingBox
+        case .faceFound(let faceGeometryModel):
+            let boundingBox = faceGeometryModel.boundingBox
             updateAcceptableBounds(using: boundingBox)
         case .faceNotFound:
             invalidateFaceGeometry()
@@ -122,24 +124,24 @@ final class CameraViewModel: ObservableObject {
     
     func processUpdatedFaceQuality() {
         switch faceQualityObservation {
-        case .faceFound(let faceQuality):
-            if faceQuality.quality < 0.3 {
-                isAcceptableQuality = false
+        case .faceFound(let faceQualityModel):
+            if faceQualityModel.quality < 0.3 {
+                faceQuality = false
             } else {
-                isAcceptableQuality = true
+                faceQuality = true
             }
         case .faceNotFound:
-            isAcceptableQuality = false
+            faceQuality = false
         case .errored(let error):
             print("\(error.localizedDescription)")
-            isAcceptableQuality = false
+            faceQuality = false
         }
     }
     
     func processUpdatedFaceLiveness() {
         switch faceLivenessObservation {
-        case .faceFound(let liveness):
-            updateAcceptableLiveness(using: liveness)
+        case .faceFound(let livenessModel):
+            updateAcceptableLiveness(using: livenessModel)
         case .faceNotFound:
             invalidateFaceGeometry()
         case .errored(let error):
@@ -157,7 +159,7 @@ final class CameraViewModel: ObservableObject {
         
         
         
-        isAcceptableQuality = false
+        faceQuality = false
         faceBounds = .faceNotFound
         faceLiveness = .faceNotFound
     }
