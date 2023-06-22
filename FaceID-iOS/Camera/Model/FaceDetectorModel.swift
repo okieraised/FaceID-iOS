@@ -42,6 +42,7 @@ class FaceDetector: NSObject {
 
     var sequenceHandler = VNSequenceRequestHandler()
     var faceIDModel = FaceIDModel()
+    var faceAntiSpoofingModel = FaceAntiSpoofingModel()
     var isCapturingPhoto = true
     var currentFrameBuffer: CVImageBuffer?
     var subscriptions = Set<AnyCancellable>()
@@ -71,6 +72,13 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
 //        } catch {
 //            print("\(error.localizedDescription)")
 //        }
+        
+        do {
+            try faceAntiSpoofingModel.antiSpoofing(buffer: imageBuffer)
+        } catch {
+            print("\(error.localizedDescription)")
+        }
+        
 
         if isCapturingPhoto {
 //            isCapturingPhoto = false

@@ -9,6 +9,8 @@ import Foundation
 import CoreImage
 import Vision
 import UIKit
+import CoreML
+
 
 
 @available(iOS 13.0, *)
@@ -31,28 +33,27 @@ public class FaceAntiSpoofingModel {
     
     public func antiSpoofing(buffer: CVPixelBuffer) throws -> [Float32] {
         
-        
-        
-        let width = CVPixelBufferGetWidth(buffer)
-        let height = CVPixelBufferGetHeight(buffer)
-        let scale = CGFloat(FaceAntiSpoofingModel.InputImageSize) / CGFloat(min(width, height))
-        let transform = CGAffineTransform(scaleX: scale, y: scale)
+        if let resizedBuffer = resizePixelBuffer(buffer, width: FaceAntiSpoofingModel.InputImageSize, height: FaceAntiSpoofingModel.InputImageSize) {
+            do {
+                let rawPrediction = try faceAntiSpoofing.prediction(input_1: resizedBuffer)
+    
+                print(rawPrediction.var_1030)
+                
+                if let result = try? UnsafeBufferPointer<Float32>(rawPrediction.var_1030) {
+                    let predictionResult = Array(result)
+                    print(predictionResult)
 
-        
-        let ciImage = CIImage(cvPixelBuffer: buffer).transformed(by: transform, highQualityDownsample: true)
-        let uiImage = UIImage(ciImage: ciImage)
-        
-        let resized = uiImage.resizeImageTo(size: CGSize(width: FaceAntiSpoofingModel.InputImageSize, height: FaceAntiSpoofingModel.InputImageSize))
-        
-        do {
-//            let cc = try faceID.prediction(input_1: MLFeatureValue(g))
-//
-//            print(cc.var_1612)
+                    return predictionResult
+                }
+                
+                return [0, 0, 0]
+                
 
-            return []
-
-        } catch {
-            return []
+            } catch {
+                print("\(error.localizedDescription)")
+                return [0, 0, 0]
+            }
         }
+        return [0, 0, 0]
     }
 }
