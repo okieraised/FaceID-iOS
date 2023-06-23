@@ -169,7 +169,7 @@ extension FaceDetector {
             return
         }
         
-        if let resizedBuffer = scaleImage(pixelBuffer: buffer) {
+        if let resizedBuffer = scaleImage(pixelBuffer: buffer, width: FaceIDModel.InputImageSize, height: FaceIDModel.InputImageSize) {
             if let result = try? faceIDModel.detectFaceID(buffer: resizedBuffer) {
             }
         }
@@ -178,14 +178,14 @@ extension FaceDetector {
     
     func faceLivenessHandler(buffer: CVPixelBuffer) {
         guard
-            let model = cameraViewModel, let resizedBuffer = scaleImage(pixelBuffer: buffer)
+            let model = cameraViewModel,
+            let maskBuffer = scaleImage(pixelBuffer: buffer, width: FaceMaskModel.InputImageSize, height: FaceMaskModel.InputImageSize)
         else {
             return
         }
         
         var faceLiveness = FaceLivenessModel(spoofed: true, obstructed: true)
-        
-        if let maskResult = try? faceMaskModel.detectFaceMask(buffer: resizedBuffer) {
+        if let maskResult = try? faceMaskModel.detectFaceMask(buffer: maskBuffer) {
             if let maxVal = maskResult.max() {
                 faceLiveness.obstructed = (maxVal == maskResult[1] && maxVal != 0) ? false : true
             }
@@ -210,35 +210,40 @@ extension FaceDetector {
         }
         
         imageProcessingQueue.async { [self] in
-
-            let originalImage = CIImage(cvPixelBuffer: pixelBuffer)
             
-            let imageViewScale = max(originalImage.extent.width / UIScreen.screenWidth,
-                                     originalImage.extent.size.height / UIScreen.screenHeight / 2)
+            let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+            let imageViewScale = max(ciImage.extent.width / UIScreen.screenWidth,
+                                     ciImage.extent.size.height / UIScreen.screenHeight / 2)
             
             let converted = viewDelegate.convertFromMetadataToPreviewRect(rect: bBox)
-            
             let cropZone = CGRect(
                 x: (converted.origin.x + PreviewLayerFrameConstant.YOffset) + PreviewLayerFrameConstant.YOffset/2,
                 y: (UIScreen.screenHeight - converted.origin.y + PreviewLayerFrameConstant.YOffset)/2,
                 width: converted.size.width * imageViewScale + PreviewLayerFrameConstant.YOffset,
                 height: (converted.size.height + PreviewLayerFrameConstant.YOffset) * imageViewScale)
-            
-            let cropped = originalImage.cropped(to: cropZone)
 
+            let cropped = ciImage.cropped(to: cropZone)
             let context = CIContext()
-            if let cgImage = context.createCGImage(cropped, from: cropped.extent) {
-                let uiImage = UIImage(cgImage: cgImage)
-                DispatchQueue.main.async {
-                    model.perform(action: .savePhoto(uiImage))
-                }
+            
+            guard
+                let cgImage = context.createCGImage(cropped, from: cropped.extent)
+            else {
+                return
             }
+            
+            let uiImage = UIImage(cgImage: cgImage)
+            DispatchQueue.main.async {
+                model.perform(action: .savePhoto(uiImage))
+            }
+  
+
+            
         }
     }
 }
 
 extension FaceDetector {
-    private func scaleImage(pixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
+    private func scaleImage(pixelBuffer: CVPixelBuffer, width: Int, height: Int) -> CVPixelBuffer? {
         guard
             let viewDelegate = viewDelegate
         else {
@@ -271,6 +276,6 @@ extension FaceDetector {
             return nil
         }
         
-        return resizePixelBuffer(convertedBuffer, width: FaceIDModel.InputImageSize, height: FaceIDModel.InputImageSize)
+        return resizePixelBuffer(convertedBuffer, width: width, height: height)
     }
 }

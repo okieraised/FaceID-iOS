@@ -31,8 +31,6 @@ enum FaceBoundsState {
     case detectedFaceTooSmall
     case detectedFaceTooLarge
     case detectedFaceOffCentre
-    case faceObstructed
-    case faceSpoofed
     case faceOK
 }
 
@@ -41,6 +39,15 @@ enum FaceLivenessState {
     case faceObstructed
     case faceSpoofed
     case faceOK
+}
+
+enum FacePositionState {
+    case Left
+    case Right
+    case Up
+    case Down
+    case Straight
+    case faceNotFound
 }
 
 
@@ -63,9 +70,10 @@ final class CameraViewModel: ObservableObject {
     
     let shutterReleased = PassthroughSubject<Void, Never>()
     
-    // MARK: - Published Variables
+    // MARK: - Variables
     @Published var capturedIndices: Set<Int>
     @Published var captureMode: Bool
+    @Published var straightFacePositionTaken: Bool
     
     @Published private(set) var capturedPhoto: UIImage?
     @Published private(set) var hasDetectedValidFace: Bool
@@ -107,7 +115,27 @@ final class CameraViewModel: ObservableObject {
         }
     }
     
+    @Published private(set) var facePosition: FacePositionState
     
+    // MARK: - Init
+    
+    init() {
+        faceGeometryObservation = .faceNotFound
+        faceQualityObservation = .faceNotFound
+        faceLivenessObservation = .faceNotFound
+        
+        hasDetectedValidFace = false
+        captureMode = false
+        faceQuality = false
+        faceBounds = .faceNotFound
+        faceLiveness = .faceNotFound
+        facePosition = .faceNotFound
+        
+        straightFacePositionTaken = false
+        capturedIndices = []
+    }
+    
+    // MARK: - Functions
     
     func processUpdatedFaceGeometry() {
         switch faceGeometryObservation {
@@ -120,6 +148,12 @@ final class CameraViewModel: ObservableObject {
             print("roll: \(String(format: "%.2f", roll)) | pitch: \(String(format: "%.2f", pitch)) | yaw: \(String(format: "%.2f", yaw))")
             
             updateAcceptableBounds(using: boundingBox)
+            updateCurrentProgress(yaw: yaw, pitch: pitch)
+            facePosition = .Straight
+            if isValidStraightFace(roll: roll, pitch: pitch, yaw: yaw) {
+                facePosition = .Straight
+            }
+            
         case .faceNotFound:
             invalidateFaceGeometry()
         case .errored(let error):
@@ -156,21 +190,7 @@ final class CameraViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Init
     
-    init() {
-        hasDetectedValidFace = false
-        faceGeometryObservation = .faceNotFound
-        faceQualityObservation = .faceNotFound
-        faceLivenessObservation = .faceNotFound
-        
-        captureMode = false
-        faceQuality = false
-        faceBounds = .faceNotFound
-        faceLiveness = .faceNotFound
-        
-        capturedIndices = []
-    }
     
     // MARK: - Public Methods
     
@@ -194,8 +214,17 @@ final class CameraViewModel: ObservableObject {
     // MARK: - Private Methods
     
     private func takePhoto() {
-        shutterReleased.send()
+        switch facePosition {
+        case .Straight:
+            if !straightFacePositionTaken {
+                shutterReleased.send()
+                straightFacePositionTaken = true
+            }
+        default:
+            break
+        }
     }
+        
     
     private func savePhoto(_ photo: UIImage) {
         UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
@@ -238,10 +267,15 @@ final class CameraViewModel: ObservableObject {
 extension CameraViewModel {
     
     func invalidateFaceGeometry() {
-//        faceGeometryObservation = .faceNotFound
-//        faceQualityObservation = .faceNotFound
-//        faceLivenessObservation = .faceNotFound
-//        faceBounds = .faceNotFound
+        hasDetectedValidFace = false
+        captureMode = false
+        faceQuality = false
+        faceBounds = .faceNotFound
+        faceLiveness = .faceNotFound
+        facePosition = .faceNotFound
+        
+        straightFacePositionTaken = false
+        capturedIndices = []
     }
     
     func updateFaceValidity() {
@@ -257,6 +291,14 @@ extension CameraViewModel {
         } else if boundingBox.width  < FaceCaptureConstant.LayoutGuideHeight * 0.5 {
             faceBounds = .detectedFaceTooSmall
         } else {
+//            if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 50 {
+//              isAcceptableBounds = .detectedFaceOffCentre
+//            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 50 {
+//              isAcceptableBounds = .detectedFaceOffCentre
+//            }
+            
+            
+            
             faceBounds = .faceOK
         }
     }
@@ -281,7 +323,7 @@ extension CameraViewModel {
 
 extension CameraViewModel {
     
-    private func isValidNeutralFace(roll: Double, pitch: Double, yaw: Double) -> Bool {
+    private func isValidStraightFace(roll: Double, pitch: Double, yaw: Double) -> Bool {
         return (
             hasDetectedValidFace &&
             isValidNeutralPitch(pitch: pitch) &&
@@ -306,15 +348,28 @@ extension CameraViewModel {
         
     }
     
+
     private func isValidNeutralRoll(roll: Double) -> Bool {
-        return (roll >= 1.47 && roll <= 1.63)
+        return (roll >= 1.4 && roll <= 1.70)
     }
     
+    
     func isValidNeutralYaw(yaw: Double) -> Bool  {
-        return (yaw >= -0.05 && yaw <= 0.05)
+        return (yaw >= -0.1 && yaw <= 0.2)
     }
     
     func isValidNeutralPitch(pitch: Double) -> Bool {
-        return (pitch >= -0.05 && pitch <= 0.05)
+        return (pitch >= -0.2 && pitch <= 0.2)
+    }
+    
+    private func updateCurrentProgress(yaw: Double, pitch: Double) {
+        let localCoord = atan2(yaw, pitch)
+        let dLocalCoord = rad2deg(localCoord) + 180
+        let dProgress = dLocalCoord / Double(FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress)
+        
+        capturedIndices.insert(abs(Int(dProgress)))
+        
+        print("capturedIndices len: \(self.capturedIndices.count)")
+        print("capturedIndices: \(self.capturedIndices.sorted())")
     }
 }

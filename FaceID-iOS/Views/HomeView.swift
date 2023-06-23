@@ -21,6 +21,11 @@ struct HomeView: View {
     var body: some View {
         ZStack {
             CameraView(cameraViewModel: model)
+                .onReceive(model.$facePosition) { _ in
+                    DispatchQueue.main.async {
+                        model.perform(action: .takePhoto)
+                    }
+                }
             FaceBoundingBoxView(model: model)
             FaceCaptureBorderView()
         }
