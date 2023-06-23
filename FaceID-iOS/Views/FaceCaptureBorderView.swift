@@ -15,7 +15,7 @@ struct FaceCaptureBorderView: View {
                 .frame(width: FaceCaptureConstant.LayoutGuideWidth, height: FaceCaptureConstant.LayoutGuideHeight)
             Spacer()
         }
-        .padding(.top, 50 + PreviewLayerFrameConstant.YOffset)
+        .padding(.top, FaceCaptureConstant.OffsetFromTop)
     }
 }
 

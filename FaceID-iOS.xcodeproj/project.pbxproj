@@ -18,6 +18,7 @@
 		E507B4AA2A381BE400331FCA /* CGImage+CVPixelBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E507B4A92A381BE400331FCA /* CGImage+CVPixelBuffer.swift */; };
 		E52222CA2A3AB6940058246C /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E52222C92A3AB6940058246C /* CameraViewModel.swift */; };
 		E585685A2A3969DA008460A3 /* AnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58568592A3969DA008460A3 /* AnimationView.swift */; };
+		E59C5A662A454EBB0069D718 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59C5A652A454EBB0069D718 /* ColorExtension.swift */; };
 		E5A01CD82A42A88300E7BD7E /* UIImage+CVPixelBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A01CD72A42A88300E7BD7E /* UIImage+CVPixelBuffer.swift */; };
 		E5A01CDA2A42AB0100E7BD7E /* FaceCaptureBorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A01CD92A42AB0100E7BD7E /* FaceCaptureBorderView.swift */; };
 		E5A01CDC2A42AD0800E7BD7E /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A01CDB2A42AD0800E7BD7E /* ViewExtension.swift */; };
@@ -53,6 +54,7 @@
 		E507B4A92A381BE400331FCA /* CGImage+CVPixelBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGImage+CVPixelBuffer.swift"; sourceTree = "<group>"; };
 		E52222C92A3AB6940058246C /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		E58568592A3969DA008460A3 /* AnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationView.swift; sourceTree = "<group>"; };
+		E59C5A652A454EBB0069D718 /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		E5A01CD72A42A88300E7BD7E /* UIImage+CVPixelBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+CVPixelBuffer.swift"; sourceTree = "<group>"; };
 		E5A01CD92A42AB0100E7BD7E /* FaceCaptureBorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceCaptureBorderView.swift; sourceTree = "<group>"; };
 		E5A01CDB2A42AD0800E7BD7E /* ViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
@@ -170,6 +172,7 @@
 				E5A01CDD2A42AD4400E7BD7E /* UINavigationControllerExtension.swift */,
 				E5A01CE72A42FAF100E7BD7E /* CVPixelBuffer+Resize.swift */,
 				E5A01CE92A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift */,
+				E59C5A652A454EBB0069D718 /* ColorExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -291,6 +294,7 @@
 				E5AC97522A384CC200DC1B27 /* HomeView.swift in Sources */,
 				E5A01CE62A42EE5600E7BD7E /* FaceAntiSpoofingHelper.swift in Sources */,
 				E5A01CD82A42A88300E7BD7E /* UIImage+CVPixelBuffer.swift in Sources */,
+				E59C5A662A454EBB0069D718 /* ColorExtension.swift in Sources */,
 				E5AC974D2A384B7E00DC1B27 /* UIScreenExtension.swift in Sources */,
 				E5A01CDC2A42AD0800E7BD7E /* ViewExtension.swift in Sources */,
 				E5AC97502A384C5C00DC1B27 /* CameraView.swift in Sources */,

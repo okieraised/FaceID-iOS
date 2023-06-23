@@ -64,11 +64,11 @@ final class CameraViewModel: ObservableObject {
     let shutterReleased = PassthroughSubject<Void, Never>()
     
     // MARK: - Published Variables
+    @Published var capturedIndices: Set<Int>
+    @Published var captureMode: Bool
     
     @Published private(set) var capturedPhoto: UIImage?
-    
-    
-    
+    @Published private(set) var hasDetectedValidFace: Bool
     
     @Published private(set) var faceGeometryObservation: FaceObservationState<FaceGeometryModel> {
         didSet {
@@ -103,7 +103,7 @@ final class CameraViewModel: ObservableObject {
     
     @Published private(set) var faceQuality: Bool {
         didSet {
-            print(faceQuality)
+            updateFaceValidity()
         }
     }
     
@@ -113,6 +113,12 @@ final class CameraViewModel: ObservableObject {
         switch faceGeometryObservation {
         case .faceFound(let faceGeometryModel):
             let boundingBox = faceGeometryModel.boundingBox
+            let roll = faceGeometryModel.roll.doubleValue
+            let pitch = faceGeometryModel.pitch.doubleValue
+            let yaw = faceGeometryModel.yaw.doubleValue
+            
+            print("roll: \(String(format: "%.2f", roll)) | pitch: \(String(format: "%.2f", pitch)) | yaw: \(String(format: "%.2f", yaw))")
+            
             updateAcceptableBounds(using: boundingBox)
         case .faceNotFound:
             invalidateFaceGeometry()
@@ -153,15 +159,17 @@ final class CameraViewModel: ObservableObject {
     // MARK: - Init
     
     init() {
+        hasDetectedValidFace = false
         faceGeometryObservation = .faceNotFound
         faceQualityObservation = .faceNotFound
         faceLivenessObservation = .faceNotFound
         
-        
-        
+        captureMode = false
         faceQuality = false
         faceBounds = .faceNotFound
         faceLiveness = .faceNotFound
+        
+        capturedIndices = []
     }
     
     // MARK: - Public Methods
@@ -237,19 +245,19 @@ extension CameraViewModel {
     }
     
     func updateFaceValidity() {
-        
+        hasDetectedValidFace = (faceBounds == .faceOK &&
+                                faceLiveness == .faceOK &&
+                                faceQuality)
+//        print("hasDetectedValidFace: \(hasDetectedValidFace)")
     }
     
     func updateAcceptableBounds(using boundingBox: CGRect) {
         if boundingBox.width > 1.1 * FaceCaptureConstant.LayoutGuideWidth {
             faceBounds = .detectedFaceTooLarge
-            print("TOO BIG")
         } else if boundingBox.width  < FaceCaptureConstant.LayoutGuideHeight * 0.5 {
             faceBounds = .detectedFaceTooSmall
-            print("TOO SMALL")
         } else {
             faceBounds = .faceOK
-            print("OK")
         }
     }
     
@@ -269,4 +277,44 @@ extension CameraViewModel {
         
     }
     
+}
+
+extension CameraViewModel {
+    
+    private func isValidNeutralFace(roll: Double, pitch: Double, yaw: Double) -> Bool {
+        return (
+            hasDetectedValidFace &&
+            isValidNeutralPitch(pitch: pitch) &&
+            isValidNeutralYaw(yaw: yaw) &&
+            isValidNeutralRoll(roll: roll)
+        )
+    }
+    
+    private func isValidTopFace() {
+        
+    }
+    
+    private func isValidBottomFace() {
+        
+    }
+    
+    private func isValidRightFace() {
+        
+    }
+    
+    private func isValidLeftFace() {
+        
+    }
+    
+    private func isValidNeutralRoll(roll: Double) -> Bool {
+        return (roll >= 1.47 && roll <= 1.63)
+    }
+    
+    func isValidNeutralYaw(yaw: Double) -> Bool  {
+        return (yaw >= -0.05 && yaw <= 0.05)
+    }
+    
+    func isValidNeutralPitch(pitch: Double) -> Bool {
+        return (pitch >= -0.05 && pitch <= 0.05)
+    }
 }

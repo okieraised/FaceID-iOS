@@ -25,4 +25,7 @@ struct FaceCaptureConstant {
     
     static let MaxProgress: Int = 60
     static let FullCircle: Int = 360
+    
+    static let OffsetFromTop = PreviewLayerFrameConstant.YOffset + 60
 }
+
