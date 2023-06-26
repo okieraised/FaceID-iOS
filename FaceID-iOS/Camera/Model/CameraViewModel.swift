@@ -282,7 +282,6 @@ extension CameraViewModel {
         hasDetectedValidFace = (faceBounds == .faceOK &&
                                 faceLiveness == .faceOK &&
                                 faceQuality)
-//        print("hasDetectedValidFace: \(hasDetectedValidFace)")
     }
     
     func updateAcceptableBounds(using boundingBox: CGRect) {

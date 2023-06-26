@@ -13,22 +13,29 @@ struct HomeView: View {
     @ObservedObject private(set) var model: CameraViewModel
 
     // MARK: - Init
-    init(model: CameraViewModel) {
-        self.model = model
-    }
+//    init(model: CameraViewModel) {
+//        self.model = model
+//    }
     
     // MARK: - View
     var body: some View {
-        ZStack {
-            CameraView(cameraViewModel: model)
-                .onReceive(model.$facePosition) { _ in
-                    DispatchQueue.main.async {
-                        model.perform(action: .takePhoto)
+        VStack {
+            ZStack {
+                Color(.black)
+                    .ignoresSafeArea()
+                
+                CameraView(cameraViewModel: model)
+                    .onReceive(model.$facePosition) { _ in
+                        DispatchQueue.main.async {
+                            model.perform(action: .takePhoto)
+                        }
                     }
-                }
-            FaceBoundingBoxView(model: model)
-            FaceCaptureBorderView()
+                FaceBoundingBoxView(model: model)
+                FaceCaptureBorderView()
+                FaceCaptureProgressView()
+            }
         }
+        .padding(.top, -50)
         
     }
 }
