@@ -8,40 +8,36 @@
 import SwiftUI
 
 struct FaceCaptureProgressView: View {
-    private var height: CGFloat = 10
-    private var width: CGFloat {
-        CGFloat(FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress) * 0.9
-    }
     
-    func degrees(for index: Int) -> Double {
-        Double(((index+1) * 3))
-    }
+    // MARK: - Variables
+    @ObservedObject private(set) var model: CameraViewModel
+    
+    // MARK: - View
     
     var body: some View {
+        
         VStack {
-//            DefaultProgressCircle(offset: UIScreen.screenSize.width / 2 - 15, opacity: 0.8)
             ZStack {
-                // Base progress circle
-                ForEach(0 ..< FaceCaptureConstant.MaxProgress, id: \.self) { i in
+                DefaultProgressCircle(offset: UIScreen.screenSize.width / 2 - 40, opacity: 0.4, height: 10)
+                
+                ForEach(model.capturedIndices.sorted(), id: \.self) { i in
                     RoundedRectangle(cornerRadius: 4, style: .continuous)
-                        .offset(y: UIScreen.screenSize.width / 2 - 15)
-                        .fill(.gray)
-                        .frame(width: width, height: height, alignment: .center)
-                        .opacity(0.8)
-                        .rotationEffect(.degrees(Double((i+1) * (FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress))), anchor: .center)
+                        .offset(y: UIScreen.screenSize.width / 2 - 30)
+                        .fill(.green)
+                        .frame(width: CGFloat(FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress) * 0.9, height: 30, alignment: .center)
+                        .animation(.easeInOut, value: 30)
+                        .rotationEffect(.degrees(Double(-1 * ((i+1) * (FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress) - 180))))
                 }
             }
             
             Spacer()
         }
         .padding(.top, 2*FaceCaptureConstant.OffsetFromTop)
-        
-        
     }
 }
 
 struct FaceCaptureProgressView_Previews: PreviewProvider {
     static var previews: some View {
-        FaceCaptureProgressView()
+        FaceCaptureProgressView(model: CameraViewModel())
     }
 }

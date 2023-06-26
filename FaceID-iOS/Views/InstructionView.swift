@@ -68,7 +68,7 @@ struct InstructionView: View {
                 VStack(spacing: 60) {
                     VStack {
                         ZStack {
-                            DefaultProgressCircle(offset: UIScreen.screenSize.width / 2 - 60, opacity: 0.4)
+                            DefaultProgressCircle(offset: UIScreen.screenSize.width / 2 - 60, opacity: 0.4, height: 30)
                             faceIDView
                         }
                     }

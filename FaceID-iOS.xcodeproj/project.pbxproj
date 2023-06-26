@@ -43,6 +43,7 @@
 		E5AE11742A442D08003C38CC /* FaceMaskHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AE11732A442D08003C38CC /* FaceMaskHelper.swift */; };
 		E5AE52732A40145700CB741F /* FaceBoundingBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AE52722A40145700CB741F /* FaceBoundingBoxView.swift */; };
 		E5AE52752A4034DB00CB741F /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AE52742A4034DB00CB741F /* Constants.swift */; };
+		E5B554722A493D5800CD8E36 /* ProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B554712A493D5800CD8E36 /* ProgressBarView.swift */; };
 		E5B87DBF2A4186C5002AECD9 /* FaceIDHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B87DBE2A4186C5002AECD9 /* FaceIDHelper.swift */; };
 /* End PBXBuildFile section */
 
@@ -84,6 +85,7 @@
 		E5AE11732A442D08003C38CC /* FaceMaskHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceMaskHelper.swift; sourceTree = "<group>"; };
 		E5AE52722A40145700CB741F /* FaceBoundingBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceBoundingBoxView.swift; sourceTree = "<group>"; };
 		E5AE52742A4034DB00CB741F /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		E5B554712A493D5800CD8E36 /* ProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBarView.swift; sourceTree = "<group>"; };
 		E5B87DBE2A4186C5002AECD9 /* FaceIDHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceIDHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -219,6 +221,7 @@
 			children = (
 				E59C5A6D2A457E220069D718 /* CustomTextView.swift */,
 				E59C5A722A4588100069D718 /* DefaultProgressCircle.swift */,
+				E5B554712A493D5800CD8E36 /* ProgressBarView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -345,6 +348,7 @@
 				E5A01CE82A42FAF100E7BD7E /* CVPixelBuffer+Resize.swift in Sources */,
 				E59C5A6B2A4557B70069D718 /* RadToDegree.swift in Sources */,
 				E585685A2A3969DA008460A3 /* InstructionView.swift in Sources */,
+				E5B554722A493D5800CD8E36 /* ProgressBarView.swift in Sources */,
 				E507B4A02A380CD100331FCA /* CameraError.swift in Sources */,
 				E507B4972A380ACA00331FCA /* FaceID_iOS.xcdatamodeld in Sources */,
 				E5AC97562A38534400DC1B27 /* FaceDetectorModel.swift in Sources */,

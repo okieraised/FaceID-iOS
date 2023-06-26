@@ -27,7 +27,7 @@ struct HomeView: View {
                     }
                 FaceBoundingBoxView(model: model)
                 FaceCaptureBorderView()
-                FaceCaptureProgressView()
+                FaceCaptureProgressView(model: model)
             }
         }
         .padding(.top, -50)
