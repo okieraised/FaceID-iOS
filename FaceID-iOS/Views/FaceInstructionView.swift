@@ -30,7 +30,7 @@ enum FaceIDEnum: String {
     }
 }
 
-struct InstructionView: View {
+struct FaceInstructionView: View {
     
     // MARK: - Observed oject
     @ObservedObject var model: CameraViewModel
@@ -90,7 +90,7 @@ struct InstructionView: View {
                         Spacer()
                         
                         NavigationLink {
-                            HomeView(model: model)
+                            FaceCaptureView(model: model)
                         } label: {
                             CustomTextView(text: "Start")
                         }
@@ -104,7 +104,7 @@ struct InstructionView: View {
 }
 
 // MARK: - Extension
-extension InstructionView {
+extension FaceInstructionView {
     
     var faceIDView: some View {
         Image(imgs[order].image)
@@ -125,7 +125,7 @@ extension InstructionView {
 
 struct InstructionView_Previews: PreviewProvider {
     static var previews: some View {
-        InstructionView(model: CameraViewModel())
+        FaceInstructionView(model: CameraViewModel())
     }
 }
 

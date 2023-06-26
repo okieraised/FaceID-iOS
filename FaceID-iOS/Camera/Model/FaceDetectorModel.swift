@@ -169,10 +169,25 @@ extension FaceDetector {
             return
         }
         
-        if let resizedBuffer = scaleImage(pixelBuffer: buffer, width: FaceIDModel.InputImageSize, height: FaceIDModel.InputImageSize) {
-            if let result = try? faceIDModel.detectFaceID(buffer: resizedBuffer) {
+        if model.captureMode {
+            if let resizedBuffer = scaleImage(pixelBuffer: buffer, width: FaceIDModel.InputImageSize, height: FaceIDModel.InputImageSize) {
+                if let result = try? faceIDModel.detectFaceID(buffer: resizedBuffer) {
+                    
+                    
+//                    imageProcessingQueue.async { [self] in
+//
+//                        let ciImage = CIImage(cvPixelBuffer: resizedBuffer)
+//                        let uiImage = UIImage(ciImage: ciImage)
+//                        DispatchQueue.main.async {
+//                            model.perform(action: .savePhoto(uiImage))
+//                        }
+//
+//                    }
+                    
+                }
             }
         }
+        
     }
     
     
@@ -204,40 +219,26 @@ extension FaceDetector {
     
     func saveCapturedPhoto(from pixelBuffer: CVPixelBuffer) {
         guard
-            let model = cameraViewModel, let viewDelegate = viewDelegate
+            let model = cameraViewModel
         else {
             return
         }
         
         imageProcessingQueue.async { [self] in
-            
             let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-            let imageViewScale = max(ciImage.extent.width / UIScreen.screenWidth,
-                                     ciImage.extent.size.height / UIScreen.screenHeight / 2)
-            
-            let converted = viewDelegate.convertFromMetadataToPreviewRect(rect: bBox)
-            let cropZone = CGRect(
-                x: (converted.origin.x + PreviewLayerFrameConstant.YOffset) + PreviewLayerFrameConstant.YOffset/2,
-                y: (UIScreen.screenHeight - converted.origin.y + PreviewLayerFrameConstant.YOffset)/2,
-                width: converted.size.width * imageViewScale + PreviewLayerFrameConstant.YOffset,
-                height: (converted.size.height + PreviewLayerFrameConstant.YOffset) * imageViewScale)
+            let width = ciImage.extent.width
+            let height = ciImage.extent.height
+            let desiredImageHeight = width * 4 / 3
+            let yOrigin = (height - desiredImageHeight) / 2
+            let photoRect = CGRect(x: 0, y: yOrigin, width: width, height: desiredImageHeight)
 
-            let cropped = ciImage.cropped(to: cropZone)
             let context = CIContext()
-            
-            guard
-                let cgImage = context.createCGImage(cropped, from: cropped.extent)
-            else {
-                return
+            if let cgImage = context.createCGImage(ciImage, from: photoRect) {
+                let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
+                DispatchQueue.main.async {
+                    model.perform(action: .savePhoto(uiImage))
+                }
             }
-            
-            let uiImage = UIImage(cgImage: cgImage)
-            DispatchQueue.main.async {
-                model.perform(action: .savePhoto(uiImage))
-            }
-  
-
-            
         }
     }
 }

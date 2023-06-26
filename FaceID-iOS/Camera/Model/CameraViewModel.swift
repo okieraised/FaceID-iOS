@@ -73,7 +73,7 @@ final class CameraViewModel: ObservableObject {
     // MARK: - Variables
     @Published var capturedIndices: Set<Int>
     @Published var captureMode: Bool = false
-    @Published var straightFacePositionTaken: Bool
+    @Published var straightFacePositionTaken: Bool = false
     
     @Published private(set) var capturedPhoto: UIImage?
     @Published private(set) var hasDetectedValidFace: Bool
@@ -139,14 +139,17 @@ final class CameraViewModel: ObservableObject {
         faceBounds = .faceNotFound
         faceLiveness = .faceObstructed
         facePosition = .faceNotFound
-        
-        straightFacePositionTaken = false
         capturedIndices = []
         
         $hasDetectedValidFaceUnthrottled
             .throttle(for: .seconds(throttleDelay), scheduler: DispatchQueue.main, latest: true)
             .sink(receiveValue: { [weak self] value in
                 self?.hasDetectedValidFace = value
+                if value {
+                    self?.captureMode = true
+                } else {
+                    self?.captureMode = false
+                }
             })
             .store(in: &throttleSubscriber)
         
@@ -239,7 +242,7 @@ final class CameraViewModel: ObservableObject {
     private func takePhoto() {
         switch facePosition {
         case .Straight:
-            if !straightFacePositionTaken {
+            if !straightFacePositionTaken && captureMode {
                 shutterReleased.send()
                 straightFacePositionTaken = true
             }
@@ -296,7 +299,6 @@ extension CameraViewModel {
         faceBounds = .faceNotFound
         faceLiveness = .faceObstructed
         facePosition = .faceNotFound
-        
         straightFacePositionTaken = false
         capturedIndices = []
     }
@@ -332,23 +334,6 @@ extension CameraViewModel {
                 }
             }
         }
-        
-        
-//        if liveness.spoofed && liveness.obstructed {
-//            faceLiveness = .faceObstructed
-//        } else {
-//            if liveness.spoofed {
-//                faceLiveness = .faceSpoofed
-//            } else {
-//                if liveness.obstructed {
-//                    faceLiveness = .faceObstructed
-//                } else {
-//                    faceLiveness = .faceOK
-//                }
-//            }
-//        }
-//
-        
     }
 }
 
@@ -394,13 +379,16 @@ extension CameraViewModel {
     }
     
     private func updateFaceCaptureProgress(yaw: Double, pitch: Double) {
-        let localCoord = atan2(yaw, pitch)
-        let dLocalCoord = rad2deg(localCoord) + 180
-        let dProgress = dLocalCoord / Double(FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress)
-        
-        capturedIndices.insert(abs(Int(dProgress)))
-        
-        print("capturedIndices len: \(self.capturedIndices.count)")
-        print("capturedIndices: \(self.capturedIndices.sorted())")
+        if captureMode {
+            
+            let localCoord = atan2(yaw, pitch)
+            let dLocalCoord = rad2deg(localCoord) + 180
+            let dProgress = dLocalCoord / Double(FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress)
+            
+            capturedIndices.insert(abs(Int(dProgress)))
+            
+            print("capturedIndices len: \(self.capturedIndices.count)")
+            print("capturedIndices: \(self.capturedIndices.sorted())")
+        }
     }
 }

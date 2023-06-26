@@ -31,6 +31,7 @@ public class FaceIDModel {
     
     public func detectFaceID(buffer: CVPixelBuffer) throws -> [Float32] {
         do {
+            
             let rawPrediction = try faceID.prediction(x_1: buffer)
             if let result = try? UnsafeBufferPointer<Float32>(rawPrediction.var_1617) {
                 let predictionResult = Array(result)

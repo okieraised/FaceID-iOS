@@ -34,7 +34,7 @@ struct WelcomeView: View {
                     
                     VStack(spacing: 24) {
                         NavigationLink {
-                            InstructionView(model: CameraViewModel())
+                            FaceInstructionView(model: CameraViewModel())
                         } label: {
                             CustomTextView(text: "Enroll")
                         }
