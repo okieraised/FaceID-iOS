@@ -35,7 +35,7 @@ enum FaceBoundsState {
 }
 
 enum FaceLivenessState {
-    case faceNotFound
+//    case faceNotFound
     case faceObstructed
     case faceSpoofed
     case faceOK
@@ -72,11 +72,18 @@ final class CameraViewModel: ObservableObject {
     
     // MARK: - Variables
     @Published var capturedIndices: Set<Int>
-    @Published var captureMode: Bool
+    @Published var captureMode: Bool = false
     @Published var straightFacePositionTaken: Bool
     
     @Published private(set) var capturedPhoto: UIImage?
     @Published private(set) var hasDetectedValidFace: Bool
+    @Published private var hasDetectedValidFaceUnthrottled: Bool = false
+    
+    
+    let throttleDelay = 0.5
+    let throttleReleased = PassthroughSubject<Bool, Never>()
+    var throttleSubscriber = Set<AnyCancellable>()
+    
     
     @Published private(set) var faceGeometryObservation: FaceObservationState<FaceGeometryModel> {
         didSet {
@@ -109,6 +116,8 @@ final class CameraViewModel: ObservableObject {
         }
     }
     
+    @Published private var faceLivenessUnthrottled: FaceLivenessState = .faceObstructed
+    
     @Published private(set) var faceQuality: Bool {
         didSet {
             updateFaceValidity()
@@ -128,11 +137,25 @@ final class CameraViewModel: ObservableObject {
         captureMode = false
         faceQuality = false
         faceBounds = .faceNotFound
-        faceLiveness = .faceNotFound
+        faceLiveness = .faceObstructed
         facePosition = .faceNotFound
         
         straightFacePositionTaken = false
         capturedIndices = []
+        
+        $hasDetectedValidFaceUnthrottled
+            .throttle(for: .seconds(throttleDelay), scheduler: DispatchQueue.main, latest: true)
+            .sink(receiveValue: { [weak self] value in
+                self?.hasDetectedValidFace = value
+            })
+            .store(in: &throttleSubscriber)
+        
+        $faceLivenessUnthrottled
+            .throttle(for: .seconds(throttleDelay), scheduler: DispatchQueue.main, latest: true)
+            .sink(receiveValue: { [weak self] value in
+                self?.faceLiveness = value
+            })
+            .store(in: &throttleSubscriber)
     }
     
     // MARK: - Functions
@@ -148,7 +171,7 @@ final class CameraViewModel: ObservableObject {
             print("roll: \(String(format: "%.2f", roll)) | pitch: \(String(format: "%.2f", pitch)) | yaw: \(String(format: "%.2f", yaw))")
             
             updateAcceptableBounds(using: boundingBox)
-            updateCurrentProgress(yaw: yaw, pitch: pitch)
+            updateFaceCaptureProgress(yaw: yaw, pitch: pitch)
             facePosition = .Straight
             if isValidStraightFace(roll: roll, pitch: pitch, yaw: yaw) {
                 facePosition = .Straight
@@ -271,7 +294,7 @@ extension CameraViewModel {
         captureMode = false
         faceQuality = false
         faceBounds = .faceNotFound
-        faceLiveness = .faceNotFound
+        faceLiveness = .faceObstructed
         facePosition = .faceNotFound
         
         straightFacePositionTaken = false
@@ -279,9 +302,10 @@ extension CameraViewModel {
     }
     
     func updateFaceValidity() {
-        hasDetectedValidFace = (faceBounds == .faceOK &&
+        hasDetectedValidFaceUnthrottled = (faceBounds == .faceOK &&
                                 faceLiveness == .faceOK &&
                                 faceQuality)
+        
     }
     
     func updateAcceptableBounds(using boundingBox: CGRect) {
@@ -290,34 +314,42 @@ extension CameraViewModel {
         } else if boundingBox.width  < FaceCaptureConstant.LayoutGuideHeight * 0.5 {
             faceBounds = .detectedFaceTooSmall
         } else {
-//            if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 50 {
-//              isAcceptableBounds = .detectedFaceOffCentre
-//            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 50 {
-//              isAcceptableBounds = .detectedFaceOffCentre
-//            }
-            
-            
-            
             faceBounds = .faceOK
         }
     }
     
     func updateAcceptableLiveness(using liveness: FaceLivenessModel) {
-        if liveness.spoofed {
-            faceLiveness = .faceSpoofed
+        if liveness.spoofed && liveness.obstructed {
+            faceLivenessUnthrottled = .faceObstructed
         } else {
-            if liveness.obstructed {
-                faceLiveness = .faceObstructed
+            if liveness.spoofed {
+                faceLivenessUnthrottled = .faceSpoofed
             } else {
-                faceLiveness = .faceOK
+                if liveness.obstructed {
+                    faceLivenessUnthrottled = .faceObstructed
+                } else {
+                    faceLivenessUnthrottled = .faceOK
+                }
             }
         }
-    }
-    
-    func updateFaceCaptureProgress(yaw: Double, pitch: Double) {
+        
+        
+//        if liveness.spoofed && liveness.obstructed {
+//            faceLiveness = .faceObstructed
+//        } else {
+//            if liveness.spoofed {
+//                faceLiveness = .faceSpoofed
+//            } else {
+//                if liveness.obstructed {
+//                    faceLiveness = .faceObstructed
+//                } else {
+//                    faceLiveness = .faceOK
+//                }
+//            }
+//        }
+//
         
     }
-    
 }
 
 extension CameraViewModel {
@@ -361,7 +393,7 @@ extension CameraViewModel {
         return (pitch >= -0.2 && pitch <= 0.2)
     }
     
-    private func updateCurrentProgress(yaw: Double, pitch: Double) {
+    private func updateFaceCaptureProgress(yaw: Double, pitch: Double) {
         let localCoord = atan2(yaw, pitch)
         let dLocalCoord = rad2deg(localCoord) + 180
         let dProgress = dLocalCoord / Double(FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress)
