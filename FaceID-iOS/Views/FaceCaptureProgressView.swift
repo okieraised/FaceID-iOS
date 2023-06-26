@@ -18,17 +18,25 @@ struct FaceCaptureProgressView: View {
     }
     
     var body: some View {
-        ZStack {
-            // Base progress circle
-            ForEach(0 ..< FaceCaptureConstant.MaxProgress, id: \.self) { i in
-                RoundedRectangle(cornerRadius: 4, style: .continuous)
-                    .offset(y: UIScreen.screenSize.width / 2 - 15)
-                    .fill(.gray)
-                    .frame(width: width, height: height, alignment: .center)
-                    .opacity(0.8)
-                    .rotationEffect(.degrees(Double((i+1) * (FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress))), anchor: .center)
+        VStack {
+//            DefaultProgressCircle(offset: UIScreen.screenSize.width / 2 - 15, opacity: 0.8)
+            ZStack {
+                // Base progress circle
+                ForEach(0 ..< FaceCaptureConstant.MaxProgress, id: \.self) { i in
+                    RoundedRectangle(cornerRadius: 4, style: .continuous)
+                        .offset(y: UIScreen.screenSize.width / 2 - 15)
+                        .fill(.gray)
+                        .frame(width: width, height: height, alignment: .center)
+                        .opacity(0.8)
+                        .rotationEffect(.degrees(Double((i+1) * (FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress))), anchor: .center)
+                }
             }
+            
+            Spacer()
         }
+        .padding(.top, 2*FaceCaptureConstant.OffsetFromTop)
+        
+        
     }
 }
 

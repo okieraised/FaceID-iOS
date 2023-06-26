@@ -11,11 +11,6 @@ struct HomeView: View {
     
     // MARK: - Variables
     @ObservedObject private(set) var model: CameraViewModel
-
-    // MARK: - Init
-//    init(model: CameraViewModel) {
-//        self.model = model
-//    }
     
     // MARK: - View
     var body: some View {

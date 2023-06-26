@@ -68,7 +68,7 @@ struct InstructionView: View {
                 VStack(spacing: 60) {
                     VStack {
                         ZStack {
-                            DefaultProgressCircle()
+                            DefaultProgressCircle(offset: UIScreen.screenSize.width / 2 - 60, opacity: 0.4)
                             faceIDView
                         }
                     }
@@ -79,6 +79,7 @@ struct InstructionView: View {
                             .font(.system(size: 32, weight: .bold))
                             .foregroundColor(.white)
                             .padding(.all)
+                            .padding(.top, 24)
                         
                         Text(InstructionText.Instruction)
                             .multilineTextAlignment(.center)
@@ -89,7 +90,6 @@ struct InstructionView: View {
                         Spacer()
                         
                         NavigationLink {
-//                            EmptyView()
                             HomeView(model: model)
                         } label: {
                             CustomTextView(text: "Start")
