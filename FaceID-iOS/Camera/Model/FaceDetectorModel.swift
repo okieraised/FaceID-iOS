@@ -173,17 +173,6 @@ extension FaceDetector {
             if let resizedBuffer = scaleImage(pixelBuffer: buffer, width: FaceIDModel.InputImageSize, height: FaceIDModel.InputImageSize) {
                 if let result = try? faceIDModel.detectFaceID(buffer: resizedBuffer) {
                     
-                    
-//                    imageProcessingQueue.async { [self] in
-//
-//                        let ciImage = CIImage(cvPixelBuffer: resizedBuffer)
-//                        let uiImage = UIImage(ciImage: ciImage)
-//                        DispatchQueue.main.async {
-//                            model.perform(action: .savePhoto(uiImage))
-//                        }
-//
-//                    }
-                    
                 }
             }
         }

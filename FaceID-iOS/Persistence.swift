@@ -18,8 +18,9 @@ struct PersistenceController {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            
             if let error = error as NSError? {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
+                print("Unresolved error \(error.localizedDescription)")
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
@@ -54,7 +55,7 @@ struct PersistenceController {
         entity.id = 0
         entity.vector = vector
         entity.created = Date()
-        entity.updated = Date()
+        entity.update = Date()
         saveChanges()
     }
     
@@ -81,7 +82,7 @@ struct PersistenceController {
         
         if vector != nil {
             entity.vector = vector
-            entity.updated = Date()
+            entity.update = Date()
             hasChanges = true
         }
         

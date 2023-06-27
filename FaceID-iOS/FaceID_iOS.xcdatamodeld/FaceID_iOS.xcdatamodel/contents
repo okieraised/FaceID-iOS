@@ -3,10 +3,7 @@
     <entity name="FaceVector" representedClassName="FaceVector" syncable="YES" codeGenerationType="class">
         <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="updated" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="update" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="vector" optional="YES" attributeType="Transformable" customClassName="[Float32]"/>
-    </entity>
-    <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
-        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
 </model>

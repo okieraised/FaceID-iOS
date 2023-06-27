@@ -33,7 +33,6 @@
 		E5A01CE62A42EE5600E7BD7E /* FaceAntiSpoofingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A01CE52A42EE5600E7BD7E /* FaceAntiSpoofingHelper.swift */; };
 		E5A01CE82A42FAF100E7BD7E /* CVPixelBuffer+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A01CE72A42FAF100E7BD7E /* CVPixelBuffer+Resize.swift */; };
 		E5A01CEA2A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A01CE92A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift */; };
-		E5A2D2122A4A86D1000EF5AF /* FaceVectorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A2D2112A4A86D1000EF5AF /* FaceVectorModel.swift */; };
 		E5AC974B2A381DEA00DC1B27 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC974A2A381DEA00DC1B27 /* CameraViewController.swift */; };
 		E5AC974D2A384B7E00DC1B27 /* UIScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC974C2A384B7E00DC1B27 /* UIScreen.swift */; };
 		E5AC97502A384C5C00DC1B27 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC974F2A384C5C00DC1B27 /* CameraView.swift */; };
@@ -76,7 +75,6 @@
 		E5A01CE52A42EE5600E7BD7E /* FaceAntiSpoofingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceAntiSpoofingHelper.swift; sourceTree = "<group>"; };
 		E5A01CE72A42FAF100E7BD7E /* CVPixelBuffer+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CVPixelBuffer+Resize.swift"; sourceTree = "<group>"; };
 		E5A01CE92A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CVPixelBuffer+Create.swift"; sourceTree = "<group>"; };
-		E5A2D2112A4A86D1000EF5AF /* FaceVectorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceVectorModel.swift; sourceTree = "<group>"; };
 		E5AC974A2A381DEA00DC1B27 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		E5AC974C2A384B7E00DC1B27 /* UIScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScreen.swift; sourceTree = "<group>"; };
 		E5AC974F2A384C5C00DC1B27 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
@@ -175,7 +173,6 @@
 			children = (
 				E5AC97552A38534300DC1B27 /* FaceDetectorModel.swift */,
 				E52222C92A3AB6940058246C /* CameraViewModel.swift */,
-				E5A2D2112A4A86D1000EF5AF /* FaceVectorModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -357,7 +354,6 @@
 				E5AC97562A38534400DC1B27 /* FaceDetectorModel.swift in Sources */,
 				E507B4AA2A381BE400331FCA /* CGImage+CVPixelBuffer.swift in Sources */,
 				E507B48D2A380AC900331FCA /* ContentView.swift in Sources */,
-				E5A2D2122A4A86D1000EF5AF /* FaceVectorModel.swift in Sources */,
 				E5AE52732A40145700CB741F /* FaceBoundingBoxView.swift in Sources */,
 				E5A01CEA2A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift in Sources */,
 				E5AE11722A442C80003C38CC /* FaceMask.mlmodel in Sources */,

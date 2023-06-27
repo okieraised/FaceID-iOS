@@ -14,7 +14,7 @@ struct FaceID_iOSApp: App {
     var body: some Scene {
         WindowGroup {
             WelcomeView()
-//                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
 }

@@ -26,6 +26,10 @@ struct FaceLivenessModel {
     var obstructed: Bool
 }
 
+struct FaceVectorModel {
+    var vector: [Float32]
+}
+
 enum FaceBoundsState {
     case faceNotFound
     case detectedFaceTooSmall
@@ -74,16 +78,23 @@ final class CameraViewModel: ObservableObject {
     @Published var capturedIndices: Set<Int>
     @Published var captureMode: Bool = false
     @Published var straightFacePositionTaken: Bool = false
-    @Published var enrolled: Bool = false
+    
+    
+    
+    
     
     @Published private(set) var capturedPhoto: UIImage?
     @Published private(set) var hasDetectedValidFace: Bool
     @Published private var hasDetectedValidFaceUnthrottled: Bool = false
     
-    
+    // These three variables handles the throttling of face liveliness and geometry
+    // so the screen does not flicker at boundary values
     let throttleDelay = 0.5
     let throttleReleased = PassthroughSubject<Bool, Never>()
     var throttleSubscriber = Set<AnyCancellable>()
+    
+    
+    @Published private(set) var enrollMode: Bool = false
     
     
     @Published private(set) var faceGeometryObservation: FaceObservationState<FaceGeometryModel> {
