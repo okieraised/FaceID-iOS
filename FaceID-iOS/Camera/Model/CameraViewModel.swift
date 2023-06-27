@@ -79,10 +79,6 @@ final class CameraViewModel: ObservableObject {
     @Published var captureMode: Bool = false
     @Published var straightFacePositionTaken: Bool = false
     
-    
-    
-    
-    
     @Published private(set) var capturedPhoto: UIImage?
     @Published private(set) var hasDetectedValidFace: Bool
     @Published private var hasDetectedValidFaceUnthrottled: Bool = false
@@ -96,6 +92,7 @@ final class CameraViewModel: ObservableObject {
     
     @Published private(set) var enrolled: Bool
     private var savedVector: [FaceVector]
+    @Published var reEnroll: Bool = false
     
     
     @Published private(set) var faceGeometryObservation: FaceObservationState<FaceGeometryModel> {
@@ -214,7 +211,7 @@ final class CameraViewModel: ObservableObject {
     func processUpdatedFaceQuality() {
         switch faceQualityObservation {
         case .faceFound(let faceQualityModel):
-            if faceQualityModel.quality < 0.3 {
+            if faceQualityModel.quality < 0.2 {
                 faceQuality = false
             } else {
                 faceQuality = true
@@ -317,8 +314,13 @@ final class CameraViewModel: ObservableObject {
             if captureMode {
                 if !enrolled {
                     PersistenceController.shared.saveFaceVector(vector: faceVector.vector)
+                    print("got here 1")
                 } else {
-                    
+                    if reEnroll {
+                        PersistenceController.shared.updateFaceVector(entity: savedVector[0], vector: faceVector.vector)
+                        print("got here 2")
+                        reEnroll = false
+                    }
                 }
             }
         }
