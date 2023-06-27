@@ -45,6 +45,7 @@
 		E5AE52752A4034DB00CB741F /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AE52742A4034DB00CB741F /* Constants.swift */; };
 		E5B554722A493D5800CD8E36 /* ProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B554712A493D5800CD8E36 /* ProgressBarView.swift */; };
 		E5B87DBF2A4186C5002AECD9 /* FaceIDHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B87DBE2A4186C5002AECD9 /* FaceIDHelper.swift */; };
+		E5DCE1D12A4AD5D9004B0761 /* CosineSimilarity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5DCE1D02A4AD5D9004B0761 /* CosineSimilarity.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +88,7 @@
 		E5AE52742A4034DB00CB741F /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		E5B554712A493D5800CD8E36 /* ProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBarView.swift; sourceTree = "<group>"; };
 		E5B87DBE2A4186C5002AECD9 /* FaceIDHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceIDHelper.swift; sourceTree = "<group>"; };
+		E5DCE1D02A4AD5D9004B0761 /* CosineSimilarity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CosineSimilarity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				E59C5A6A2A4557B70069D718 /* RadToDegree.swift */,
+				E5DCE1D02A4AD5D9004B0761 /* CosineSimilarity.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -344,6 +347,7 @@
 				E5AC97502A384C5C00DC1B27 /* CameraView.swift in Sources */,
 				E52222CA2A3AB6940058246C /* CameraViewModel.swift in Sources */,
 				E507B4A22A380E0900331FCA /* ErrorView.swift in Sources */,
+				E5DCE1D12A4AD5D9004B0761 /* CosineSimilarity.swift in Sources */,
 				E5A01CDE2A42AD4400E7BD7E /* UINavigationController.swift in Sources */,
 				E5A01CE82A42FAF100E7BD7E /* CVPixelBuffer+Resize.swift in Sources */,
 				E59C5A6B2A4557B70069D718 /* RadToDegree.swift in Sources */,

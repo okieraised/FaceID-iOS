@@ -50,7 +50,7 @@ struct PersistenceController {
     }
 
     
-    func saveFaceVector(vector: [Float32]){
+    func saveFaceVector(vector: [Float32]) {
         let entity = FaceVector(context: container.viewContext)
         entity.id = 0
         entity.vector = vector

@@ -66,6 +66,7 @@ enum CameraAction {
     case faceGeometryDetected(FaceGeometryModel)
     case faceQualityDetected(FaceQualityModel)
     case faceLivenessDetected(FaceLivenessModel)
+    case faceVectorDetected(FaceVectorModel)
     case takePhoto
     case savePhoto(UIImage)
 }
@@ -94,7 +95,7 @@ final class CameraViewModel: ObservableObject {
     var throttleSubscriber = Set<AnyCancellable>()
     
     
-    @Published private(set) var enrollMode: Bool = false
+    @Published private(set) var enrolled: Bool
     
     
     @Published private(set) var faceGeometryObservation: FaceObservationState<FaceGeometryModel> {
@@ -153,6 +154,15 @@ final class CameraViewModel: ObservableObject {
         facePosition = .faceNotFound
         capturedIndices = []
         
+        let savedVector = PersistenceController.shared.getFaceVector()
+        
+        if savedVector.count == 0 {
+            enrolled = false
+        } else {
+//            print("savedVector: \(savedVector[0].vector)")
+            enrolled = true
+        }
+        
         $hasDetectedValidFaceUnthrottled
             .throttle(for: .seconds(throttleDelay), scheduler: DispatchQueue.main, latest: true)
             .sink(receiveValue: { [weak self] value in
@@ -171,6 +181,8 @@ final class CameraViewModel: ObservableObject {
                 self?.faceLiveness = value
             })
             .store(in: &throttleSubscriber)
+        
+        
     }
     
     // MARK: - Functions
@@ -240,6 +252,8 @@ final class CameraViewModel: ObservableObject {
             publishFaceQualityObservation(faceQuality)
         case .faceLivenessDetected(let faceLiveness):
             publishFaceLivenessObservation(faceLiveness)
+        case .faceVectorDetected(let faceVector):
+            publishFaceVectorObservation(faceVector)
         case .takePhoto:
             takePhoto()
         case .savePhoto(let image):
@@ -295,6 +309,15 @@ final class CameraViewModel: ObservableObject {
     private func publishFaceLivenessObservation(_ faceLiveness: FaceLivenessModel) {
         DispatchQueue.main.async { [self] in
             faceLivenessObservation = .faceFound(faceLiveness)
+        }
+    }
+    
+    private func publishFaceVectorObservation(_ faceVector: FaceVectorModel) {
+        DispatchQueue.main.async { [self] in
+            if !enrolled {
+                PersistenceController.shared.saveFaceVector(vector: faceVector.vector)
+                enrolled = true
+            }
         }
     }
     

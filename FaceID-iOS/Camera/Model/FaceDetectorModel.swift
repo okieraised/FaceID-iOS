@@ -171,8 +171,8 @@ extension FaceDetector {
         
         if model.captureMode {
             if let resizedBuffer = scaleImage(pixelBuffer: buffer, width: FaceIDModel.InputImageSize, height: FaceIDModel.InputImageSize) {
-                if let result = try? faceIDModel.detectFaceID(buffer: resizedBuffer) {
-                    
+                if let vector = try? faceIDModel.detectFaceID(buffer: resizedBuffer) {
+                    model.perform(action: .faceVectorDetected(FaceVectorModel(vector: vector)))
                 }
             }
         }
