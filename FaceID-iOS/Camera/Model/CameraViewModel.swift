@@ -39,7 +39,6 @@ enum FaceBoundsState {
 }
 
 enum FaceLivenessState {
-//    case faceNotFound
     case faceObstructed
     case faceSpoofed
     case faceOK
@@ -96,6 +95,7 @@ final class CameraViewModel: ObservableObject {
     
     
     @Published private(set) var enrolled: Bool
+    private var savedVector: [FaceVector]
     
     
     @Published private(set) var faceGeometryObservation: FaceObservationState<FaceGeometryModel> {
@@ -154,12 +154,11 @@ final class CameraViewModel: ObservableObject {
         facePosition = .faceNotFound
         capturedIndices = []
         
-        let savedVector = PersistenceController.shared.getFaceVector()
+        savedVector = PersistenceController.shared.getFaceVector()
         
         if savedVector.count == 0 {
             enrolled = false
         } else {
-//            print("savedVector: \(savedVector[0].vector)")
             enrolled = true
         }
         
@@ -314,9 +313,13 @@ final class CameraViewModel: ObservableObject {
     
     private func publishFaceVectorObservation(_ faceVector: FaceVectorModel) {
         DispatchQueue.main.async { [self] in
-            if !enrolled {
-                PersistenceController.shared.saveFaceVector(vector: faceVector.vector)
-                enrolled = true
+            
+            if captureMode {
+                if !enrolled {
+                    PersistenceController.shared.saveFaceVector(vector: faceVector.vector)
+                } else {
+                    
+                }
             }
         }
     }
@@ -340,15 +343,15 @@ extension CameraViewModel {
     
     func updateFaceValidity() {
         hasDetectedValidFaceUnthrottled = (faceBounds == .faceOK &&
-                                faceLiveness == .faceOK &&
-                                faceQuality)
+                                           faceLiveness == .faceOK &&
+                                           faceQuality)
         
     }
     
     func updateAcceptableBounds(using boundingBox: CGRect) {
-        if boundingBox.width > 1.1 * FaceCaptureConstant.LayoutGuideWidth {
+        if boundingBox.width > 1.3 * FaceCaptureConstant.LayoutGuideWidth {
             faceBounds = .detectedFaceTooLarge
-        } else if boundingBox.width  < FaceCaptureConstant.LayoutGuideHeight * 0.5 {
+        } else if boundingBox.width < FaceCaptureConstant.LayoutGuideHeight * 0.5 {
             faceBounds = .detectedFaceTooSmall
         } else {
             faceBounds = .faceOK

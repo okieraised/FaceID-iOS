@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		E507B48B2A380AC900331FCA /* FaceID_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E507B48A2A380AC900331FCA /* FaceID_iOSApp.swift */; };
-		E507B48D2A380AC900331FCA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E507B48C2A380AC900331FCA /* ContentView.swift */; };
 		E507B48F2A380ACA00331FCA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E507B48E2A380ACA00331FCA /* Assets.xcassets */; };
 		E507B4922A380ACA00331FCA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E507B4912A380ACA00331FCA /* Preview Assets.xcassets */; };
 		E507B4942A380ACA00331FCA /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = E507B4932A380ACA00331FCA /* Persistence.swift */; };
@@ -51,7 +50,6 @@
 /* Begin PBXFileReference section */
 		E507B4872A380AC900331FCA /* FaceID-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FaceID-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E507B48A2A380AC900331FCA /* FaceID_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceID_iOSApp.swift; sourceTree = "<group>"; };
-		E507B48C2A380AC900331FCA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E507B48E2A380ACA00331FCA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E507B4912A380ACA00331FCA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E507B4932A380ACA00331FCA /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -130,7 +128,6 @@
 				E507B49E2A380C7700331FCA /* Camera */,
 				E507B49D2A380C5900331FCA /* Views */,
 				E507B48A2A380AC900331FCA /* FaceID_iOSApp.swift */,
-				E507B48C2A380AC900331FCA /* ContentView.swift */,
 				E507B4932A380ACA00331FCA /* Persistence.swift */,
 				E507B4952A380ACA00331FCA /* FaceID_iOS.xcdatamodeld */,
 				E507B4902A380ACA00331FCA /* Preview Content */,
@@ -357,7 +354,6 @@
 				E507B4972A380ACA00331FCA /* FaceID_iOS.xcdatamodeld in Sources */,
 				E5AC97562A38534400DC1B27 /* FaceDetectorModel.swift in Sources */,
 				E507B4AA2A381BE400331FCA /* CGImage+CVPixelBuffer.swift in Sources */,
-				E507B48D2A380AC900331FCA /* ContentView.swift in Sources */,
 				E5AE52732A40145700CB741F /* FaceBoundingBoxView.swift in Sources */,
 				E5A01CEA2A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift in Sources */,
 				E5AE11722A442C80003C38CC /* FaceMask.mlmodel in Sources */,
