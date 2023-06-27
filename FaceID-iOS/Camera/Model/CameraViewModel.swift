@@ -74,6 +74,7 @@ final class CameraViewModel: ObservableObject {
     @Published var capturedIndices: Set<Int>
     @Published var captureMode: Bool = false
     @Published var straightFacePositionTaken: Bool = false
+    @Published var enrolled: Bool = false
     
     @Published private(set) var capturedPhoto: UIImage?
     @Published private(set) var hasDetectedValidFace: Bool

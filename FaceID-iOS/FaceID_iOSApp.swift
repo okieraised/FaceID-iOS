@@ -13,7 +13,6 @@ struct FaceID_iOSApp: App {
 
     var body: some Scene {
         WindowGroup {
-//            CameraView(cameraViewModel: CameraViewModel())
             WelcomeView()
 //                .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
