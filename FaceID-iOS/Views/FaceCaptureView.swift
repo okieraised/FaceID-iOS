@@ -14,12 +14,14 @@ struct FaceCaptureView: View {
     
     // MARK: - View
     var body: some View {
+        
+
         VStack {
             ZStack {
-                
+
                 Color(.black)
                     .ignoresSafeArea()
-                
+
                 CameraView(cameraViewModel: model)
                     .mask(
                         model.captureMode == true ? captureModeCameraView : AnyView(Rectangle().aspectRatio(1, contentMode: .fill))
@@ -29,16 +31,21 @@ struct FaceCaptureView: View {
                             model.perform(action: .takePhoto)
                         }
                     }
-                
+
                 if model.captureMode {
                     FaceCaptureProgressView(model: model)
                 } else {
                     FaceCaptureBorderView()
                 }
-                
+
                 FaceBoundingBoxView(model: model)
-                
+
                 captureStatusView
+                
+                if model.enrollFinished {
+                    FaceEnrollCompletionView(capturedImage: model.capturedPhoto)
+                }
+
             }
         }
         .padding(.top, -50)
@@ -120,9 +127,3 @@ extension FaceCaptureView {
         }
     }
 }
-
-//struct HomeView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        HomeView()
-//    }
-//}

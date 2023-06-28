@@ -61,44 +61,46 @@ struct FaceInstructionView: View {
     
     // MARK: - View
     var body: some View {
-            ZStack {
-                Color(.black)
-                    .ignoresSafeArea()
-                
-                VStack(spacing: 60) {
-                    VStack {
-                        ZStack {
-                            DefaultProgressCircle(offset: UIScreen.screenSize.width / 2 - 60, opacity: 0.4, height: 30)
-                            faceIDView
-                        }
+
+        ZStack {
+            Color(.black)
+                .ignoresSafeArea()
+            
+            VStack(spacing: 60) {
+                VStack {
+                    ZStack {
+                        DefaultProgressCircle(offset: UIScreen.screenSize.width / 2 - 60, opacity: 0.4, height: 30)
+                        faceIDView
                     }
-                    
-                    VStack {
-                        Text(InstructionText.Title)
-                            .multilineTextAlignment(.center)
-                            .font(.system(size: 32, weight: .bold))
-                            .foregroundColor(.white)
-                            .padding(.all)
-                            .padding(.top, 24)
-                        
-                        Text(InstructionText.Instruction)
-                            .multilineTextAlignment(.center)
-                            .font(.system(size: 22, weight: .medium))
-                            .foregroundColor(.white)
-                            .padding(.all)
-                        
-                        Spacer()
-                        
-                        NavigationLink {
-                            FaceCaptureView(model: model)
-                        } label: {
-                            CustomTextView(text: "Start")
-                        }
-                    }
-                    .padding(.all)
                 }
-                .padding(.top, 100)
+                
+                VStack {
+                    Text(InstructionText.Title)
+                        .multilineTextAlignment(.center)
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundColor(.white)
+                        .padding(.all)
+                        .padding(.top, 24)
+                    
+                    Text(InstructionText.Instruction)
+                        .multilineTextAlignment(.center)
+                        .font(.system(size: 22, weight: .medium))
+                        .foregroundColor(.white)
+                        .padding(.all)
+                    
+                    Spacer()
+                    
+                    NavigationLink {
+                        FaceCaptureView(model: model)
+                    } label: {
+                        CustomTextView(text: "Start")
+                    }
+                    .isDetailLink(false)
+                }
+                .padding(.all)
             }
+            .padding(.top, 100)
+        }
         
     }
 }
@@ -123,9 +125,9 @@ extension FaceInstructionView {
     }
 }
 
-struct InstructionView_Previews: PreviewProvider {
-    static var previews: some View {
-        FaceInstructionView(model: CameraViewModel())
-    }
-}
+//struct InstructionView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        FaceInstructionView(model: CameraViewModel())
+//    }
+//}
 

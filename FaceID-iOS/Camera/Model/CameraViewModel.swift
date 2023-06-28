@@ -92,7 +92,9 @@ final class CameraViewModel: ObservableObject {
     
     @Published private(set) var enrolled: Bool
     private var savedVector: [FaceVector]
+    
     @Published var reEnroll: Bool = false
+    @Published var enrollFinished: Bool = false
     
     
     @Published private(set) var faceGeometryObservation: FaceObservationState<FaceGeometryModel> {
@@ -426,6 +428,10 @@ extension CameraViewModel {
             let dProgress = dLocalCoord / Double(FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress)
             
             capturedIndices.insert(abs(Int(dProgress)))
+            
+            if capturedIndices.count == FaceCaptureConstant.MaxProgress && straightFacePositionTaken {
+                enrollFinished = true
+            }
             
             print("capturedIndices len: \(self.capturedIndices.count)")
             print("capturedIndices: \(self.capturedIndices.sorted())")

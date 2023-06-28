@@ -9,6 +9,14 @@ import SwiftUI
 
 struct WelcomeView: View {
     
+    private var enrollText: String {
+        if PersistenceController.shared.getFaceVector().count == 1 {
+            return "Re-Enroll"
+        } else {
+            return "Enroll"
+        }
+    }
+    
     var body: some View {
         
         NavigationView {
@@ -36,14 +44,16 @@ struct WelcomeView: View {
                         NavigationLink {
                             FaceInstructionView(model: CameraViewModel())
                         } label: {
-                            CustomTextView(text: "Enroll")
+                            CustomTextView(text: enrollText)
                         }
+                        .isDetailLink(false)
                         
                         NavigationLink {
                             EmptyView()
                         } label: {
                             CustomTextView(text: "Check-In")
                         }
+                        .isDetailLink(false)
 
                     }
                 }
