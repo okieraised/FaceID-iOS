@@ -45,7 +45,6 @@ struct WelcomeView: View {
                         
                         NavigationLink {
                             FaceCheckinView()
-
                         } label: {
                             CustomTextView(text: "Check-In",
                                            isDisabled: faceVectorCount == 1 ? false : true)

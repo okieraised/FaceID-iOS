@@ -62,11 +62,22 @@ class CameraViewController: UIViewController {
         
         checkPermissions()
         configureCaptureSession()
-        self.notificationCenter.addObserver(self, selector: #selector(willResignActive), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(willResignActive),
+                                            name: UIApplication.didEnterBackgroundNotification,
+                                            object: nil)
         
         sessionQueue.async {
             self.session.startRunning()
         }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        sessionQueue.async {
+            if self.session.isRunning {
+                self.session.stopRunning()
+            }
+        }
+        
     }
     
     @objc func willResignActive(_ notification: Notification) {
@@ -186,6 +197,5 @@ extension CameraViewController: FaceDetectorDelegate {
     }
 
     func draw(image: CIImage) {
-//        currentCIImage = image
     }
 }
