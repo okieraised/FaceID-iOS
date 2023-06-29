@@ -38,6 +38,6 @@ struct FaceCaptureProgressView: View {
 
 struct FaceCaptureProgressView_Previews: PreviewProvider {
     static var previews: some View {
-        FaceCaptureProgressView(model: CameraViewModel())
+        FaceCaptureProgressView(model: CameraViewModel(isEnrollMode: true, reEnroll: false))
     }
 }

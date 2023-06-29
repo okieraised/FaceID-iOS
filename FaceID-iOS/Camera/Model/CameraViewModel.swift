@@ -72,19 +72,31 @@ enum CameraAction {
 
 final class CameraViewModel: ObservableObject {
     
-    let shutterReleased = PassthroughSubject<Void, Never>()
+    
+    var isEnrollMode: Bool
+    var reEnroll: Bool
+    
+    var straightFacePositionTaken: Bool = false
+    var leftSideFacePositionTaken: Bool = false
+    var rightSideFacePositionTaken: Bool = false
+    
+    
     
     // MARK: - Variables
     @Published var capturedIndices: Set<Int>
     @Published var captureMode: Bool = false
-    @Published var straightFacePositionTaken: Bool = false
+    
     
     @Published private(set) var capturedPhoto: UIImage?
     @Published private(set) var hasDetectedValidFace: Bool
     @Published private var hasDetectedValidFaceUnthrottled: Bool = false
+    @Published private var faceLivenessUnthrottled: FaceLivenessState = .faceObstructed
+    @Published private var faceVectorUnthrottled: FaceVectorModel = FaceVectorModel(vector: [])
+    
     
     // These three variables handles the throttling of face liveliness and geometry
     // so the screen does not flicker at boundary values
+    let shutterReleased = PassthroughSubject<Void, Never>()
     let throttleDelay = 0.5
     let throttleReleased = PassthroughSubject<Bool, Never>()
     var throttleSubscriber = Set<AnyCancellable>()
@@ -93,8 +105,9 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var enrolled: Bool
     private var savedVector: [FaceVector]
     
-    @Published var reEnroll: Bool = false
     @Published var enrollFinished: Bool = false
+    @Published var checkinFinished: Bool = false
+    @Published var checkinOK: Bool = false
     
     
     @Published private(set) var faceGeometryObservation: FaceObservationState<FaceGeometryModel> {
@@ -128,7 +141,7 @@ final class CameraViewModel: ObservableObject {
         }
     }
     
-    @Published private var faceLivenessUnthrottled: FaceLivenessState = .faceObstructed
+    
     
     @Published private(set) var faceQuality: Bool {
         didSet {
@@ -136,15 +149,21 @@ final class CameraViewModel: ObservableObject {
         }
     }
     
+    @Published private(set) var faceVector: FaceVectorModel {
+        didSet {
+            updateFaceVector()
+        }
+    }
+    
     @Published private(set) var facePosition: FacePositionState
     
     // MARK: - Init
     
-    deinit {
-        print("DEINIT")
-    }
-    
-    init() {
+    init(isEnrollMode: Bool, reEnroll: Bool) {
+        self.isEnrollMode = isEnrollMode
+        self.reEnroll = reEnroll
+        
+        
         faceGeometryObservation = .faceNotFound
         faceQualityObservation = .faceNotFound
         faceLivenessObservation = .faceNotFound
@@ -156,6 +175,7 @@ final class CameraViewModel: ObservableObject {
         faceLiveness = .faceObstructed
         facePosition = .faceNotFound
         capturedIndices = []
+        faceVector = FaceVectorModel(vector: [])
         
         savedVector = PersistenceController.shared.getFaceVector()
         
@@ -184,6 +204,12 @@ final class CameraViewModel: ObservableObject {
             })
             .store(in: &throttleSubscriber)
         
+        $faceVectorUnthrottled
+            .throttle(for: .seconds(throttleDelay), scheduler: DispatchQueue.main, latest: true)
+            .sink(receiveValue: { [weak self] value in
+                self?.faceVector = value
+            })
+            .store(in: &throttleSubscriber)
         
     }
     
@@ -200,12 +226,26 @@ final class CameraViewModel: ObservableObject {
             print("roll: \(String(format: "%.2f", roll)) | pitch: \(String(format: "%.2f", pitch)) | yaw: \(String(format: "%.2f", yaw))")
             
             updateAcceptableBounds(using: boundingBox)
-            updateFaceCaptureProgress(yaw: yaw, pitch: pitch)
-            facePosition = .Straight
+            
             if isValidStraightFace(roll: roll, pitch: pitch, yaw: yaw) {
                 facePosition = .Straight
+            } else {
+                facePosition = .faceNotFound
             }
             
+            if isEnrollMode {
+                updateFaceCaptureProgress(yaw: yaw, pitch: pitch)
+                
+            } else {
+                if isValidLeftFace(yaw: yaw) {
+                    leftSideFacePositionTaken = true
+                }
+                
+                if isValidRightFace(yaw: yaw) {
+                    rightSideFacePositionTaken = true
+                }
+            }
+        
         case .faceNotFound:
             invalidateFaceGeometry()
         case .errored(let error):
@@ -317,21 +357,25 @@ final class CameraViewModel: ObservableObject {
     private func publishFaceVectorObservation(_ faceVector: FaceVectorModel) {
         DispatchQueue.main.async { [self] in
             
-            if captureMode {
-                if !enrolled {
-                    PersistenceController.shared.saveFaceVector(vector: faceVector.vector)
-                    print("got here 1")
-                } else {
-                    if reEnroll {
-                        PersistenceController.shared.updateFaceVector(entity: savedVector[0], vector: faceVector.vector)
-                        print("got here 2")
-                        reEnroll = false
+            faceVectorUnthrottled = faceVector
+            
+            if isEnrollMode {
+                if captureMode {
+                    if !enrolled && facePosition == .Straight {
+                        
+                        PersistenceController.shared.saveFaceVector(vector: faceVector.vector)
+                        print("got here 1")
+                    } else {
+                        if reEnroll && facePosition == .Straight {
+                            PersistenceController.shared.updateFaceVector(entity: savedVector[0], vector: faceVector.vector)
+                            print("got here 2")
+                            reEnroll = false
+                        }
                     }
                 }
             }
         }
     }
-    
 }
 
 // MARK: - Extensions
@@ -346,14 +390,38 @@ extension CameraViewModel {
         faceLiveness = .faceObstructed
         facePosition = .faceNotFound
         straightFacePositionTaken = false
+        leftSideFacePositionTaken = false
+        rightSideFacePositionTaken = false
         capturedIndices = []
+        enrollFinished = false
+        checkinFinished = false
     }
     
     func updateFaceValidity() {
         hasDetectedValidFaceUnthrottled = (faceBounds == .faceOK &&
                                            faceLiveness == .faceOK &&
                                            faceQuality)
-        
+    }
+    
+    func updateFaceVector() {
+        if !checkinFinished {
+            if leftSideFacePositionTaken && rightSideFacePositionTaken && hasDetectedValidFace {
+                if facePosition == .Straight {
+                    if let enrolledFaceVector = savedVector[0].vector {
+                        let currentFaceVector = faceVector.vector
+                        let similarity = cosineSim(A: enrolledFaceVector, B: currentFaceVector)
+                        print("similarity: \(round(similarity * 10) / 10.0)")
+                        if round(similarity * 10) / 10.0 >= 0.6 {
+                            checkinFinished = true
+                            checkinOK = true
+                        } else {
+                            checkinFinished = true
+                            checkinOK = false
+                        }
+                    }
+                }
+            }
+        }
     }
     
     func updateAcceptableBounds(using boundingBox: CGRect) {
@@ -402,12 +470,12 @@ extension CameraViewModel {
         
     }
     
-    private func isValidRightFace() {
-        
+    private func isValidRightFace(yaw: Double) -> Bool {
+        return yaw > 0.2
     }
     
-    private func isValidLeftFace() {
-        
+    private func isValidLeftFace(yaw: Double) -> Bool {
+        return yaw < -0.1
     }
     
 
@@ -430,6 +498,10 @@ extension CameraViewModel {
             let localCoord = atan2(yaw, pitch)
             let dLocalCoord = rad2deg(localCoord) + 180
             let dProgress = dLocalCoord / Double(FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress)
+            
+            if abs(Int(dProgress)) > FaceCaptureConstant.MaxProgress - 1 {
+                return
+            }
             
             capturedIndices.insert(abs(Int(dProgress)))
             

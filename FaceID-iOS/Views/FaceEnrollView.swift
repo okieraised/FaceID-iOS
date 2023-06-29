@@ -8,15 +8,20 @@
 import SwiftUI
 
 struct FaceEnrollView: View {
-    
+
     // MARK: - Variables
-    @ObservedObject private(set) var model: CameraViewModel
+    
+    @StateObject private var model = CameraViewModel(
+        isEnrollMode: true,
+        reEnroll: PersistenceController.shared.getFaceVector().count == 1 ? true : false
+    )
     
     // MARK: - View
     var body: some View {
         
+        
         NavigationLink(isActive: $model.enrollFinished) {
-            FaceEnrollCompletionView(capturedImage: model.capturedPhoto)
+            FaceEnrollCompletionView(model: model)
         } label: {
             EmptyView()
         }
@@ -46,8 +51,7 @@ struct FaceEnrollView: View {
                 }
 
                 FaceBoundingBoxView(model: model)
-
-                captureStatusView
+                FaceCaptureStatusView(model: model)
 
             }
         }
@@ -68,65 +72,5 @@ extension FaceEnrollView {
             }
                 .padding(.top, FaceCaptureConstant.OffsetFromTop+40)
         )
-    }
-    
-    var captureStatusView: some View {
-        VStack(alignment: .center) {
-            
-            Spacer()
-            
-            Text(faceQualityCheckTitle())
-                .font(.system(size: 24, weight: .bold))
-                .lineLimit(nil)
-                .fixedSize(horizontal: false, vertical: true)
-                .foregroundColor(.white)
-                .offset(y: -FaceCaptureConstant.LayoutGuideWidth/2)
-            
-            Text(faceQualityCheckSubtitle())
-                .font(.system(size: 16, weight: .medium))
-                .lineLimit(nil)
-                .fixedSize(horizontal: false, vertical: true)
-                .foregroundColor(.white)
-                .offset(y: -FaceCaptureConstant.LayoutGuideWidth/2)
-        }
-    }
-    
-}
-
-extension FaceEnrollView {
-    
-    // MARK: Functions
-    
-    private func faceQualityCheckTitle() -> String {
-        if model.hasDetectedValidFace {
-            if model.capturedIndices.count == FaceCaptureConstant.MaxProgress {
-                return "Completed"
-            }
-            return "Move Your Head to Complete the Circle"
-        } else {
-            switch model.faceLiveness {
-            case .faceObstructed:
-                return "Face Obstructed"
-            case .faceSpoofed:
-                return "Face Spoofing Detected"
-            case .faceOK:
-                return "Face Not Valid"
-            }
-        }
-    }
-    
-    private func faceQualityCheckSubtitle() -> String {
-        if model.hasDetectedValidFace {
-            return ""
-        } else {
-            switch model.faceLiveness {
-            case .faceObstructed:
-                return "Please remove anything that covers your face"
-            case .faceSpoofed:
-                return ""
-            case .faceOK:
-                return "Please keep your face within the frame"
-            }
-        }
     }
 }

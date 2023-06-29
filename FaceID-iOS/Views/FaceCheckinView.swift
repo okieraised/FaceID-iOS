@@ -8,13 +8,49 @@
 import SwiftUI
 
 struct FaceCheckinView: View {
+    
+    // MARK: - Variables
+    
+    @StateObject private var model = CameraViewModel(isEnrollMode: false, reEnroll: false)
+    
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        
+        ZStack {
+            VStack {
+                ZStack {
+                    
+                    Color(.black)
+                        .ignoresSafeArea()
+                    
+                    
+                    
+                    CameraView(cameraViewModel: model)
+                        .onReceive(model.$facePosition) { _ in
+                            DispatchQueue.main.async {
+                                model.perform(action: .takePhoto)
+                            }
+                        }
+                    FaceCaptureBorderView()
+                    FaceBoundingBoxView(model: model)
+                    FaceCaptureStatusView(model: model)
+                    
+                }
+            }
+            .padding(.top, -50)
+            
+            if model.checkinFinished {
+                FaceCheckinCompletionView(model: model)
+            }
+            
+        }
+        
+        
     }
 }
 
-struct FaceCheckinView_Previews: PreviewProvider {
-    static var previews: some View {
-        FaceCheckinView()
-    }
-}
+//struct FaceCheckinView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        FaceCheckinView(model: CameraViewModel(isEnrollMode: true, reEnroll: false))
+//    }
+//}

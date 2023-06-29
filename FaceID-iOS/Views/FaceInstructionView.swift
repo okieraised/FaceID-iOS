@@ -32,15 +32,7 @@ enum FaceIDEnum: String {
 
 struct FaceInstructionView: View {
     
-    // MARK: - Observed oject
-    @ObservedObject var model: CameraViewModel
-
-
-    init(model: CameraViewModel) {
-        self.model = model
-    }
-    
-    // MARK: - State variables
+    // MARK: - Variables
     @State var order: Int = 0
     
     // MARK: - Private variables
@@ -91,7 +83,8 @@ struct FaceInstructionView: View {
                     Spacer()
                     
                     NavigationLink {
-                        FaceEnrollView(model: model)
+//                        FaceEnrollView(model: model)
+                        FaceEnrollView()
                     } label: {
                         CustomTextView(text: "Start")
                     }

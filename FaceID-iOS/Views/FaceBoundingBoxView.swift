@@ -35,6 +35,6 @@ struct FaceBoundingBoxView: View {
 
 struct FaceBoundingBoxView_Previews: PreviewProvider {
     static var previews: some View {
-        FaceBoundingBoxView(model: CameraViewModel())
+        FaceBoundingBoxView(model: CameraViewModel(isEnrollMode: true, reEnroll: false))
     }
 }
