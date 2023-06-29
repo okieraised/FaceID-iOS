@@ -7,9 +7,15 @@
 
 import Combine
 import Foundation
+import os
 import UIKit
 
 
+/// FaceGeometryModel defines the numeric representation of the captured face
+///  - boundingBox: [CGRect] The rectangle that defines the boundary of the captured face
+///  - roll: [NSNumber] the roll value in radian
+///  - pitch: [NSNumber] the pitch value in radian
+///  - yaw: [NSNumber] the yaw value in radian
 struct FaceGeometryModel {
     let boundingBox: CGRect
     let roll: NSNumber
@@ -17,19 +23,32 @@ struct FaceGeometryModel {
     let yaw: NSNumber
 }
 
+/// FaceQualityModel defines the numeric representation of the face quality
+/// - quality: [Float] The numeric value of face quality from 0 to 1
 struct FaceQualityModel {
   let quality: Float
 }
 
+/// FaceLivenessModel defines the detection result of AntiSpoofing model and FaceMask model for the captured face
+/// - spoofed: [Bool] Boolean value indicating if the face is spoofed
+/// - obstructed: [Bool] Boolean value indicating if the face is covered
 struct FaceLivenessModel {
     var spoofed: Bool
     var obstructed: Bool
 }
 
+/// FaceVectorModel defines the extracted array of the captured face
+/// - vector: [Float32]: Array of 512 elements of float32 type that represents the captured face
 struct FaceVectorModel {
     var vector: [Float32]
 }
 
+/// FaceBoundsState defines the state of the bounding box of the captured face
+/// - faceNotFound: No face detected
+/// - detectedFaceTooSmall: Face too small compared to the capture border
+/// - detectedFaceTooLarge: Face too large compared to the captured border
+/// - detectedFaceOffCentre: Face is not aligned to  the captured border
+/// - faceOK: Face is appropriately within the capture border
 enum FaceBoundsState {
     case faceNotFound
     case detectedFaceTooSmall
@@ -38,12 +57,23 @@ enum FaceBoundsState {
     case faceOK
 }
 
+/// FaceLivenessState defines the state of the captured face quality
+/// - faceObstructed: face is covered/missing
+/// - faceSpoofed: face is not real
+/// - faceOK: Face is appropriate
 enum FaceLivenessState {
     case faceObstructed
     case faceSpoofed
     case faceOK
 }
 
+/// FacePositionState defines the direction the captured face is facing
+/// - Left: Face is looking left
+/// - Right: Face is looking right
+/// - Up: Face is looking up
+/// - Down: Face is looking down
+/// - Straight: Face is facing the camera directly
+/// - FaceNotFound: No face detected
 enum FacePositionState {
     case Left
     case Right
@@ -53,13 +83,24 @@ enum FacePositionState {
     case faceNotFound
 }
 
-
+/// FaceObservationState defines the observation stated of the captured face
+/// - faceFound(T): Face is detected: can be quality, liveness, or geometry
+/// - faceNotFound: No face detected
+/// - errored(Error): Face detection encounters error
 enum FaceObservationState<T> {
   case faceFound(T)
   case faceNotFound
   case errored(Error)
 }
 
+/// CameraAction defines the action to perform with detected face
+/// - noFaceDetected: Do nothing
+/// - faceGeometryDetected(FaceGeometryModel): Handles the numeric representation of the captured face geometry
+/// - faceQualityDetected(FaceQualityModel): Handles the numeric representation of the captured face quality
+/// - faceLivenessDetected(FaceLivenessModel): Handles the result of the captured face AI models
+/// - faceVectorDetected(FaceVectorModel): Handles the result of the captured face vector array
+/// - takePhoto: Takes the photo of the captured face
+/// - savePhoto(UIImage): Saves the photo to the library
 enum CameraAction {
     case noFaceDetected
     case faceGeometryDetected(FaceGeometryModel)
@@ -70,58 +111,90 @@ enum CameraAction {
     case savePhoto(UIImage)
 }
 
+
 final class CameraViewModel: ObservableObject {
     
+    // MARK: - Variables
     
+    /// logger is the main logging variable
+    private let logger = Logger(subsystem: "vinbigdata.face.id.log", category: "faceid")
+    
+    /// isEnrollMode indicates if the mode is enrollment. If true, the mode is enrollment, if false, the mode is checkin
     var isEnrollMode: Bool
+    
+    /// reEnroll indicates if we want to replace the current stored face vector. Only matters if isEnrollMode is true
     var reEnroll: Bool
     
-    var straightFacePositionTaken: Bool = false
-    var leftSideFacePositionTaken: Bool = false
-    var rightSideFacePositionTaken: Bool = false
-    
-    
-    
-    // MARK: - Variables
-    @Published var capturedIndices: Set<Int>
-    @Published var captureMode: Bool = false
-    
-    
-    @Published private(set) var capturedPhoto: UIImage?
-    @Published private(set) var hasDetectedValidFace: Bool
-    @Published private var hasDetectedValidFaceUnthrottled: Bool = false
-    @Published private var faceLivenessUnthrottled: FaceLivenessState = .faceObstructed
-    @Published private var faceVectorUnthrottled: FaceVectorModel = FaceVectorModel(vector: [])
-    
-    
-    // These three variables handles the throttling of face liveliness and geometry
-    // so the screen does not flicker at boundary values
-    let shutterReleased = PassthroughSubject<Void, Never>()
-    let throttleDelay = 0.5
-    let throttleReleased = PassthroughSubject<Bool, Never>()
-    var throttleSubscriber = Set<AnyCancellable>()
-    
-    
+    /// enrolled indicates if user has already enrolled his/her face
     @Published private(set) var enrolled: Bool
-    private var savedVector: [FaceVector]
     
+    /// enrollFinished indicates if the user has finished enrolling his/her face
     @Published var enrollFinished: Bool = false
+    
+    /// checkinFinished indicates if the user has finished checking-in his/her face
     @Published var checkinFinished: Bool = false
+    
+    /// checkinOK indicates if the captured face matched the face stored in the database.
+    /// true if the checkin is successful, otherwise false
     @Published var checkinOK: Bool = false
     
+    /// straightFacePositionTaken indicates if the picture of user looking directly to the camera is taken.
+    private var straightFacePositionTaken: Bool = false
     
+    /// leftSideFacePositionTaken indicates if the picture of user looking left to the camera is taken.
+    private var leftSideFacePositionTaken: Bool = false
+    
+    /// rightSideFacePositionTaken indicates if the picture of user looking right to the camera is taken.
+    private var rightSideFacePositionTaken: Bool = false
+    
+    /// captureMode indicates if the camera is in the capture mode with progress bar
+    @Published var captureMode: Bool = false
+    
+    /// capturedIndices holds the angle values that the camera has captured
+    @Published var capturedIndices: Set<Int>
+    
+    /// capturedPhoto holds the captured face as UIImage
+    @Published private(set) var capturedPhoto: UIImage?
+    
+    /// hasDetectedValidFace indicates if the captured face is valid
+    @Published private(set) var hasDetectedValidFace: Bool
+    
+    /// hasDetectedValidFaceUnthrottled publishes the valid face value
+    @Published private var hasDetectedValidFaceUnthrottled: Bool = false
+    
+    /// faceLivenessUnthrottled publishes the face liveness detection
+    @Published private var faceLivenessUnthrottled: FaceLivenessState = .faceObstructed
+    
+    /// faceVectorUnthrottled publishes the face vector
+    @Published private var faceVectorUnthrottled: FaceVectorModel = FaceVectorModel(vector: [])
+    
+    /// shutterReleased used for taking and saving photo
+    let shutterReleased = PassthroughSubject<Void, Never>()
+    
+    /// throttleDelay indicates the interval between each update
+    private let throttleDelay = 0.5
+    
+    /// throttleSubscriber is the subscriber for throttling published values
+    private var throttleSubscriber = Set<AnyCancellable>()
+    
+    /// savedVector keeps the captured face array in CoreData
+    private var savedVector: [FaceVector]
+    
+    /// faceGeometryObservation publishes the face geometry values
     @Published private(set) var faceGeometryObservation: FaceObservationState<FaceGeometryModel> {
         didSet {
             processUpdatedFaceGeometry()
         }
     }
     
+    /// faceQualityObservation publishes the face quality value
     @Published private(set) var faceQualityObservation: FaceObservationState<FaceQualityModel> {
         didSet {
             processUpdatedFaceQuality()
         }
     }
     
+    /// faceLivenessObservation publishes the face liveness detection value
     @Published private(set) var faceLivenessObservation: FaceObservationState<FaceLivenessModel> {
         didSet {
             processUpdatedFaceLiveness()
@@ -157,9 +230,11 @@ final class CameraViewModel: ObservableObject {
     
     @Published private(set) var facePosition: FacePositionState
     
+    
     // MARK: - Init
     
     init(isEnrollMode: Bool, reEnroll: Bool) {
+        
         self.isEnrollMode = isEnrollMode
         self.reEnroll = reEnroll
         
@@ -185,6 +260,10 @@ final class CameraViewModel: ObservableObject {
             enrolled = true
         }
         
+        //-------------------------------------------------------------------------------------------------
+        // We throttle these variables to prevent flickering at the border value.
+        // We only publish the latest value of these captured variables at 0.5 seconds interval
+        //-------------------------------------------------------------------------------------------------
         $hasDetectedValidFaceUnthrottled
             .throttle(for: .seconds(throttleDelay), scheduler: DispatchQueue.main, latest: true)
             .sink(receiveValue: { [weak self] value in
@@ -210,8 +289,12 @@ final class CameraViewModel: ObservableObject {
                 self?.faceVector = value
             })
             .store(in: &throttleSubscriber)
+        //-------------------------------------------------------------------------------------------------
+        // End
+        //-------------------------------------------------------------------------------------------------
         
     }
+    
     
     // MARK: - Functions
     

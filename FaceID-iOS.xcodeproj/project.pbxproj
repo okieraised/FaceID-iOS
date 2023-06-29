@@ -156,11 +156,11 @@
 		E507B49D2A380C5900331FCA /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				E59C5A672A4554C80069D718 /* WelcomeView.swift */,
 				E507B4A12A380E0900331FCA /* ErrorView.swift */,
+				E59C5A672A4554C80069D718 /* WelcomeView.swift */,
+				E58568592A3969DA008460A3 /* FaceInstructionView.swift */,
 				E5AC97512A384CC200DC1B27 /* FaceEnrollView.swift */,
 				E5AB70942A4D1F8600EACCF9 /* FaceCheckinView.swift */,
-				E58568592A3969DA008460A3 /* FaceInstructionView.swift */,
 				E5AE52722A40145700CB741F /* FaceBoundingBoxView.swift */,
 				E5A01CD92A42AB0100E7BD7E /* FaceCaptureBorderView.swift */,
 				E5A01CDF2A42B00100E7BD7E /* FaceCaptureProgressView.swift */,

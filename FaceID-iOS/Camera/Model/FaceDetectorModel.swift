@@ -59,8 +59,10 @@ class FaceDetector: NSObject {
     )
 }
 
+// MARK: - Extension
 
 extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
+    
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
         guard
@@ -163,6 +165,7 @@ extension FaceDetector {
     }
     
     func faceIDHandler(buffer: CVPixelBuffer) {
+        
         guard
             let model = cameraViewModel
         else {
@@ -181,6 +184,7 @@ extension FaceDetector {
     
     
     func faceLivenessHandler(buffer: CVPixelBuffer) {
+        
         guard
             let model = cameraViewModel,
             let maskBuffer = scaleImage(pixelBuffer: buffer, width: FaceMaskModel.InputImageSize, height: FaceMaskModel.InputImageSize)
@@ -198,8 +202,6 @@ extension FaceDetector {
         if let spoofingResult = try? faceAntiSpoofingModel.antiSpoofing(buffer: buffer) {
             faceLiveness.spoofed = (spoofingResult[1] < FaceAntiSpoofingModel.AntiSpoofingThreshold) ? true : false
         }
-        
-        print("faceLiveness: \(faceLiveness)")
         
         model.perform(action: .faceLivenessDetected(faceLiveness))
     }
@@ -232,7 +234,9 @@ extension FaceDetector {
     }
 }
 
+
 extension FaceDetector {
+    
     private func scaleImage(pixelBuffer: CVPixelBuffer, width: Int, height: Int) -> CVPixelBuffer? {
         guard
             let viewDelegate = viewDelegate
