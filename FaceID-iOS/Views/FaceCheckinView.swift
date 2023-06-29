@@ -23,8 +23,6 @@ struct FaceCheckinView: View {
                     Color(.black)
                         .ignoresSafeArea()
                     
-                    
-                    
                     CameraView(cameraViewModel: model)
                         .onReceive(model.$facePosition) { _ in
                             DispatchQueue.main.async {
@@ -33,14 +31,14 @@ struct FaceCheckinView: View {
                         }
                     FaceCaptureBorderView()
                     FaceBoundingBoxView(model: model)
-                    FaceCaptureStatusView(model: model)
-                    
+                    FaceCaptureStatusView(model: model) 
                 }
             }
             .padding(.top, -50)
             
             if model.checkinFinished {
                 FaceCheckinCompletionView(model: model)
+                    .navigationBarBackButtonHidden(true)
             }
             
         }

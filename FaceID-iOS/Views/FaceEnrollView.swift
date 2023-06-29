@@ -19,43 +19,43 @@ struct FaceEnrollView: View {
     // MARK: - View
     var body: some View {
         
-        
-        NavigationLink(isActive: $model.enrollFinished) {
-            FaceEnrollCompletionView(model: model)
-        } label: {
-            EmptyView()
-        }
-        .isDetailLink(false)
-        
+        ZStack {
+            VStack {
+                ZStack {
 
-        VStack {
-            ZStack {
+                    Color(.black)
+                        .ignoresSafeArea()
 
-                Color(.black)
-                    .ignoresSafeArea()
-
-                CameraView(cameraViewModel: model)
-                    .mask(
-                        model.captureMode == true ? captureModeCameraView : AnyView(Rectangle().aspectRatio(1, contentMode: .fill))
-                    )
-                    .onReceive(model.$facePosition) { _ in
-                        DispatchQueue.main.async {
-                            model.perform(action: .takePhoto)
+                    CameraView(cameraViewModel: model)
+                        .mask(
+                            model.captureMode == true ? captureModeCameraView : AnyView(Rectangle().aspectRatio(1, contentMode: .fill))
+                        )
+                        .onReceive(model.$facePosition) { _ in
+                            DispatchQueue.main.async {
+                                model.perform(action: .takePhoto)
+                            }
                         }
+
+                    if model.captureMode {
+                        FaceCaptureProgressView(model: model)
+                    } else {
+                        FaceCaptureBorderView()
                     }
 
-                if model.captureMode {
-                    FaceCaptureProgressView(model: model)
-                } else {
-                    FaceCaptureBorderView()
+                    FaceBoundingBoxView(model: model)
+                    FaceCaptureStatusView(model: model)
+
                 }
-
-                FaceBoundingBoxView(model: model)
-                FaceCaptureStatusView(model: model)
-
+            }
+            .padding(.top, -50)
+            
+            if model.enrollFinished {
+                FaceEnrollCompletionView(model: model)
+                    .navigationBarBackButtonHidden(true)
             }
         }
-        .padding(.top, -50)
+        
+        
     }
 }
 

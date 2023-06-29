@@ -9,23 +9,7 @@ import SwiftUI
 
 struct WelcomeView: View {
     
-    
-    
-    private var enrollText: String {
-        if PersistenceController.shared.getFaceVector().count == 1 {
-            return "Re-Enroll"
-        } else {
-            return "Enroll"
-        }
-    }
-    
-    private var reEnroll: Bool {
-        if PersistenceController.shared.getFaceVector().count == 1 {
-            return true
-        } else {
-            return false
-        }
-    }
+    private var faceVectorCount = PersistenceController.shared.getFaceVector().count
     
     var body: some View {
         
@@ -52,10 +36,9 @@ struct WelcomeView: View {
                     
                     VStack(spacing: 24) {
                         NavigationLink {
-//                            FaceInstructionView(model: CameraViewModel(isEnrollMode: true, reEnroll: reEnroll))
                             FaceInstructionView()
                         } label: {
-                            CustomTextView(text: enrollText)
+                            CustomTextView(text: faceVectorCount == 1 ? "Re-Enroll" : "Enroll")
                                 .padding(.horizontal)
                         }
                         .isDetailLink(false)
@@ -64,11 +47,12 @@ struct WelcomeView: View {
                             FaceCheckinView()
 
                         } label: {
-                            CustomTextView(text: "Check-In", isDisabled: PersistenceController.shared.getFaceVector().count == 1 ? false : true)
+                            CustomTextView(text: "Check-In",
+                                           isDisabled: faceVectorCount == 1 ? false : true)
                                 .padding(.horizontal)
                         }
                         .isDetailLink(false)
-                        .disabled(PersistenceController.shared.getFaceVector().count == 1 ? false : true)
+                        .disabled(faceVectorCount == 1 ? false : true)
 
                     }
                 }

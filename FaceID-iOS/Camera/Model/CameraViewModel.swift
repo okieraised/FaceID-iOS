@@ -201,33 +201,35 @@ final class CameraViewModel: ObservableObject {
         }
     }
 
-
+    /// faceBounds publishes the state of the captured face bounding box
     @Published private(set) var faceBounds: FaceBoundsState {
         didSet {
             updateFaceValidity()
         }
     }
 
+    /// faceLiveness publishes the state of the captured face AI model
     @Published private(set) var faceLiveness: FaceLivenessState {
         didSet {
             updateFaceValidity()
         }
     }
     
-    
-    
+    /// faceQuality publishes the state of the face quality
     @Published private(set) var faceQuality: Bool {
         didSet {
             updateFaceValidity()
         }
     }
     
+    /// faceVector publishes the state of the face vector
     @Published private(set) var faceVector: FaceVectorModel {
         didSet {
             updateFaceVector()
         }
     }
     
+    /// facePosition publishes the state of the face position
     @Published private(set) var facePosition: FacePositionState
     
     
@@ -246,18 +248,20 @@ final class CameraViewModel: ObservableObject {
         hasDetectedValidFace = false
         captureMode = false
         faceQuality = false
+        
         faceBounds = .faceNotFound
         faceLiveness = .faceObstructed
         facePosition = .faceNotFound
+        
         capturedIndices = []
         faceVector = FaceVectorModel(vector: [])
         
         savedVector = PersistenceController.shared.getFaceVector()
         
         if savedVector.count == 0 {
-            enrolled = false
+            enrolled = false // User needs to enroll first
         } else {
-            enrolled = true
+            enrolled = true // User already enroll
         }
         
         //-------------------------------------------------------------------------------------------------
@@ -298,77 +302,6 @@ final class CameraViewModel: ObservableObject {
     
     // MARK: - Functions
     
-    func processUpdatedFaceGeometry() {
-        switch faceGeometryObservation {
-        case .faceFound(let faceGeometryModel):
-            let boundingBox = faceGeometryModel.boundingBox
-            let roll = faceGeometryModel.roll.doubleValue
-            let pitch = faceGeometryModel.pitch.doubleValue
-            let yaw = faceGeometryModel.yaw.doubleValue
-            
-            print("roll: \(String(format: "%.2f", roll)) | pitch: \(String(format: "%.2f", pitch)) | yaw: \(String(format: "%.2f", yaw))")
-            
-            updateAcceptableBounds(using: boundingBox)
-            
-            if isValidStraightFace(roll: roll, pitch: pitch, yaw: yaw) {
-                facePosition = .Straight
-            } else {
-                facePosition = .faceNotFound
-            }
-            
-            if isEnrollMode {
-                updateFaceCaptureProgress(yaw: yaw, pitch: pitch)
-                
-            } else {
-                if isValidLeftFace(yaw: yaw) {
-                    leftSideFacePositionTaken = true
-                }
-                
-                if isValidRightFace(yaw: yaw) {
-                    rightSideFacePositionTaken = true
-                }
-            }
-        
-        case .faceNotFound:
-            invalidateFaceGeometry()
-        case .errored(let error):
-            print("\(error.localizedDescription)")
-            invalidateFaceGeometry()
-        }
-    }
-    
-    func processUpdatedFaceQuality() {
-        switch faceQualityObservation {
-        case .faceFound(let faceQualityModel):
-            if faceQualityModel.quality < 0.2 {
-                faceQuality = false
-            } else {
-                faceQuality = true
-            }
-        case .faceNotFound:
-            faceQuality = false
-        case .errored(let error):
-            print("\(error.localizedDescription)")
-            faceQuality = false
-        }
-    }
-    
-    func processUpdatedFaceLiveness() {
-        switch faceLivenessObservation {
-        case .faceFound(let livenessModel):
-            updateAcceptableLiveness(using: livenessModel)
-        case .faceNotFound:
-            invalidateFaceGeometry()
-        case .errored(let error):
-            print("\(error.localizedDescription)")
-            invalidateFaceGeometry()
-        }
-    }
-    
-    
-    
-    // MARK: - Public Methods
-    
     func perform(action: CameraAction) {
         switch action {
         case .faceGeometryDetected(let faceGeometry):
@@ -387,8 +320,6 @@ final class CameraViewModel: ObservableObject {
             publishNoFaceObserved()
         }
     }
-    
-    // MARK: - Private Methods
     
     private func takePhoto() {
         switch facePosition {
@@ -409,6 +340,11 @@ final class CameraViewModel: ObservableObject {
             capturedPhoto = photo
         }
     }
+}
+
+// MARK: - Extensions
+
+extension CameraViewModel {
     
     private func publishNoFaceObserved() {
         DispatchQueue.main.async { [self] in
@@ -441,17 +377,13 @@ final class CameraViewModel: ObservableObject {
         DispatchQueue.main.async { [self] in
             
             faceVectorUnthrottled = faceVector
-            
             if isEnrollMode {
                 if captureMode {
                     if !enrolled && facePosition == .Straight {
-                        
                         PersistenceController.shared.saveFaceVector(vector: faceVector.vector)
-                        print("got here 1")
                     } else {
                         if reEnroll && facePosition == .Straight {
                             PersistenceController.shared.updateFaceVector(entity: savedVector[0], vector: faceVector.vector)
-                            print("got here 2")
                             reEnroll = false
                         }
                     }
@@ -461,11 +393,82 @@ final class CameraViewModel: ObservableObject {
     }
 }
 
-// MARK: - Extensions
+extension CameraViewModel {
+    
+    private func processUpdatedFaceGeometry() {
+        
+        switch faceGeometryObservation {
+        case .faceFound(let faceGeometryModel):
+            let boundingBox = faceGeometryModel.boundingBox
+            let roll = faceGeometryModel.roll.doubleValue
+            let pitch = faceGeometryModel.pitch.doubleValue
+            let yaw = faceGeometryModel.yaw.doubleValue
+            
+            logger.info("roll: \(String(format: "%.2f", roll)) | pitch: \(String(format: "%.2f", pitch)) | yaw: \(String(format: "%.2f", yaw))")
+            
+            updateAcceptableBounds(using: boundingBox)
+            
+            if isValidStraightFace(roll: roll, pitch: pitch, yaw: yaw) {
+                facePosition = .Straight
+            } else {
+                facePosition = .faceNotFound
+            }
+            
+            // if enroll mode, we capture the progress. If checkin mode, we check if user has turned left to right
+            if isEnrollMode {
+                updateFaceCaptureProgress(yaw: yaw, pitch: pitch)
+            } else {
+                if isValidLeftFace(yaw: yaw) {
+                    leftSideFacePositionTaken = true
+                }
+                
+                if isValidRightFace(yaw: yaw) {
+                    rightSideFacePositionTaken = true
+                }
+            }
+        
+        case .faceNotFound:
+            invalidateFaceGeometry()
+        case .errored(let error):
+            logger.error("\(error.localizedDescription)")
+            invalidateFaceGeometry()
+        }
+    }
+    
+    
+    private func processUpdatedFaceQuality() {
+        switch faceQualityObservation {
+        case .faceFound(let faceQualityModel):
+            if faceQualityModel.quality < 0.2 {
+                faceQuality = false
+            } else {
+                faceQuality = true
+            }
+        case .faceNotFound:
+            faceQuality = false
+        case .errored(let error):
+            logger.error("\(error.localizedDescription)")
+            faceQuality = false
+        }
+    }
+    
+    
+    private func processUpdatedFaceLiveness() {
+        switch faceLivenessObservation {
+        case .faceFound(let livenessModel):
+            updateAcceptableLiveness(using: livenessModel)
+        case .faceNotFound:
+            invalidateFaceGeometry()
+        case .errored(let error):
+            logger.error("\(error.localizedDescription)")
+            invalidateFaceGeometry()
+        }
+    }
+}
 
 extension CameraViewModel {
     
-    func invalidateFaceGeometry() {
+    private func invalidateFaceGeometry() {
         hasDetectedValidFace = false
         captureMode = false
         faceQuality = false
@@ -476,38 +479,40 @@ extension CameraViewModel {
         leftSideFacePositionTaken = false
         rightSideFacePositionTaken = false
         capturedIndices = []
-        enrollFinished = false
-        checkinFinished = false
+//        enrollFinished = false
+//        checkinFinished = false
     }
     
-    func updateFaceValidity() {
+    private func updateFaceValidity() {
         hasDetectedValidFaceUnthrottled = (faceBounds == .faceOK &&
                                            faceLiveness == .faceOK &&
                                            faceQuality)
     }
     
-    func updateFaceVector() {
-        if !checkinFinished {
-            if leftSideFacePositionTaken && rightSideFacePositionTaken && hasDetectedValidFace {
-                if facePosition == .Straight {
-                    if let enrolledFaceVector = savedVector[0].vector {
-                        let currentFaceVector = faceVector.vector
-                        let similarity = cosineSim(A: enrolledFaceVector, B: currentFaceVector)
-                        print("similarity: \(round(similarity * 10) / 10.0)")
-                        if round(similarity * 10) / 10.0 >= 0.6 {
-                            checkinFinished = true
-                            checkinOK = true
-                        } else {
-                            checkinFinished = true
-                            checkinOK = false
-                        }
-                    }
+    private func updateFaceVector() {
+        if !checkinFinished && leftSideFacePositionTaken &&
+            rightSideFacePositionTaken && hasDetectedValidFace &&
+            facePosition == .Straight && captureMode {
+            
+            let currentFaceVector = faceVector.vector
+            
+            if let enrolledFaceVector = savedVector[0].vector {
+                let similarity = round(cosineSim(A: enrolledFaceVector,
+                                                 B: currentFaceVector) * 10) / 10.0
+                logger.debug("similarity value: \(similarity)")
+                
+                if similarity >= 0.6 {
+                    checkinFinished = true
+                    checkinOK = true
+                } else {
+                    checkinFinished = true
+                    checkinOK = false
                 }
             }
         }
     }
     
-    func updateAcceptableBounds(using boundingBox: CGRect) {
+    private func updateAcceptableBounds(using boundingBox: CGRect) {
         if boundingBox.width > 1.3 * FaceCaptureConstant.LayoutGuideWidth {
             faceBounds = .detectedFaceTooLarge
         } else if boundingBox.width < FaceCaptureConstant.LayoutGuideHeight * 0.5 {
@@ -517,7 +522,7 @@ extension CameraViewModel {
         }
     }
     
-    func updateAcceptableLiveness(using liveness: FaceLivenessModel) {
+    private func updateAcceptableLiveness(using liveness: FaceLivenessModel) {
         if liveness.spoofed && liveness.obstructed {
             faceLivenessUnthrottled = .faceObstructed
         } else {
@@ -592,8 +597,8 @@ extension CameraViewModel {
                 enrollFinished = true
             }
             
-            print("capturedIndices len: \(self.capturedIndices.count)")
-            print("capturedIndices: \(self.capturedIndices.sorted())")
+            logger.debug("capturedIndices len: \(self.capturedIndices.count)")
+            logger.debug("capturedIndices: \(self.capturedIndices.sorted())")
         }
     }
 }
