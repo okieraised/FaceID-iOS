@@ -11,7 +11,6 @@ struct FaceEnrollCompletionView: View {
     
     // MARK: - Variables
     
-    @Environment(\.presentationMode) var presentationMode
     @State var capturedImage: UIImage?
     
     // MARK: - View
@@ -45,7 +44,7 @@ struct FaceEnrollCompletionView: View {
                 Spacer()
                 
                 Button {
-                    self.presentationMode.wrappedValue.dismiss()
+                    NavigationUtil.popToRootView()
                 } label: {
                     CustomTextView(text: "Done")
                 }

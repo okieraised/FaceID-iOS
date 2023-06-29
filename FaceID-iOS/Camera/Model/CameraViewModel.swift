@@ -140,6 +140,10 @@ final class CameraViewModel: ObservableObject {
     
     // MARK: - Init
     
+    deinit {
+        print("DEINIT")
+    }
+    
     init() {
         faceGeometryObservation = .faceNotFound
         faceQualityObservation = .faceNotFound

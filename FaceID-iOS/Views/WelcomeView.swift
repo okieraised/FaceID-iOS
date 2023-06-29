@@ -45,6 +45,7 @@ struct WelcomeView: View {
                             FaceInstructionView(model: CameraViewModel())
                         } label: {
                             CustomTextView(text: enrollText)
+                                .padding(.horizontal)
                         }
                         .isDetailLink(false)
                         
@@ -52,6 +53,7 @@ struct WelcomeView: View {
                             EmptyView()
                         } label: {
                             CustomTextView(text: "Check-In")
+                                .padding(.horizontal)
                         }
                         .isDetailLink(false)
 

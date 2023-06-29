@@ -18,6 +18,7 @@
 		E52222CA2A3AB6940058246C /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E52222C92A3AB6940058246C /* CameraViewModel.swift */; };
 		E585685A2A3969DA008460A3 /* FaceInstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58568592A3969DA008460A3 /* FaceInstructionView.swift */; };
 		E58B23912A4BCD05005DCF83 /* FaceEnrollCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58B23902A4BCD05005DCF83 /* FaceEnrollCompletionView.swift */; };
+		E58B23932A4BF1C5005DCF83 /* NavigationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58B23922A4BF1C5005DCF83 /* NavigationUtils.swift */; };
 		E59C5A662A454EBB0069D718 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59C5A652A454EBB0069D718 /* Color.swift */; };
 		E59C5A682A4554C80069D718 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59C5A672A4554C80069D718 /* WelcomeView.swift */; };
 		E59C5A6B2A4557B70069D718 /* RadToDegree.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59C5A6A2A4557B70069D718 /* RadToDegree.swift */; };
@@ -33,10 +34,11 @@
 		E5A01CE62A42EE5600E7BD7E /* FaceAntiSpoofingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A01CE52A42EE5600E7BD7E /* FaceAntiSpoofingHelper.swift */; };
 		E5A01CE82A42FAF100E7BD7E /* CVPixelBuffer+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A01CE72A42FAF100E7BD7E /* CVPixelBuffer+Resize.swift */; };
 		E5A01CEA2A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A01CE92A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift */; };
+		E5AB70952A4D1F8600EACCF9 /* FaceCheckinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AB70942A4D1F8600EACCF9 /* FaceCheckinView.swift */; };
 		E5AC974B2A381DEA00DC1B27 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC974A2A381DEA00DC1B27 /* CameraViewController.swift */; };
 		E5AC974D2A384B7E00DC1B27 /* UIScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC974C2A384B7E00DC1B27 /* UIScreen.swift */; };
 		E5AC97502A384C5C00DC1B27 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC974F2A384C5C00DC1B27 /* CameraView.swift */; };
-		E5AC97522A384CC200DC1B27 /* FaceCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC97512A384CC200DC1B27 /* FaceCaptureView.swift */; };
+		E5AC97522A384CC200DC1B27 /* FaceEnrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC97512A384CC200DC1B27 /* FaceEnrollView.swift */; };
 		E5AC97562A38534400DC1B27 /* FaceDetectorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AC97552A38534300DC1B27 /* FaceDetectorModel.swift */; };
 		E5AE11702A442BA9003C38CC /* FaceID.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E5AE116F2A442BA9003C38CC /* FaceID.mlmodel */; };
 		E5AE11722A442C80003C38CC /* FaceMask.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E5AE11712A442C80003C38CC /* FaceMask.mlmodel */; };
@@ -61,6 +63,7 @@
 		E52222C92A3AB6940058246C /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		E58568592A3969DA008460A3 /* FaceInstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceInstructionView.swift; sourceTree = "<group>"; };
 		E58B23902A4BCD05005DCF83 /* FaceEnrollCompletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceEnrollCompletionView.swift; sourceTree = "<group>"; };
+		E58B23922A4BF1C5005DCF83 /* NavigationUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationUtils.swift; sourceTree = "<group>"; };
 		E59C5A652A454EBB0069D718 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		E59C5A672A4554C80069D718 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		E59C5A6A2A4557B70069D718 /* RadToDegree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadToDegree.swift; sourceTree = "<group>"; };
@@ -76,10 +79,11 @@
 		E5A01CE52A42EE5600E7BD7E /* FaceAntiSpoofingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceAntiSpoofingHelper.swift; sourceTree = "<group>"; };
 		E5A01CE72A42FAF100E7BD7E /* CVPixelBuffer+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CVPixelBuffer+Resize.swift"; sourceTree = "<group>"; };
 		E5A01CE92A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CVPixelBuffer+Create.swift"; sourceTree = "<group>"; };
+		E5AB70942A4D1F8600EACCF9 /* FaceCheckinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceCheckinView.swift; sourceTree = "<group>"; };
 		E5AC974A2A381DEA00DC1B27 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		E5AC974C2A384B7E00DC1B27 /* UIScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScreen.swift; sourceTree = "<group>"; };
 		E5AC974F2A384C5C00DC1B27 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
-		E5AC97512A384CC200DC1B27 /* FaceCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceCaptureView.swift; sourceTree = "<group>"; };
+		E5AC97512A384CC200DC1B27 /* FaceEnrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceEnrollView.swift; sourceTree = "<group>"; };
 		E5AC97552A38534300DC1B27 /* FaceDetectorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetectorModel.swift; sourceTree = "<group>"; };
 		E5AE116F2A442BA9003C38CC /* FaceID.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = FaceID.mlmodel; sourceTree = "<group>"; };
 		E5AE11712A442C80003C38CC /* FaceMask.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = FaceMask.mlmodel; sourceTree = "<group>"; };
@@ -150,12 +154,13 @@
 			children = (
 				E59C5A672A4554C80069D718 /* WelcomeView.swift */,
 				E507B4A12A380E0900331FCA /* ErrorView.swift */,
-				E5AC97512A384CC200DC1B27 /* FaceCaptureView.swift */,
+				E5AC97512A384CC200DC1B27 /* FaceEnrollView.swift */,
 				E58568592A3969DA008460A3 /* FaceInstructionView.swift */,
 				E5AE52722A40145700CB741F /* FaceBoundingBoxView.swift */,
 				E5A01CD92A42AB0100E7BD7E /* FaceCaptureBorderView.swift */,
 				E5A01CDF2A42B00100E7BD7E /* FaceCaptureProgressView.swift */,
 				E58B23902A4BCD05005DCF83 /* FaceEnrollCompletionView.swift */,
+				E5AB70942A4D1F8600EACCF9 /* FaceCheckinView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -207,6 +212,7 @@
 			children = (
 				E59C5A6A2A4557B70069D718 /* RadToDegree.swift */,
 				E5DCE1D02A4AD5D9004B0761 /* CosineSimilarity.swift */,
+				E58B23922A4BF1C5005DCF83 /* NavigationUtils.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -338,7 +344,8 @@
 				E5A01CE02A42B00100E7BD7E /* FaceCaptureProgressView.swift in Sources */,
 				E59C5A682A4554C80069D718 /* WelcomeView.swift in Sources */,
 				E5AE11702A442BA9003C38CC /* FaceID.mlmodel in Sources */,
-				E5AC97522A384CC200DC1B27 /* FaceCaptureView.swift in Sources */,
+				E5AC97522A384CC200DC1B27 /* FaceEnrollView.swift in Sources */,
+				E5AB70952A4D1F8600EACCF9 /* FaceCheckinView.swift in Sources */,
 				E59C5A732A4588100069D718 /* DefaultProgressCircle.swift in Sources */,
 				E5A01CE62A42EE5600E7BD7E /* FaceAntiSpoofingHelper.swift in Sources */,
 				E5A01CD82A42A88300E7BD7E /* UIImage+CVPixelBuffer.swift in Sources */,
@@ -357,6 +364,7 @@
 				E507B4A02A380CD100331FCA /* CameraError.swift in Sources */,
 				E507B4972A380ACA00331FCA /* FaceID_iOS.xcdatamodeld in Sources */,
 				E5AC97562A38534400DC1B27 /* FaceDetectorModel.swift in Sources */,
+				E58B23932A4BF1C5005DCF83 /* NavigationUtils.swift in Sources */,
 				E507B4AA2A381BE400331FCA /* CGImage+CVPixelBuffer.swift in Sources */,
 				E5AE52732A40145700CB741F /* FaceBoundingBoxView.swift in Sources */,
 				E5A01CEA2A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift in Sources */,

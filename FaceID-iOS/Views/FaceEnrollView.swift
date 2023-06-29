@@ -7,13 +7,20 @@
 
 import SwiftUI
 
-struct FaceCaptureView: View {
+struct FaceEnrollView: View {
     
     // MARK: - Variables
     @ObservedObject private(set) var model: CameraViewModel
     
     // MARK: - View
     var body: some View {
+        
+        NavigationLink(isActive: $model.enrollFinished) {
+            FaceEnrollCompletionView(capturedImage: model.capturedPhoto)
+        } label: {
+            EmptyView()
+        }
+        .isDetailLink(false)
         
 
         VStack {
@@ -41,10 +48,6 @@ struct FaceCaptureView: View {
                 FaceBoundingBoxView(model: model)
 
                 captureStatusView
-                
-                if model.enrollFinished {
-                    FaceEnrollCompletionView(capturedImage: model.capturedPhoto)
-                }
 
             }
         }
@@ -52,7 +55,7 @@ struct FaceCaptureView: View {
     }
 }
 
-extension FaceCaptureView {
+extension FaceEnrollView {
     
     // MARK: Views
     
@@ -90,7 +93,7 @@ extension FaceCaptureView {
     
 }
 
-extension FaceCaptureView {
+extension FaceEnrollView {
     
     // MARK: Functions
     
