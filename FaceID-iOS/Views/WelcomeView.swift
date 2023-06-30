@@ -6,12 +6,24 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct WelcomeView: View {
     
-    private var faceVectorCount = PersistenceController.shared.getFaceVector().count
+//    @State private var faceVectorCount = PersistenceController.shared.getFaceVector().count
+    
+    @State private var faceVectorCount: Int = PersistenceController.shared.getFaceVector().count {
+        didSet {
+            
+                faceVectorCount = PersistenceController.shared.getFaceVector().count
+            
+        }
+    }
+    
     
     var body: some View {
+        
+       
         
         NavigationView {
             ZStack {
@@ -63,8 +75,8 @@ struct WelcomeView: View {
     }
 }
 
-struct WelcomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        WelcomeView()
-    }
-}
+//struct WelcomeView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        WelcomeView()
+//    }
+//}

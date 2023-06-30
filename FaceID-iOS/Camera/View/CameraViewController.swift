@@ -99,7 +99,6 @@ extension CameraViewController {
     private func checkPermissions() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .notDetermined:
-            sessionQueue.suspend()
             AVCaptureDevice.requestAccess(for: .video) { authorized in
                 if !authorized {
                     self.cameraPermissionStatus = .unauthorized

@@ -172,7 +172,7 @@ final class CameraViewModel: ObservableObject {
     let shutterReleased = PassthroughSubject<Void, Never>()
     
     /// throttleDelay indicates the interval between each update
-    private let throttleDelay = 0.5
+    private let throttleDelay = 1
     
     /// throttleSubscriber is the subscriber for throttling published values
     private var throttleSubscriber = Set<AnyCancellable>()
@@ -377,18 +377,6 @@ extension CameraViewModel {
         DispatchQueue.main.async { [self] in
             
             faceVectorUnthrottled = faceVector
-            if isEnrollMode {
-                if captureMode {
-                    if !enrolled && facePosition == .Straight {
-                        PersistenceController.shared.saveFaceVector(vector: faceVector.vector)
-                    } else {
-                        if reEnroll && facePosition == .Straight {
-                            PersistenceController.shared.updateFaceVector(entity: savedVector[0], vector: faceVector.vector)
-                            reEnroll = false
-                        }
-                    }
-                }
-            }
         }
     }
 }
@@ -490,32 +478,49 @@ extension CameraViewModel {
     }
     
     private func updateFaceVector() {
-        if !checkinFinished && leftSideFacePositionTaken &&
-            rightSideFacePositionTaken && hasDetectedValidFace &&
-            facePosition == .Straight && captureMode {
-            
-            let currentFaceVector = faceVector.vector
-            
-            if let enrolledFaceVector = savedVector[0].vector {
-                let similarity = round(cosineSim(A: enrolledFaceVector,
-                                                 B: currentFaceVector) * 10) / 10.0
-                logger.debug("similarity value: \(similarity)")
-                
-                if similarity >= 0.6 {
-                    checkinFinished = true
-                    checkinOK = true
+        if isEnrollMode {
+            if captureMode {
+                if !enrolled && facePosition == .Straight {
+                    PersistenceController.shared.saveFaceVector(vector: faceVector.vector)
                 } else {
-                    checkinFinished = true
-                    checkinOK = false
+                    if reEnroll && facePosition == .Straight {
+                        PersistenceController.shared.updateFaceVector(entity: savedVector[0], vector: faceVector.vector)
+                        reEnroll = false
+                    }
+                }
+            }
+        } else {
+            if !checkinFinished && leftSideFacePositionTaken &&
+                rightSideFacePositionTaken && hasDetectedValidFace &&
+                facePosition == .Straight && captureMode {
+                
+                let currentFaceVector = faceVector.vector
+                
+                if let enrolledFaceVector = savedVector[0].vector {
+                    let similarity = round(cosineSim(A: enrolledFaceVector,
+                                                     B: currentFaceVector) * 10) / 10.0
+                    logger.info("similarity value: \(similarity)")
+                    
+                    if similarity >= 0.6 {
+                        checkinFinished = true
+                        checkinOK = true
+                    } else {
+                        checkinFinished = true
+                        checkinOK = false
+                    }
                 }
             }
         }
+        
+        
+        
+        
     }
     
     private func updateAcceptableBounds(using boundingBox: CGRect) {
         if boundingBox.width > 1.3 * FaceCaptureConstant.LayoutGuideWidth {
             faceBounds = .detectedFaceTooLarge
-        } else if boundingBox.width < FaceCaptureConstant.LayoutGuideHeight * 0.5 {
+        } else if boundingBox.width < FaceCaptureConstant.LayoutGuideHeight * 0.3 {
             faceBounds = .detectedFaceTooSmall
         } else {
             faceBounds = .faceOK

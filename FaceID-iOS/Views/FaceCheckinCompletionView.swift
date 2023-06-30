@@ -23,7 +23,7 @@ struct FaceCheckinCompletionView: View {
             
             VStack {
                 Circle()
-                    .stroke(.green, lineWidth: 8)
+                    .stroke(model.checkinOK == true ? .green : .red, lineWidth: 8)
                     .aspectRatio(0.45, contentMode: .fit)
                     .overlay {
                         if let uiImage = model.capturedPhoto {
@@ -41,7 +41,7 @@ struct FaceCheckinCompletionView: View {
             VStack {
                 Spacer()
                 
-                Image(systemName: "checkmark.circle.fill")
+                Image(systemName: model.checkinOK == true ? "checkmark.circle.fill" : "xmark.circle.fill")
                     .scaledToFill()
                     .font(.system(size: 36))
                     .frame(width: 120, height: 120, alignment: .bottom)

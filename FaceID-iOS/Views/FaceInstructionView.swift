@@ -83,7 +83,6 @@ struct FaceInstructionView: View {
                     Spacer()
                     
                     NavigationLink {
-//                        FaceEnrollView(model: model)
                         FaceEnrollView()
                     } label: {
                         CustomTextView(text: "Start")
