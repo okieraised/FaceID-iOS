@@ -335,7 +335,7 @@ final class CameraViewModel: ObservableObject {
         
     
     private func savePhoto(_ photo: UIImage) {
-        UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
+//        UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
         DispatchQueue.main.async { [self] in
             capturedPhoto = photo
         }
@@ -497,8 +497,7 @@ extension CameraViewModel {
                 let currentFaceVector = faceVector.vector
                 
                 if let enrolledFaceVector = savedVector[0].vector {
-                    let similarity = round(cosineSim(A: enrolledFaceVector,
-                                                     B: currentFaceVector) * 10) / 10.0
+                    let similarity = round(cosineSim(A: enrolledFaceVector, B: currentFaceVector) * 10) / 10.0
                     logger.info("similarity value: \(similarity)")
                     
                     if similarity >= 0.6 {

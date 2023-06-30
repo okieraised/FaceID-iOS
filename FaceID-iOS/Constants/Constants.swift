@@ -17,6 +17,7 @@ struct PreviewLayerFrameConstant {
     )
     
     static let YOffset = UIScreen.screenHeight/9
+    static let XOffset = UIScreen.screenWidth/4
 }
 
 struct FaceCaptureConstant {
