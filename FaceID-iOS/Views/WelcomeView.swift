@@ -9,14 +9,10 @@ import SwiftUI
 import CoreData
 
 struct WelcomeView: View {
-    
-//    @State private var faceVectorCount = PersistenceController.shared.getFaceVector().count
-    
+        
     @State private var faceVectorCount: Int = PersistenceController.shared.getFaceVector().count {
         didSet {
-            
                 faceVectorCount = PersistenceController.shared.getFaceVector().count
-            
         }
     }
     
