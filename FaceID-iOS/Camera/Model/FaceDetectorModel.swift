@@ -224,7 +224,11 @@ extension FaceDetector {
             let photoRect = CGRect(x: 0, y: yOrigin, width: width, height: desiredImageHeight)
 
             let context = CIContext()
-            if let cgImage = context.createCGImage(ciImage, from: photoRect) {
+            
+//            let box = bBox.scaledForCropping(to: ciImage.extent.size)
+//            let faceImage = ciImage.cropped(to: box)
+            
+            if let cgImage = context.createCGImage(ciImage, from: photoRect) { // faceImage
                 let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
                 DispatchQueue.main.async {
                     model.perform(action: .savePhoto(uiImage))
@@ -245,54 +249,28 @@ extension FaceDetector {
         }
         
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        let imageViewScale = max(ciImage.extent.width / UIScreen.screenWidth,
-                                 ciImage.extent.size.height / UIScreen.screenHeight / 2)
-        
-//        let converted = viewDelegate.convertFromMetadataToPreviewRect(rect: bBox)
-//        let cropZone = CGRect(
-//            x: (converted.origin.x + PreviewLayerFrameConstant.YOffset) - PreviewLayerFrameConstant.XOffset,
-//            y: (UIScreen.screenHeight - converted.origin.y)/2 + PreviewLayerFrameConstant.YOffset,
-//            width: converted.size.width * imageViewScale + PreviewLayerFrameConstant.YOffset,
-//            height: (converted.size.height + PreviewLayerFrameConstant.YOffset) * imageViewScale)
-//
-//        let cropped = ciImage.cropped(to: cropZone)
-//        let context = CIContext()
-//
-//        guard
-//            let cgImage = context.createCGImage(cropped, from: cropped.extent)
-//        else {
-//            return nil
-//        }
-        
-//        guard
-//            let convertedBuffer = cgImage.pixelBuffer()
-//        else {
-//            return nil
-//        }
-        
-        //--------------------------------------------------------------------------
+
         let context = CIContext()
-        let imageSize = ciImage.extent.size
-        let box = bBox.scaledForCropping(to: imageSize)
+        
+        let box = bBox.scaledForCropping(to: ciImage.extent.size)
         let faceImage = ciImage.cropped(to: box)
         
+        
         guard
-            let cgImage = context.createCGImage(faceImage, from: faceImage.extent)
+            let cgImage = context.createCGImage(faceImage, from: faceImage.extent) // photoRect, faceImage.extent
         else {
             return nil
-            
         }
+        
+//        let uiImage = UIImage(cgImage: cgImage)
+//        UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
         
         guard
             let convertedBuffer = cgImage.pixelBuffer()
         else {
             return nil
         }
-        
-//        let uiImage = UIImage(cgImage: cgImage2)
-//        UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
-        
-        //--------------------------------------------------------------------------
+
         return resizePixelBuffer(convertedBuffer, width: width, height: height)
     }
 }

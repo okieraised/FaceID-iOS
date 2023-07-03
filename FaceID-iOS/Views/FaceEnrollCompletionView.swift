@@ -24,7 +24,7 @@ struct FaceEnrollCompletionView: View {
             
             VStack {
                 Circle()
-                    .stroke(.green, lineWidth: 8)
+                    .stroke(model.enrollOK == true ? .green : .red, lineWidth: 8)
                     .aspectRatio(0.45, contentMode: .fit)
                     .overlay {
                         if let uiImage = model.capturedPhoto {
@@ -38,6 +38,27 @@ struct FaceEnrollCompletionView: View {
                 Spacer()
             }
             .padding(.top, FaceCaptureConstant.OffsetFromTop+40)
+            
+            VStack {
+                Spacer()
+                
+                Image(systemName: model.enrollOK == true ? "checkmark.circle.fill" : "xmark.circle.fill")
+                    .scaledToFill()
+                    .font(.system(size: 36))
+                    .frame(width: 120, height: 120, alignment: .bottom)
+                    .foregroundColor(model.enrollOK == true ? .green : .red)
+                
+                Text(model.enrollOK == true ? "Enroll Completed" : "Enroll Failed")
+                    .frame(minWidth: 0, maxWidth: .infinity)
+                    .padding(.horizontal, 20)
+                    .font(.system(size: 18, weight: .bold))
+                    .padding()
+                    .foregroundColor(.white)
+                
+                Spacer()
+            }
+            .padding(.top, 240)
+            .padding()
             
             VStack {
                 

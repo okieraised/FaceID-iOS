@@ -131,6 +131,9 @@ final class CameraViewModel: ObservableObject {
     /// enrollFinished indicates if the user has finished enrolling his/her face
     @Published var enrollFinished: Bool = false
     
+    /// enrollOK indicates if the user has successfully enrolled his/her face
+    @Published var enrollOK: Bool = false
+    
     /// checkinFinished indicates if the user has finished checking-in his/her face
     @Published var checkinFinished: Bool = false
     
@@ -293,10 +296,6 @@ final class CameraViewModel: ObservableObject {
                 self?.faceVector = value
             })
             .store(in: &throttleSubscriber)
-        //-------------------------------------------------------------------------------------------------
-        // End
-        //-------------------------------------------------------------------------------------------------
-        
     }
     
     
@@ -324,7 +323,7 @@ final class CameraViewModel: ObservableObject {
     private func takePhoto() {
         switch facePosition {
         case .Straight:
-            if !straightFacePositionTaken && captureMode {
+            if !straightFacePositionTaken && captureMode && faceLiveness == .faceOK {
                 shutterReleased.send()
                 straightFacePositionTaken = true
             }
@@ -473,15 +472,16 @@ extension CameraViewModel {
     
     private func updateFaceValidity() {
         hasDetectedValidFaceUnthrottled = (faceBounds == .faceOK &&
-                                           faceLiveness == .faceOK &&
+                                           (faceLiveness == .faceOK || faceLiveness == .faceObstructed) &&
                                            faceQuality)
     }
     
     private func updateFaceVector() {
         if isEnrollMode {
             if captureMode {
-                if !enrolled && facePosition == .Straight {
+                if !enrolled && facePosition == .Straight && faceLiveness != .faceObstructed {
                     PersistenceController.shared.saveFaceVector(vector: faceVector.vector)
+                    
                 } else {
                     if reEnroll && facePosition == .Straight {
                         PersistenceController.shared.updateFaceVector(entity: savedVector[0], vector: faceVector.vector)
@@ -595,9 +595,17 @@ extension CameraViewModel {
                 return
             }
             
-            capturedIndices.insert(abs(Int(dProgress)))
+            if faceLiveness != .faceObstructed {
+                capturedIndices.insert(abs(Int(dProgress)))
+            }
             
-            if capturedIndices.count == FaceCaptureConstant.MaxProgress && straightFacePositionTaken {
+            if capturedIndices.count == FaceCaptureConstant.MaxProgress &&
+                straightFacePositionTaken {
+                if faceLiveness == .faceOK {
+                    enrollOK = true
+                } else {
+                    enrollOK = false
+                }
                 enrollFinished = true
             }
             

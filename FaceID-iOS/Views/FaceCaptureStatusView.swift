@@ -41,10 +41,15 @@ extension FaceCaptureStatusView {
     private func faceQualityCheckTitle() -> String {
         if model.hasDetectedValidFace {
             if model.isEnrollMode {
-                if model.capturedIndices.count == FaceCaptureConstant.MaxProgress {
-                    return "Completed"
+                switch model.faceLiveness {
+                case .faceObstructed:
+                    return "Face Obstructed"
+                default:
+                    if model.capturedIndices.count == FaceCaptureConstant.MaxProgress {
+                        return "Completed"
+                    }
+                    return "Move Your Head to Complete the Circle"
                 }
-                return "Move Your Head to Complete the Circle"
             } else {
                 return "Move Your Head from Left to Right"
             }
@@ -62,7 +67,12 @@ extension FaceCaptureStatusView {
     
     private func faceQualityCheckSubtitle() -> String {
         if model.hasDetectedValidFace {
-            return ""
+            switch model.faceLiveness {
+            case .faceObstructed:
+                return "Please remove anything that covers your face"
+            default:
+                return ""
+            }
         } else {
             switch model.faceLiveness {
             case .faceObstructed:
