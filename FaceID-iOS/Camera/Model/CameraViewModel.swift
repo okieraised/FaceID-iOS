@@ -466,8 +466,6 @@ extension CameraViewModel {
         leftSideFacePositionTaken = false
         rightSideFacePositionTaken = false
         capturedIndices = []
-//        enrollFinished = false
-//        checkinFinished = false
     }
     
     private func updateFaceValidity() {
@@ -479,7 +477,8 @@ extension CameraViewModel {
     private func updateFaceVector() {
         if isEnrollMode {
             if captureMode {
-                if !enrolled && facePosition == .Straight && faceLiveness != .faceObstructed {
+                if !enrolled && facePosition == .Straight &&
+                    faceLiveness != .faceObstructed {
                     PersistenceController.shared.saveFaceVector(vector: faceVector.vector)
                     
                 } else {
@@ -490,9 +489,9 @@ extension CameraViewModel {
                 }
             }
         } else {
-            if !checkinFinished && leftSideFacePositionTaken &&
+            if (!checkinFinished && leftSideFacePositionTaken &&
                 rightSideFacePositionTaken && hasDetectedValidFace &&
-                facePosition == .Straight && captureMode {
+                facePosition == .Straight && captureMode) {
                 
                 let currentFaceVector = faceVector.vector
                 
@@ -585,6 +584,11 @@ extension CameraViewModel {
     }
     
     private func updateFaceCaptureProgress(yaw: Double, pitch: Double) {
+        if faceLiveness == .faceObstructed {
+            capturedIndices = []
+            return
+        }
+        
         if captureMode {
             
             let localCoord = atan2(yaw, pitch)

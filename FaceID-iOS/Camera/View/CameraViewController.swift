@@ -57,6 +57,10 @@ class CameraViewController: UIViewController {
     
     // MARK: - Controller Instance Method:
     override func viewDidLoad() {
+        
+        // Disable going to sleep
+        UIApplication.shared.isIdleTimerDisabled = true
+        
         super.viewDidLoad()
         faceDetector?.viewDelegate = self
         
