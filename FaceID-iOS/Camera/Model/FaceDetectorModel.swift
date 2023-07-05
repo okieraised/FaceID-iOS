@@ -15,7 +15,6 @@ import Combine
 
 protocol FaceDetectorDelegate: NSObjectProtocol {
     func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect
-    func draw(image: CIImage)
 }
 
 class FaceDetector: NSObject {
@@ -175,7 +174,6 @@ extension FaceDetector {
                 }
             }
         }
-        
     }
     
     
@@ -213,21 +211,37 @@ extension FaceDetector {
         
         imageProcessingQueue.async { [self] in
             let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+            let width = ciImage.extent.width
+            let height = ciImage.extent.height
+            let desiredImageHeight = width * 4 / 3
+            let yOrigin = (height - desiredImageHeight) / 2
+            let photoRect = CGRect(x: 0, y: yOrigin, width: width, height: desiredImageHeight)
 
             let context = CIContext()
-            
-            let box = bBox.scaledForCropping(to: ciImage.extent.size)
-            let faceImage = ciImage.cropped(to: box)
-            
-            guard
-                let cgImage = context.createCGImage(faceImage, from: faceImage.extent)
-            else {
-                return
+
+            if let cgImage = context.createCGImage(ciImage, from: photoRect) { // faceImage
+                let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
+                DispatchQueue.main.async {
+                    model.perform(action: .savePhoto(uiImage))
             }
-            
-            let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
-            DispatchQueue.main.async {
-                model.perform(action: .savePhoto(uiImage))
+                
+                //            let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+                //
+                //            let context = CIContext()
+                //
+                //            let box = bBox.scaledForCropping(to: ciImage.extent.size)
+                //            let faceImage = ciImage.cropped(to: box)
+                //
+                //            guard
+                //                let cgImage = context.createCGImage(faceImage, from: faceImage.extent)
+                //            else {
+                //                return
+                //            }
+                //
+                //            let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
+                //            DispatchQueue.main.async {
+                //                model.perform(action: .savePhoto(uiImage))
+                //            }
             }
         }
     }

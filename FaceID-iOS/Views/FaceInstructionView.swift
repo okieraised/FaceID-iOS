@@ -34,8 +34,6 @@ struct FaceInstructionView: View {
     
     // MARK: - Variables
     @State var order: Int = 0
-    
-    // MARK: - Private variables
     private var imgs: [FaceIDEnum] = [.middle, .top, .middle, .right, .middle, .bottom, .middle, .left]
     private var height: CGFloat = 30
     private var width: CGFloat = 4.5 * 0.9
@@ -47,11 +45,10 @@ struct FaceInstructionView: View {
             return .identity
         }
     }
-    
-    // MARK: - Constant variable
     let imageSwitchTimer = Timer.publish(every: 0.75, on: .main, in: .common).autoconnect()
     
     // MARK: - View
+    
     var body: some View {
 
         ZStack {
@@ -116,10 +113,3 @@ extension FaceInstructionView {
             }
     }
 }
-
-//struct InstructionView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        FaceInstructionView(model: CameraViewModel())
-//    }
-//}
-

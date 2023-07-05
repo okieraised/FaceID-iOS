@@ -9,8 +9,11 @@ import SwiftUI
 
 struct FaceCaptureStatusView: View {
     
+    // MARK: - Variables
+    
     @ObservedObject private(set) var model: CameraViewModel
     
+    // MARK: - View
     
     var body: some View {
         VStack(alignment: .center) {
@@ -33,6 +36,8 @@ struct FaceCaptureStatusView: View {
         }
     }
 }
+
+// MARK: - Extension
 
 extension FaceCaptureStatusView {
     

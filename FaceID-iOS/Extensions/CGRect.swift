@@ -14,7 +14,7 @@ extension CGRect {
             x: self.origin.x * size.width / 2 - PreviewLayerFrameConstant.YOffset / 2,
             y: self.origin.y * size.height + 2*PreviewLayerFrameConstant.YOffset,
             width: (self.size.width * size.width) * 2,
-            height: (self.size.width * size.width) * 2  + PreviewLayerFrameConstant.YOffset / 2 // (self.size.height * size.height) - 2 * PreviewLayerFrameConstant.YOffset
+            height: (self.size.width * size.width) * 2  + PreviewLayerFrameConstant.YOffset / 2
         )
         
         return rect

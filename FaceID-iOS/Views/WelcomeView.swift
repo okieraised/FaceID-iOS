@@ -9,6 +9,8 @@ import SwiftUI
 import CoreData
 
 struct WelcomeView: View {
+    
+    // MARK: - Variables
         
     @State private var faceVectorCount: Int = PersistenceController.shared.getFaceVector().count {
         didSet {
@@ -16,11 +18,9 @@ struct WelcomeView: View {
         }
     }
     
+    // MARK: - View
     
     var body: some View {
-        
-       
-        
         NavigationView {
             ZStack {
                 Color(.black)
@@ -32,7 +32,6 @@ struct WelcomeView: View {
                             .resizable()
                             .frame(width: 250, height: 150)
                             .scaledToFill()
-                        
                         
                         Text("FaceID SDK\nIn-App Enroll & Check-in")
                             .multilineTextAlignment(.center)
@@ -60,19 +59,11 @@ struct WelcomeView: View {
                         }
                         .isDetailLink(false)
                         .disabled(faceVectorCount == 1 ? false : true)
-
                     }
                 }
                 .padding(.top, 100)
                 .padding(.bottom, 20)
-                
             }
         }
     }
 }
-
-//struct WelcomeView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        WelcomeView()
-//    }
-//}

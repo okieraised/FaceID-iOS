@@ -20,26 +20,15 @@ class CameraViewController: UIViewController {
         case failed
     }
     
-    // MARK: - Published Variables
+    // MARK: - Variables
+    
     @Published var error: CameraError?
-    
-    // MARK: - Public Variables
-    
-    
-    // MARK: - Optional Variables
+    private var cameraPermissionStatus = CameraPermissionStatus.unconfigured
     var faceDetector: FaceDetector?
     var previewLayer: AVCaptureVideoPreviewLayer?
-    
-    
-    // MARK: - Private Variables
-    private var cameraPermissionStatus = CameraPermissionStatus.unconfigured
-    
-    // MARK: - Constant Variables
     let session = AVCaptureSession()
     let videoOutput = AVCaptureVideoDataOutput()
     let notificationCenter = NotificationCenter.default
-    
-    // MARK: - Queue
     
     let videoOutputQueue = DispatchQueue(
       label: "Video Output Queue",
@@ -56,20 +45,18 @@ class CameraViewController: UIViewController {
     )
     
     // MARK: - Controller Instance Method:
+    
     override func viewDidLoad() {
         
         // Disable going to sleep
         UIApplication.shared.isIdleTimerDisabled = true
-        
         super.viewDidLoad()
         faceDetector?.viewDelegate = self
-        
         checkPermissions()
         configureCaptureSession()
         self.notificationCenter.addObserver(self, selector: #selector(willResignActive),
                                             name: UIApplication.didEnterBackgroundNotification,
                                             object: nil)
-        
         sessionQueue.async {
             self.session.startRunning()
         }
@@ -122,9 +109,7 @@ extension CameraViewController {
             self.set(error: .unknownAuthorization)
         }
     }
-    
-    
-    
+
     private func configureCaptureSession() {
         guard self.cameraPermissionStatus == .unconfigured else {
             return
@@ -197,8 +182,5 @@ extension CameraViewController: FaceDetectorDelegate {
         }
 
         return previewLayer.layerRectConverted(fromMetadataOutputRect: rect)
-    }
-
-    func draw(image: CIImage) {
     }
 }

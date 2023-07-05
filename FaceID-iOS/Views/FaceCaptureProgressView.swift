@@ -10,6 +10,7 @@ import SwiftUI
 struct FaceCaptureProgressView: View {
     
     // MARK: - Variables
+    
     @ObservedObject private(set) var model: CameraViewModel
     
     // MARK: - View
@@ -24,7 +25,9 @@ struct FaceCaptureProgressView: View {
                     RoundedRectangle(cornerRadius: 4, style: .continuous)
                         .offset(y: UIScreen.screenSize.width / 2 - 30)
                         .fill(.green)
-                        .frame(width: CGFloat(FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress) * 0.9, height: 30, alignment: .center)
+                        .frame(width: CGFloat(FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress) * 0.9,
+                               height: 30,
+                               alignment: .center)
                         .animation(.easeInOut, value: 30)
                         .rotationEffect(.degrees(Double(-1 * ((i+1) * (FaceCaptureConstant.FullCircle / FaceCaptureConstant.MaxProgress) - 180))))
                 }

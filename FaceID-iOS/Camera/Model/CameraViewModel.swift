@@ -334,7 +334,7 @@ final class CameraViewModel: ObservableObject {
         
     
     private func savePhoto(_ photo: UIImage) {
-        UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
+//        UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
         DispatchQueue.main.async { [self] in
             capturedPhoto = photo
         }
@@ -583,16 +583,8 @@ extension CameraViewModel {
     }
     
     private func updateFaceCaptureProgress(yaw: Double, pitch: Double) {
-//        if faceLiveness == .faceObstructed {
-//            capturedIndices = []
-//            return
-//        }
         
         if captureMode {
-//            if faceLiveness == .faceObstructed {
-//                capturedIndices = []
-//                return
-//            }
             
             let localCoord = atan2(yaw, pitch)
             let dLocalCoord = rad2deg(localCoord) + 180

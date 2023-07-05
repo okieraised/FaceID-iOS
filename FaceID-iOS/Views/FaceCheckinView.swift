@@ -13,6 +13,7 @@ struct FaceCheckinView: View {
     
     @StateObject private var model = CameraViewModel(isEnrollMode: false, reEnroll: false)
     
+    // MARK: - View
     
     var body: some View {
         
@@ -24,12 +25,28 @@ struct FaceCheckinView: View {
                         .ignoresSafeArea()
                     
                     CameraView(cameraViewModel: model)
+                        .mask(
+                            model.captureMode == true ? captureModeCameraView : AnyView(Rectangle().aspectRatio(1, contentMode: .fill))
+                        )
                         .onReceive(model.$facePosition) { _ in
                             DispatchQueue.main.async {
                                 model.perform(action: .takePhoto)
                             }
                         }
-                    FaceCaptureBorderView()
+                    
+                    
+                    if model.captureMode {
+                        VStack {
+                            Circle()
+                                .stroke(.white, lineWidth: 2)
+                                .aspectRatio(0.45, contentMode: .fit)
+                            Spacer()
+                        }
+                            .padding(.top, FaceCaptureConstant.OffsetFromTop+40)
+                    } else {
+                        FaceCaptureBorderView()
+                    }
+                    
                     FaceBoundingBoxView(model: model)
                     FaceCaptureStatusView(model: model) 
                 }
@@ -40,15 +57,22 @@ struct FaceCheckinView: View {
                 FaceCheckinCompletionView(model: model)
                     .navigationBarBackButtonHidden(true)
             }
-            
         }
-        
-        
     }
 }
 
-//struct FaceCheckinView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        FaceCheckinView(model: CameraViewModel(isEnrollMode: true, reEnroll: false))
-//    }
-//}
+extension FaceCheckinView {
+    
+    // MARK: Views
+    
+    var captureModeCameraView: AnyView {
+        AnyView(
+            VStack {
+                Circle()
+                    .aspectRatio(0.45, contentMode: .fit)
+                Spacer()
+            }
+                .padding(.top, FaceCaptureConstant.OffsetFromTop+40)
+        )
+    }
+}

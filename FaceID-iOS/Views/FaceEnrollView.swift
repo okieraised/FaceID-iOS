@@ -59,6 +59,8 @@ struct FaceEnrollView: View {
     }
 }
 
+// MARK: - Extension
+
 extension FaceEnrollView {
     
     // MARK: Views

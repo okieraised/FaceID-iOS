@@ -9,10 +9,13 @@ import SwiftUI
 
 struct FaceBoundingBoxView: View {
     
+    // MARK: - Variables
+    
     @ObservedObject var model: CameraViewModel
     
+    // MARK: - View
+    
     var body: some View {
-        
         
         switch model.faceGeometryObservation {
         case .faceNotFound, .errored:

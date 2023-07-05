@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct FaceCaptureBorderView: View {
+    
+    // MARK: - View
+    
     var body: some View {
         VStack {
             Image("Bounding")
