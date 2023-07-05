@@ -76,7 +76,6 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
             saveCapturedPhoto(from: imageBuffer)
         }
         
-        /// Vision Model to detect face angles and quality
         let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(completionHandler: detectedFaceRectangles)
         detectFaceRectanglesRequest.revision = VNDetectFaceRectanglesRequestRevision3
 
@@ -121,12 +120,9 @@ extension FaceDetector {
         }
         
         bBox = result.boundingBox
-        
         let boundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
-        if round(abs(UIScreen.midY - boundingBox.midY)) < 50 ||
-            round(abs(UIScreen.midY - boundingBox.midY)) > 300 ||
-            round(abs(UIScreen.midX - boundingBox.midX)) > 130 ||
-            round(boundingBox.midY) > 450 || round(boundingBox.midX) < 100 || round(boundingBox.midX) > 300 {
+        
+        if isInvalidBoundingBox(boundingBox) {
             model.perform(action: .noFaceDetected)
             return
         }
@@ -217,22 +213,21 @@ extension FaceDetector {
         
         imageProcessingQueue.async { [self] in
             let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-            let width = ciImage.extent.width
-            let height = ciImage.extent.height
-            let desiredImageHeight = width * 4 / 3
-            let yOrigin = (height - desiredImageHeight) / 2
-            let photoRect = CGRect(x: 0, y: yOrigin, width: width, height: desiredImageHeight)
 
             let context = CIContext()
             
-//            let box = bBox.scaledForCropping(to: ciImage.extent.size)
-//            let faceImage = ciImage.cropped(to: box)
+            let box = bBox.scaledForCropping(to: ciImage.extent.size)
+            let faceImage = ciImage.cropped(to: box)
             
-            if let cgImage = context.createCGImage(ciImage, from: photoRect) { // faceImage
-                let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
-                DispatchQueue.main.async {
-                    model.perform(action: .savePhoto(uiImage))
-                }
+            guard
+                let cgImage = context.createCGImage(faceImage, from: faceImage.extent)
+            else {
+                return
+            }
+            
+            let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
+            DispatchQueue.main.async {
+                model.perform(action: .savePhoto(uiImage))
             }
         }
     }
@@ -241,12 +236,16 @@ extension FaceDetector {
 
 extension FaceDetector {
     
+    private func isInvalidBoundingBox(_ boundingBox: CGRect) -> Bool {
+        return round(abs(UIScreen.midY - boundingBox.midY)) < 50 ||
+        round(abs(UIScreen.midY - boundingBox.midY)) > 300 ||
+        round(abs(UIScreen.midX - boundingBox.midX)) > 130 ||
+        round(boundingBox.midY) > 450 ||
+        round(boundingBox.midX) < 100 ||
+        round(boundingBox.midX) > 300
+    }
+    
     private func scaleImage(pixelBuffer: CVPixelBuffer, width: Int, height: Int) -> CVPixelBuffer? {
-        guard
-            let viewDelegate = viewDelegate
-        else {
-            return nil
-        }
         
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
 
@@ -255,15 +254,11 @@ extension FaceDetector {
         let box = bBox.scaledForCropping(to: ciImage.extent.size)
         let faceImage = ciImage.cropped(to: box)
         
-        
         guard
-            let cgImage = context.createCGImage(faceImage, from: faceImage.extent) // photoRect, faceImage.extent
+            let cgImage = context.createCGImage(faceImage, from: faceImage.extent)
         else {
             return nil
         }
-        
-//        let uiImage = UIImage(cgImage: cgImage)
-//        UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
         
         guard
             let convertedBuffer = cgImage.pixelBuffer()

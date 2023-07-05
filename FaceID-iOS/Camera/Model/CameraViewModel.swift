@@ -269,7 +269,7 @@ final class CameraViewModel: ObservableObject {
         
         //-------------------------------------------------------------------------------------------------
         // We throttle these variables to prevent flickering at the border value.
-        // We only publish the latest value of these captured variables at 0.5 seconds interval
+        // We only publish the latest value of these captured variables at 1 seconds interval
         //-------------------------------------------------------------------------------------------------
         $hasDetectedValidFaceUnthrottled
             .throttle(for: .seconds(throttleDelay), scheduler: DispatchQueue.main, latest: true)
@@ -334,7 +334,7 @@ final class CameraViewModel: ObservableObject {
         
     
     private func savePhoto(_ photo: UIImage) {
-//        UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
+        UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
         DispatchQueue.main.async { [self] in
             capturedPhoto = photo
         }
@@ -374,7 +374,6 @@ extension CameraViewModel {
     
     private func publishFaceVectorObservation(_ faceVector: FaceVectorModel) {
         DispatchQueue.main.async { [self] in
-            
             faceVectorUnthrottled = faceVector
         }
     }
@@ -413,7 +412,6 @@ extension CameraViewModel {
                     rightSideFacePositionTaken = true
                 }
             }
-        
         case .faceNotFound:
             invalidateFaceGeometry()
         case .errored(let error):
@@ -491,6 +489,7 @@ extension CameraViewModel {
         } else {
             if (!checkinFinished && leftSideFacePositionTaken &&
                 rightSideFacePositionTaken && hasDetectedValidFace &&
+                faceLiveness == .faceOK &&
                 facePosition == .Straight && captureMode) {
                 
                 let currentFaceVector = faceVector.vector
@@ -499,7 +498,7 @@ extension CameraViewModel {
                     let similarity = round(cosineSim(A: enrolledFaceVector, B: currentFaceVector) * 10) / 10.0
                     logger.info("similarity value: \(similarity)")
                     
-                    if similarity >= 0.6 {
+                    if similarity >= 0.5 {
                         checkinFinished = true
                         checkinOK = true
                     } else {
@@ -584,12 +583,16 @@ extension CameraViewModel {
     }
     
     private func updateFaceCaptureProgress(yaw: Double, pitch: Double) {
-        if faceLiveness == .faceObstructed {
-            capturedIndices = []
-            return
-        }
+//        if faceLiveness == .faceObstructed {
+//            capturedIndices = []
+//            return
+//        }
         
         if captureMode {
+//            if faceLiveness == .faceObstructed {
+//                capturedIndices = []
+//                return
+//            }
             
             let localCoord = atan2(yaw, pitch)
             let dLocalCoord = rad2deg(localCoord) + 180

@@ -51,7 +51,12 @@ extension FaceCaptureStatusView {
                     return "Move Your Head to Complete the Circle"
                 }
             } else {
-                return "Move Your Head from Left to Right"
+                switch model.faceLiveness {
+                case .faceObstructed:
+                    return "Face Obstructed"
+                default:
+                    return "Move Your Head from Left to Right"
+                }    
             }
         } else {
             switch model.faceLiveness {
