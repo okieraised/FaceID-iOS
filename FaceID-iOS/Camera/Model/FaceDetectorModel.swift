@@ -56,6 +56,8 @@ class FaceDetector: NSObject {
         attributes: [],
         autoreleaseFrequency: .workItem
     )
+    
+    let context = CIContext()
 }
 
 // MARK: - Extension
@@ -65,14 +67,23 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
         guard
-            let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
+            let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
         else {
             return
         }
+        
+        // Discard blurry frame
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        let cgImage = context.createCGImage(ciImage, from: ciImage.extent)
+        let image = UIImage(cgImage: cgImage!)
+        if image.isBlurry {
+            return
+        }
+        
 
         if isCapturingPhoto {
             isCapturingPhoto = false
-            saveCapturedPhoto(from: imageBuffer)
+            saveCapturedPhoto(from: pixelBuffer)
         }
         
         let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(completionHandler: detectedFaceRectangles)
@@ -82,19 +93,19 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
         detectCaptureQualityRequest.revision = VNDetectFaceCaptureQualityRequestRevision2
 
 
-        currentFrameBuffer = imageBuffer
+        currentFrameBuffer = pixelBuffer
         do {
             try sequenceHandler.perform(
                 [detectFaceRectanglesRequest, detectCaptureQualityRequest],
-                on: imageBuffer,
+                on: pixelBuffer,
                 orientation: .leftMirrored
             )
         } catch {
             print(error.localizedDescription)
         }
         
-        faceIDHandler(buffer: imageBuffer)
-        faceLivenessHandler(buffer: imageBuffer)
+        faceIDHandler(buffer: pixelBuffer)
+        faceLivenessHandler(buffer: pixelBuffer)
     }
 }
 
@@ -167,7 +178,7 @@ extension FaceDetector {
             return
         }
         
-        if model.captureMode {
+        if model.captureMode && model.facePosition == .Straight {
             if let resizedBuffer = scaleImage(pixelBuffer: buffer, width: FaceIDModel.InputImageSize, height: FaceIDModel.InputImageSize) {
                 if let vector = try? faceIDModel.detectFaceID(buffer: resizedBuffer) {
                     model.perform(action: .faceVectorDetected(FaceVectorModel(vector: vector)))
@@ -204,45 +215,71 @@ extension FaceDetector {
     
     func saveCapturedPhoto(from pixelBuffer: CVPixelBuffer) {
         guard
-            let model = cameraViewModel
+            let model = cameraViewModel, let viewDelegate = viewDelegate
         else {
             return
         }
         
         imageProcessingQueue.async { [self] in
+            
+//            let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+//            let transformedRect = VNImageRectForNormalizedRect(bBox, Int(PreviewLayerFrameConstant.Frame.width), Int(PreviewLayerFrameConstant.Frame.height))
+//                
+//            // Crop the image using the transformed rectangle
+//            
+//            let toCrop = CGRect(x: transformedRect.origin.x,
+//                                y: transformedRect.origin.y + PreviewLayerFrameConstant.YOffset,
+//                                width: transformedRect.width,
+//                                height: transformedRect.height
+//            )
+//            
+//            let croppedImage = ciImage.cropped(to: toCrop)
+//            
+//            let context = CIContext()
+//
+//            if let cgImage = context.createCGImage(croppedImage, from: croppedImage.extent) {
+//                let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
+//                DispatchQueue.main.async {
+//                                        model.perform(action: .savePhoto(uiImage))
+//                }
+//            }
+            
+            //-----------------------------------------------------------
             let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
             let width = ciImage.extent.width
             let height = ciImage.extent.height
+            
             let desiredImageHeight = width * 4 / 3
             let yOrigin = (height - desiredImageHeight) / 2
             let photoRect = CGRect(x: 0, y: yOrigin, width: width, height: desiredImageHeight)
 
             let context = CIContext()
 
-            if let cgImage = context.createCGImage(ciImage, from: photoRect) { // faceImage
+            if let cgImage = context.createCGImage(ciImage, from: photoRect) {
                 let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
                 DispatchQueue.main.async {
                     model.perform(action: .savePhoto(uiImage))
+                }
             }
-                
-                //            let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-                //
-                //            let context = CIContext()
-                //
-                //            let box = bBox.scaledForCropping(to: ciImage.extent.size)
-                //            let faceImage = ciImage.cropped(to: box)
-                //
-                //            guard
-                //                let cgImage = context.createCGImage(faceImage, from: faceImage.extent)
-                //            else {
-                //                return
-                //            }
-                //
-                //            let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
-                //            DispatchQueue.main.async {
-                //                model.perform(action: .savePhoto(uiImage))
-                //            }
-            }
+            //=-----------------------------------
+            
+//                    let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+//
+//                    let context = CIContext()
+//
+//                    let box = bBox.scaledForCropping(to: ciImage.extent.size)
+//                    let faceImage = ciImage.cropped(to: box)
+//
+//                    guard
+//                        let cgImage = context.createCGImage(faceImage, from: faceImage.extent)
+//                    else {
+//                        return
+//                    }
+//
+//                    let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
+//                    DispatchQueue.main.async {
+//                        model.perform(action: .savePhoto(uiImage))
+//                    }
         }
     }
 }
@@ -263,7 +300,7 @@ extension FaceDetector {
         
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
 
-        let context = CIContext()
+//        let context = CIContext()
         
         let box = bBox.scaledForCropping(to: ciImage.extent.size)
         let faceImage = ciImage.cropped(to: box)

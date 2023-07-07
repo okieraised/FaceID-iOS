@@ -19,6 +19,7 @@
 		E585685A2A3969DA008460A3 /* FaceInstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58568592A3969DA008460A3 /* FaceInstructionView.swift */; };
 		E58B23912A4BCD05005DCF83 /* FaceEnrollCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58B23902A4BCD05005DCF83 /* FaceEnrollCompletionView.swift */; };
 		E58B23932A4BF1C5005DCF83 /* NavigationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58B23922A4BF1C5005DCF83 /* NavigationUtils.swift */; };
+		E59C4EF52A579716009E57C3 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59C4EF42A579716009E57C3 /* UIImage.swift */; };
 		E59C5A662A454EBB0069D718 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59C5A652A454EBB0069D718 /* Color.swift */; };
 		E59C5A682A4554C80069D718 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59C5A672A4554C80069D718 /* WelcomeView.swift */; };
 		E59C5A6B2A4557B70069D718 /* RadToDegree.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59C5A6A2A4557B70069D718 /* RadToDegree.swift */; };
@@ -67,6 +68,7 @@
 		E58568592A3969DA008460A3 /* FaceInstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceInstructionView.swift; sourceTree = "<group>"; };
 		E58B23902A4BCD05005DCF83 /* FaceEnrollCompletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceEnrollCompletionView.swift; sourceTree = "<group>"; };
 		E58B23922A4BF1C5005DCF83 /* NavigationUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationUtils.swift; sourceTree = "<group>"; };
+		E59C4EF42A579716009E57C3 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		E59C5A652A454EBB0069D718 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		E59C5A672A4554C80069D718 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		E59C5A6A2A4557B70069D718 /* RadToDegree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadToDegree.swift; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 				E5A01CE92A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift */,
 				E59C5A652A454EBB0069D718 /* Color.swift */,
 				E5AC887B2A4ECFEF00F71AA7 /* CGRect.swift */,
+				E59C4EF42A579716009E57C3 /* UIImage.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -378,6 +381,7 @@
 				E5AC97562A38534400DC1B27 /* FaceDetectorModel.swift in Sources */,
 				E58B23932A4BF1C5005DCF83 /* NavigationUtils.swift in Sources */,
 				E507B4AA2A381BE400331FCA /* CGImage+CVPixelBuffer.swift in Sources */,
+				E59C4EF52A579716009E57C3 /* UIImage.swift in Sources */,
 				E5AE52732A40145700CB741F /* FaceBoundingBoxView.swift in Sources */,
 				E5A01CEA2A42FE4F00E7BD7E /* CVPixelBuffer+Create.swift in Sources */,
 				E5AE11722A442C80003C38CC /* FaceMask.mlmodel in Sources */,

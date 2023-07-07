@@ -144,10 +144,8 @@ extension CameraViewController {
             return
         }
         
-        
         if session.canAddOutput(videoOutput) {
             session.addOutput(videoOutput)
-            
             videoOutput.alwaysDiscardsLateVideoFrames = true
             videoOutput.setSampleBufferDelegate(faceDetector, queue: videoOutputQueue)
             videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]

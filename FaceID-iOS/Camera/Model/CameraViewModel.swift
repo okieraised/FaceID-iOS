@@ -334,8 +334,9 @@ final class CameraViewModel: ObservableObject {
         
     
     private func savePhoto(_ photo: UIImage) {
-//        UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
+        
         DispatchQueue.main.async { [self] in
+            UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
             capturedPhoto = photo
         }
     }
@@ -495,7 +496,8 @@ extension CameraViewModel {
                 let currentFaceVector = faceVector.vector
                 
                 if let enrolledFaceVector = savedVector[0].vector {
-                    let similarity = round(cosineSim(A: enrolledFaceVector, B: currentFaceVector) * 10) / 10.0
+//                    let similarity = round(cosineSim(A: enrolledFaceVector, B: currentFaceVector) * 10) / 10.0
+                    let similarity = cosineSim(A: enrolledFaceVector, B: currentFaceVector)
                     logger.info("similarity value: \(similarity)")
                     
                     if similarity >= 0.5 {
@@ -595,6 +597,14 @@ extension CameraViewModel {
             }
             
             if faceLiveness != .faceObstructed {
+                if abs(Int(dProgress)) + 2 <= 59 && abs(Int(dProgress)) + 1 <= 59 {
+                    capturedIndices.insert(abs(Int(dProgress))+2)
+                    capturedIndices.insert(abs(Int(dProgress))+1)
+                }
+                if abs(Int(dProgress)) - 2 >= 0 && abs(Int(dProgress)) - 1 >= 0  {
+                    capturedIndices.insert(abs(Int(dProgress))-2)
+                    capturedIndices.insert(abs(Int(dProgress))-1)
+                }
                 capturedIndices.insert(abs(Int(dProgress)))
             }
             
