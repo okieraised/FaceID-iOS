@@ -67,17 +67,18 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
         guard
-            let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
+            let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer), let model = cameraViewModel, let viewDelegate = viewDelegate
         else {
             return
         }
         
         // Discard blurry frame
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        let cgImage = context.createCGImage(ciImage, from: ciImage.extent)
-        let image = UIImage(cgImage: cgImage!)
-        if image.isBlurry {
-            return
+        if let cgImage = context.createCGImage(ciImage, from: ciImage.extent) {
+            let image = UIImage(cgImage: cgImage)
+            if image.isBlurry {
+                return
+            }
         }
         
 
@@ -104,8 +105,19 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
             print(error.localizedDescription)
         }
         
-        faceIDHandler(buffer: pixelBuffer)
-        faceLivenessHandler(buffer: pixelBuffer)
+        let boundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: bBox)
+        
+        if isInvalidBoundingBox(boundingBox) {
+            model.perform(action: .noFaceDetected)
+            return
+        }
+        
+        if let buffer = currentFrameBuffer {
+            faceIDHandler(buffer: buffer)
+            faceLivenessHandler(buffer: buffer)
+        }
+//        faceIDHandler(buffer: pixelBuffer)
+//        faceLivenessHandler(buffer: pixelBuffer)
     }
 }
 
@@ -221,65 +233,79 @@ extension FaceDetector {
         }
         
         imageProcessingQueue.async { [self] in
-            
-//            let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-//            let transformedRect = VNImageRectForNormalizedRect(bBox, Int(PreviewLayerFrameConstant.Frame.width), Int(PreviewLayerFrameConstant.Frame.height))
-//                
-//            // Crop the image using the transformed rectangle
-//            
-//            let toCrop = CGRect(x: transformedRect.origin.x,
-//                                y: transformedRect.origin.y + PreviewLayerFrameConstant.YOffset,
-//                                width: transformedRect.width,
-//                                height: transformedRect.height
-//            )
-//            
-//            let croppedImage = ciImage.cropped(to: toCrop)
-//            
-//            let context = CIContext()
-//
-//            if let cgImage = context.createCGImage(croppedImage, from: croppedImage.extent) {
-//                let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
-//                DispatchQueue.main.async {
-//                                        model.perform(action: .savePhoto(uiImage))
-//                }
-//            }
-            
-            //-----------------------------------------------------------
             let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-            let width = ciImage.extent.width
-            let height = ciImage.extent.height
-            
-            let desiredImageHeight = width * 4 / 3
-            let yOrigin = (height - desiredImageHeight) / 2
-            let photoRect = CGRect(x: 0, y: yOrigin, width: width, height: desiredImageHeight)
-
-            let context = CIContext()
-
-            if let cgImage = context.createCGImage(ciImage, from: photoRect) {
-                let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
+            if let cgImage = context.createCGImage(ciImage, from: ciImage.extent) {
+                let uiImage = UIImage(cgImage: cgImage, scale: 1.5, orientation: .upMirrored)
                 DispatchQueue.main.async {
                     model.perform(action: .savePhoto(uiImage))
                 }
             }
-            //=-----------------------------------
             
-//                    let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+            
+            let newSize = CGSize(width: PreviewLayerFrameConstant.Frame.width, height: PreviewLayerFrameConstant.Frame.height)
+            let newImage = ciImage.transformed(by: CGAffineTransform(scaleX: newSize.width / ciImage.extent.width, y: newSize.height / ciImage.extent.height))
+
+            let bbox = viewDelegate.convertFromMetadataToPreviewRect(rect: bBox)
+            let cropped = newImage.cropped(to: bbox)
+
+
+            if let cgImage = context.createCGImage(newImage, from: cropped.extent) {
+                let uiImage = UIImage(cgImage: cgImage, scale: 1.5, orientation: .upMirrored)
+                DispatchQueue.main.async {
+                    model.perform(action: .savePhoto(uiImage))
+                }
+            }
+            
+            
+            //-----------------------------------------------------------
+            
+//            let ciImage = CIImage(cvPixelBuffer: currentFrameBuffer!)
+//            let resizeFilter = CIFilter(name:"CILanczosScaleTransform")!
 //
-//                    let context = CIContext()
+//            // Desired output size
 //
-//                    let box = bBox.scaledForCropping(to: ciImage.extent.size)
-//                    let faceImage = ciImage.cropped(to: box)
+//            // Compute scale and corrective aspect ratio
+//            let scale = PreviewLayerFrameConstant.Frame.height / (ciImage.extent.height)
+//            let aspectRatio = PreviewLayerFrameConstant.Frame.width / ((ciImage.extent.width) * scale)
 //
-//                    guard
-//                        let cgImage = context.createCGImage(faceImage, from: faceImage.extent)
-//                    else {
-//                        return
-//                    }
-//
+//            // Apply resizing
+//            resizeFilter.setValue(ciImage, forKey: kCIInputImageKey)
+//            resizeFilter.setValue(scale, forKey: kCIInputScaleKey)
+//            resizeFilter.setValue(aspectRatio, forKey: kCIInputAspectRatioKey) // kCIInputAspectRatioKey
+//            if let outputImage = resizeFilter.outputImage {
+//                let bbox = viewDelegate.convertFromMetadataToPreviewRect(rect: bBox)
+//                let cropped = outputImage.cropped(to: bbox)
+//                if let cgImage = context.createCGImage(outputImage, from: cropped.extent) {
 //                    let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
 //                    DispatchQueue.main.async {
 //                        model.perform(action: .savePhoto(uiImage))
 //                    }
+//                }
+//            }
+            
+            //-----------------------------------------------------------
+            // Current OK
+            //-----------------------------------------------------------
+//            let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+//            let width = ciImage.extent.width
+//            let height = ciImage.extent.height
+//
+//            let desiredImageHeight = width * 4 / 3
+//            let yOrigin = (height - desiredImageHeight) / 2
+//            let photoRect = CGRect(x: 0, y: yOrigin, width: width, height: desiredImageHeight)
+//
+//            let context = CIContext()
+//
+//            if let cgImage = context.createCGImage(ciImage, from: photoRect) {
+//                let uiImage = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
+//                DispatchQueue.main.async {
+//                    model.perform(action: .savePhoto(uiImage))
+//                }
+//            }
+            //-----------------------------------------------------------
+            // End current
+            //-----------------------------------------------------------
+            
         }
     }
 }
@@ -298,9 +324,39 @@ extension FaceDetector {
     
     private func scaleImage(pixelBuffer: CVPixelBuffer, width: Int, height: Int) -> CVPixelBuffer? {
         
+        guard
+            let viewDelegate = viewDelegate
+        else {
+            return nil
+        }
+        
+        
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        
+        
+        let newSize = CGSize(width: PreviewLayerFrameConstant.Frame.width, height: PreviewLayerFrameConstant.Frame.height)
+        let newImage = ciImage.transformed(by: CGAffineTransform(scaleX: newSize.width / ciImage.extent.width, y: newSize.height / ciImage.extent.height))
+        
+        let bbox = viewDelegate.convertFromMetadataToPreviewRect(rect: bBox)
+        let cropped = newImage.cropped(to: bbox)
+        
+        
+        if let cgImage = context.createCGImage(newImage, from: cropped.extent) {
+            guard
+                let convertedBuffer = cgImage.pixelBuffer()
+            else {
+                return nil
+            }
 
-//        let context = CIContext()
+            return resizePixelBuffer(convertedBuffer, width: width, height: height)
+        }
+        
+        return nil
+    }
+    
+    private func scaleImage2(pixelBuffer: CVPixelBuffer, width: Int, height: Int) -> CVPixelBuffer? {
+        
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
         
         let box = bBox.scaledForCropping(to: ciImage.extent.size)
         let faceImage = ciImage.cropped(to: box)
@@ -318,5 +374,45 @@ extension FaceDetector {
         }
 
         return resizePixelBuffer(convertedBuffer, width: width, height: height)
+    }
+    
+    private func scaleImage3(pixelBuffer: CVPixelBuffer, width: Int, height: Int) -> CVPixelBuffer? {
+        
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        
+        guard
+            let resizeFilter = CIFilter(name:"CILanczosScaleTransform"), let viewDelegate = viewDelegate
+        else {
+            return nil
+        }
+
+        let scale = PreviewLayerFrameConstant.Frame.height / (ciImage.extent.height)
+        let aspectRatio = PreviewLayerFrameConstant.Frame.width / ((ciImage.extent.width) * scale)
+
+        resizeFilter.setValue(ciImage, forKey: kCIInputImageKey)
+        resizeFilter.setValue(scale, forKey: kCIInputScaleKey)
+        resizeFilter.setValue(aspectRatio, forKey: kCIInputAspectRatioKey)
+        
+        if let resizedCIImage = resizeFilter.outputImage {
+            let bbox = viewDelegate.convertFromMetadataToPreviewRect(rect: bBox)
+            
+            let cropped = resizedCIImage.cropped(to: bbox)
+            
+            guard
+                let cgImage = context.createCGImage(cropped, from: cropped.extent)
+            else {
+                return nil
+            }
+            
+            guard
+                let convertedBuffer = cgImage.pixelBuffer()
+            else {
+                return nil
+            }
+
+            return resizePixelBuffer(convertedBuffer, width: width, height: height)
+        }
+        
+        return nil
     }
 }

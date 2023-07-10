@@ -477,11 +477,13 @@ extension CameraViewModel {
         if isEnrollMode {
             if captureMode {
                 if !enrolled && facePosition == .Straight &&
-                    faceLiveness != .faceObstructed {
+                    faceLiveness != .faceObstructed && faceBounds == .faceOK {
                     PersistenceController.shared.saveFaceVector(vector: faceVector.vector)
+                    enrolled = true
                     
                 } else {
-                    if reEnroll && facePosition == .Straight {
+                    if reEnroll && facePosition == .Straight &&
+                        faceLiveness == .faceOK && faceBounds == .faceOK && hasDetectedValidFace {
                         PersistenceController.shared.updateFaceVector(entity: savedVector[0], vector: faceVector.vector)
                         reEnroll = false
                     }
@@ -496,8 +498,7 @@ extension CameraViewModel {
                 let currentFaceVector = faceVector.vector
                 
                 if let enrolledFaceVector = savedVector[0].vector {
-//                    let similarity = round(cosineSim(A: enrolledFaceVector, B: currentFaceVector) * 10) / 10.0
-                    let similarity = cosineSim(A: enrolledFaceVector, B: currentFaceVector)
+                    let similarity = round(cosineSim(A: enrolledFaceVector, B: currentFaceVector) * 10) / 10.0
                     logger.info("similarity value: \(similarity)")
                     
                     if similarity >= 0.5 {
@@ -517,7 +518,8 @@ extension CameraViewModel {
     }
     
     private func updateAcceptableBounds(using boundingBox: CGRect) {
-        if boundingBox.width > 1.3 * FaceCaptureConstant.LayoutGuideWidth {
+        if boundingBox.width > 1.2 * FaceCaptureConstant.LayoutGuideWidth {
+            
             faceBounds = .detectedFaceTooLarge
         } else if boundingBox.width < FaceCaptureConstant.LayoutGuideHeight * 0.3 {
             faceBounds = .detectedFaceTooSmall

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0CB150BB5166B4EC351C5C6D /* Pods_FaceID_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095C1269D6C7DF33E98891AA /* Pods_FaceID_iOS.framework */; };
 		E507B48B2A380AC900331FCA /* FaceID_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E507B48A2A380AC900331FCA /* FaceID_iOSApp.swift */; };
 		E507B48F2A380ACA00331FCA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E507B48E2A380ACA00331FCA /* Assets.xcassets */; };
 		E507B4922A380ACA00331FCA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E507B4912A380ACA00331FCA /* Preview Assets.xcassets */; };
@@ -16,6 +17,7 @@
 		E507B4A22A380E0900331FCA /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E507B4A12A380E0900331FCA /* ErrorView.swift */; };
 		E507B4AA2A381BE400331FCA /* CGImage+CVPixelBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E507B4A92A381BE400331FCA /* CGImage+CVPixelBuffer.swift */; };
 		E52222CA2A3AB6940058246C /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E52222C92A3AB6940058246C /* CameraViewModel.swift */; };
+		E53B06692A5BB05E0068F67F /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = E53B06682A5BB05E0068F67F /* OpenCVWrapper.mm */; };
 		E585685A2A3969DA008460A3 /* FaceInstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58568592A3969DA008460A3 /* FaceInstructionView.swift */; };
 		E58B23912A4BCD05005DCF83 /* FaceEnrollCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58B23902A4BCD05005DCF83 /* FaceEnrollCompletionView.swift */; };
 		E58B23932A4BF1C5005DCF83 /* NavigationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58B23922A4BF1C5005DCF83 /* NavigationUtils.swift */; };
@@ -55,6 +57,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		095C1269D6C7DF33E98891AA /* Pods_FaceID_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FaceID_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		28AA8C53C24D49CD2537F5A9 /* Pods-FaceID-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FaceID-iOS.debug.xcconfig"; path = "Target Support Files/Pods-FaceID-iOS/Pods-FaceID-iOS.debug.xcconfig"; sourceTree = "<group>"; };
+		7A7D0CDFADD0E5F2C7CCC2DC /* Pods-FaceID-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FaceID-iOS.release.xcconfig"; path = "Target Support Files/Pods-FaceID-iOS/Pods-FaceID-iOS.release.xcconfig"; sourceTree = "<group>"; };
 		E507B4872A380AC900331FCA /* FaceID-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FaceID-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E507B48A2A380AC900331FCA /* FaceID_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceID_iOSApp.swift; sourceTree = "<group>"; };
 		E507B48E2A380ACA00331FCA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -65,6 +70,9 @@
 		E507B4A12A380E0900331FCA /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		E507B4A92A381BE400331FCA /* CGImage+CVPixelBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGImage+CVPixelBuffer.swift"; sourceTree = "<group>"; };
 		E52222C92A3AB6940058246C /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
+		E53B06662A5BAFF40068F67F /* FaceID-iOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FaceID-iOS-Bridging-Header.h"; sourceTree = "<group>"; };
+		E53B06672A5BB05E0068F67F /* OpenCVWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
+		E53B06682A5BB05E0068F67F /* OpenCVWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
 		E58568592A3969DA008460A3 /* FaceInstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceInstructionView.swift; sourceTree = "<group>"; };
 		E58B23902A4BCD05005DCF83 /* FaceEnrollCompletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceEnrollCompletionView.swift; sourceTree = "<group>"; };
 		E58B23922A4BF1C5005DCF83 /* NavigationUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationUtils.swift; sourceTree = "<group>"; };
@@ -108,17 +116,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0CB150BB5166B4EC351C5C6D /* Pods_FaceID_iOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		16B653CBEE29BD1E4609664F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				095C1269D6C7DF33E98891AA /* Pods_FaceID_iOS.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3524C79033AA02D8DB7D0921 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				28AA8C53C24D49CD2537F5A9 /* Pods-FaceID-iOS.debug.xcconfig */,
+				7A7D0CDFADD0E5F2C7CCC2DC /* Pods-FaceID-iOS.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		E507B47E2A380AC800331FCA = {
 			isa = PBXGroup;
 			children = (
 				E507B4892A380AC900331FCA /* FaceID-iOS */,
 				E507B4882A380AC900331FCA /* Products */,
+				3524C79033AA02D8DB7D0921 /* Pods */,
+				16B653CBEE29BD1E4609664F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -133,6 +161,7 @@
 		E507B4892A380AC900331FCA /* FaceID-iOS */ = {
 			isa = PBXGroup;
 			children = (
+				E53B06602A5BAF1B0068F67F /* OpenCV */,
 				E59C5A6C2A457E010069D718 /* Reuseables */,
 				E507B48E2A380ACA00331FCA /* Assets.xcassets */,
 				E59C5A692A4557A80069D718 /* Utils */,
@@ -219,6 +248,16 @@
 			path = Error;
 			sourceTree = "<group>";
 		};
+		E53B06602A5BAF1B0068F67F /* OpenCV */ = {
+			isa = PBXGroup;
+			children = (
+				E53B06662A5BAFF40068F67F /* FaceID-iOS-Bridging-Header.h */,
+				E53B06672A5BB05E0068F67F /* OpenCVWrapper.h */,
+				E53B06682A5BB05E0068F67F /* OpenCVWrapper.mm */,
+			);
+			path = OpenCV;
+			sourceTree = "<group>";
+		};
 		E59C5A692A4557A80069D718 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -285,6 +324,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E507B49A2A380ACA00331FCA /* Build configuration list for PBXNativeTarget "FaceID-iOS" */;
 			buildPhases = (
+				24D74C7F33319E093F1F8C50 /* [CP] Check Pods Manifest.lock */,
 				E507B4832A380AC900331FCA /* Sources */,
 				E507B4842A380AC900331FCA /* Frameworks */,
 				E507B4852A380AC900331FCA /* Resources */,
@@ -310,6 +350,7 @@
 				TargetAttributes = {
 					E507B4862A380AC900331FCA = {
 						CreatedOnToolsVersion = 14.3.1;
+						LastSwiftMigration = 1430;
 					};
 				};
 			};
@@ -342,6 +383,31 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		24D74C7F33319E093F1F8C50 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FaceID-iOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E507B4832A380AC900331FCA /* Sources */ = {
@@ -378,6 +444,7 @@
 				E5B554722A493D5800CD8E36 /* ProgressBarView.swift in Sources */,
 				E507B4A02A380CD100331FCA /* CameraError.swift in Sources */,
 				E507B4972A380ACA00331FCA /* FaceID_iOS.xcdatamodeld in Sources */,
+				E53B06692A5BB05E0068F67F /* OpenCVWrapper.mm in Sources */,
 				E5AC97562A38534400DC1B27 /* FaceDetectorModel.swift in Sources */,
 				E58B23932A4BF1C5005DCF83 /* NavigationUtils.swift in Sources */,
 				E507B4AA2A381BE400331FCA /* CGImage+CVPixelBuffer.swift in Sources */,
@@ -513,9 +580,11 @@
 		};
 		E507B49B2A380ACA00331FCA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 28AA8C53C24D49CD2537F5A9 /* Pods-FaceID-iOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"FaceID-iOS/Preview Content\"";
@@ -537,6 +606,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.thomaspham.FaceID-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "FaceID-iOS/OpenCV/FaceID-iOS-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -544,9 +615,11 @@
 		};
 		E507B49C2A380ACA00331FCA /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7A7D0CDFADD0E5F2C7CCC2DC /* Pods-FaceID-iOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"FaceID-iOS/Preview Content\"";
@@ -568,6 +641,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.thomaspham.FaceID-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "FaceID-iOS/OpenCV/FaceID-iOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

@@ -47,7 +47,6 @@ class CameraViewController: UIViewController {
     // MARK: - Controller Instance Method:
     
     override func viewDidLoad() {
-        
         // Disable going to sleep
         UIApplication.shared.isIdleTimerDisabled = true
         super.viewDidLoad()
@@ -60,6 +59,11 @@ class CameraViewController: UIViewController {
         sessionQueue.async {
             self.session.startRunning()
         }
+        
+        
+        
+        let openCVWrapper = OpenCVWrapper()
+        openCVWrapper.isThisWorking()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -178,6 +182,7 @@ extension CameraViewController: FaceDetectorDelegate {
         else {
             return CGRect.zero
         }
+
 
         return previewLayer.layerRectConverted(fromMetadataOutputRect: rect)
     }
