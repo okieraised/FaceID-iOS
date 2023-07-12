@@ -10,8 +10,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface OpenCVWrapper : NSObject
-
-- (void)isThisWorking;
+- (void) estimateAffinePartial2D :(const float*) from output:(float*) matrix;
 
 @end
 
