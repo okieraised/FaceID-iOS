@@ -66,7 +66,7 @@ struct FaceCheckinCompletionView: View {
                 Button {
                     NavigationUtil.popToRootView()
                 } label: {
-                    CustomTextView(text: "Done")
+                    CustomTextView(text: model.checkinOK == true ? "Done" : "Try Again")
                 }
             }
             .padding()

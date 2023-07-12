@@ -18,6 +18,13 @@ public class FaceMaskModel {
         public let result: [Float32]
     }
     
+    public enum Label: Int {
+        case bad = 0
+        case good = 1
+        case facemask = 2
+        case sunglasses = 3
+    }
+    
     public static let InputImageSize = 112
     
     private let faceMask: FaceMask = {
