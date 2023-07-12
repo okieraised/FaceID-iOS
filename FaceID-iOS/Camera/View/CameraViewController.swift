@@ -59,11 +59,6 @@ class CameraViewController: UIViewController {
         sessionQueue.async {
             self.session.startRunning()
         }
-        
-        
-        
-        let openCVWrapper = OpenCVWrapper()
-        openCVWrapper.isThisWorking()
     }
     
     override func viewDidDisappear(_ animated: Bool) {

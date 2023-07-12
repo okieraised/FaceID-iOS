@@ -501,7 +501,7 @@ extension CameraViewModel {
                     let similarity = round(cosineSim(A: enrolledFaceVector, B: currentFaceVector) * 10) / 10.0
                     logger.info("similarity value: \(similarity)")
                     
-                    if similarity >= 0.5 {
+                    if similarity >= 0.6 {
                         checkinFinished = true
                         checkinOK = true
                     } else {

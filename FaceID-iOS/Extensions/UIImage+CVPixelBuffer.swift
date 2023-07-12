@@ -10,6 +10,7 @@ import UIKit
 
 
 extension UIImage {
+    
     func resizeImageTo(size: CGSize) -> UIImage {
 
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
@@ -114,41 +115,5 @@ extension UIImage {
         return pixelBuffer
     }
 }
-
-//extension UIImage {
-//  /**
-//    Creates a new UIImage from a CVPixelBuffer.
-//
-//    - Note: Not all CVPixelBuffer pixel formats support conversion into a
-//            CGImage-compatible pixel format.
-//  */
-//  public convenience init?(pixelBuffer: CVPixelBuffer) {
-//    if let cgImage = CGImage.create(pixelBuffer: pixelBuffer) {
-//      self.init(cgImage: cgImage)
-//    } else {
-//      return nil
-//    }
-//  }
-//
-//  /*
-//  // Alternative implementation:
-//  public convenience init?(pixelBuffer: CVPixelBuffer) {
-//    // This converts the image to a CIImage first and then to a UIImage.
-//    // Does not appear to work on the simulator but is OK on the device.
-//    self.init(ciImage: CIImage(cvPixelBuffer: pixelBuffer))
-//  }
-//  */
-//
-//  /**
-//    Creates a new UIImage from a CVPixelBuffer, using a Core Image context.
-//  */
-//  public convenience init?(pixelBuffer: CVPixelBuffer, context: CIContext) {
-//    if let cgImage = CGImage.create(pixelBuffer: pixelBuffer, context: context) {
-//      self.init(cgImage: cgImage)
-//    } else {
-//      return nil
-//    }
-//  }
-//}
 
 #endif
